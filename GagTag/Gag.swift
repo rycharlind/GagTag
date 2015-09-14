@@ -34,9 +34,9 @@ class GagViewController: UIViewController, UIImagePickerControllerDelegate, UINa
     
     override func viewDidAppear(animated: Bool) {
         
-        //self.labelTag?.hidden = true
-        
         if (self.gag != nil) {
+            println(self.gag)
+            self.updateUI()
             queryGagImage()
             queryGagUserTag()
         }
@@ -44,6 +44,11 @@ class GagViewController: UIViewController, UIImagePickerControllerDelegate, UINa
     }
     
     func updateUI() {
+        
+        if let winningTag = self.gag["winningTag"] as? PFObject {
+            self.labelTag?.text = winningTag["value"] as? String
+            self.labelTag?.hidden = false
+        }
         
         if let chosenTag = self.gagUserTag?["chosenTag"] as? PFObject {
             self.labelTag?.text = chosenTag["value"] as? String
@@ -75,10 +80,10 @@ class GagViewController: UIViewController, UIImagePickerControllerDelegate, UINa
         query.getFirstObjectInBackgroundWithBlock({
             (object: PFObject?, error: NSError?) -> Void in
             if error != nil || object == nil {
-                println("The getFirstObject request failed.")
+                println("queryGagUserTag:  The getFirstObject request failed.")
             } else {
                 // The find succeeded.
-                println("Found first object.")
+                println("queryGagUserTag:  Found first object.")
                 self.gagUserTag = object
                 self.updateUI()
             }
@@ -132,10 +137,32 @@ class GagViewController: UIViewController, UIImagePickerControllerDelegate, UINa
                 // The find succeeded.
                 println("Found first object.")
                 object?.setObject(tag, forKey: "chosenTag")
-                object?.saveInBackground()
+                object?.saveInBackgroundWithBlock({
+                    (success: Bool, error: NSError?) -> Void in
+                    if (success) {
+                        // The object has been saved.
+                    } else {
+                        // There was a problem, check error.description
+                    }
+                })
                 
             }
         })
+    }
+    
+    func sendWinningTag(tag : PFObject) {
+        self.gag.setObject(tag, forKey: "winningTag")
+        self.gag.saveInBackgroundWithBlock({
+            (success: Bool, error: NSError?) -> Void in
+            if (success) {
+                // The object has been saved.
+                println("Winning Tag:  Success")
+            } else {
+                // There was a problem, check error.description
+                println("Winning Tag:  Failed")
+            }
+        })
+        
     }
     
     func sendPhoto(users: [String:PFObject]) {
@@ -205,8 +232,8 @@ class GagViewController: UIViewController, UIImagePickerControllerDelegate, UINa
     
     // MARK: TagsViewControllerDelegate
     func tagsViewController(controller: TagsViewController, didSelectTag tag: PFObject) {
-        println(tag)
-        sendChosenTag(tag)
+        //sendChosenTag(tag)
+        sendWinningTag(tag)
     }
     
     override func didReceiveMemoryWarning() {

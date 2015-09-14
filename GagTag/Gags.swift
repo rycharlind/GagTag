@@ -32,19 +32,10 @@ class GagsTableViewController: PFQueryTableViewController, PFLogInViewController
         var currentUser = PFUser.currentUser()
         if currentUser == nil {
             showParseLogin()
+        } else {
+            self.loadObjects()
+            println("Current User \(PFUser.currentUser()!)")
         }
-        self.loadObjects()
-    }
-    
-    func loadMyGags() {
-        
-    }
-    
-    func loadGagsToMe() {
-        
-        var query = PFQuery(className: "Gag")
-        
-        
     }
     
     func showTags() {
@@ -94,6 +85,7 @@ class GagsTableViewController: PFQueryTableViewController, PFLogInViewController
         } else {
             return false
         }
+    
     }
     
     func logInViewController(logInController: PFLogInViewController, didLogInUser user: PFUser) {
@@ -108,6 +100,7 @@ class GagsTableViewController: PFQueryTableViewController, PFLogInViewController
         let predicate = NSPredicate(format: "user = %@ OR friends = %@", PFUser.currentUser()!, PFUser.currentUser()!)
         var query = PFQuery(className: "Gag", predicate: predicate)
         query.includeKey("user")
+        query.includeKey("winningTag")
         query.addDescendingOrder("createdAt")
         return query
     }

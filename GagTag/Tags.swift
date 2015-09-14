@@ -48,10 +48,18 @@ class TagsViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     override func viewDidAppear(animated: Bool) {
-        queryTags()
+        
+        if let user : PFObject = self.gag["user"] as? PFObject {
+            if (user.objectId == PFUser.currentUser()?.objectId) {
+                queryChosenTags()
+            } else {
+                queryDealtTags()
+            }
+        }
+        
     }
     
-    func queryTags() {
+    func queryDealtTags() {
         var query = PFQuery(className: "GagUserTag")
         query.whereKey("gag", equalTo: self.gag)
         query.whereKey("user", equalTo: PFUser.currentUser()!)
@@ -63,6 +71,26 @@ class TagsViewController: UIViewController, UITableViewDelegate, UITableViewData
                     for object in objects {
                         println(object.objectId)
                         self.tags = object["dealtTags"] as? [PFObject]
+                    }
+                }
+                self.tableView.reloadData()
+            }
+        })
+    }
+    
+    func queryChosenTags() {
+        var query = PFQuery(className: "GagUserTag")
+        query.whereKey("gag", equalTo: self.gag)
+        query.includeKey("chosenTag")
+        query.findObjectsInBackgroundWithBlock({
+            (objects: [AnyObject]?, error: NSError?) -> Void in
+            if (error == nil) {
+                if let objects = objects as? [PFObject] {
+                    for object in objects {
+                        println(object.objectId)
+                        if let tag = object["chosenTag"] as? PFObject {
+                            self.tags.append(tag)
+                        }
                     }
                 }
                 self.tableView.reloadData()
@@ -113,29 +141,8 @@ class TagsViewController: UIViewController, UITableViewDelegate, UITableViewData
         let currentObject = self.tags[row] as PFObject
         
         if let objId = currentObject.objectId {
-            
             self.selectedTag = currentObject
             self.tableView.reloadData()
-            
-            /*
-            var isSelected = false
-            for (key, value) in self.selectedObjects {
-                if (key == currentObject.objectId) {
-                    isSelected = true
-                }
-            }
-            
-            if (isSelected) {
-                self.selectedObjects.removeValueForKey(currentObject.objectId!)
-                cell?.accessoryType = .None
-            } else {
-                self.selectedObjects[objId] = currentObject
-                cell?.accessoryType = .Checkmark
-            }
-            
-            println(self.selectedObjects)
-            */
-            
         }
         
         
