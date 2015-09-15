@@ -18,17 +18,19 @@ class GagViewController: UIViewController, UIImagePickerControllerDelegate, UINa
     @IBOutlet weak var progressView: UIProgressView!
     var gag : PFObject!
     var gagUserTag : PFObject!
-    var image : UIImage!
+    var gagImage : UIImage!
+    var newImage : UIImage!
     var imagePicker = UIImagePickerController()
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.progressView.hidden = true
 
         // Do any additional setup after loading the view.
         
-        imagePicker.delegate = self
+        self.progressView.hidden = true
+        self.imagePicker.delegate = self
+        self.imageView.contentMode = .ScaleAspectFit
     
     }
     
@@ -45,14 +47,22 @@ class GagViewController: UIViewController, UIImagePickerControllerDelegate, UINa
     
     func updateUI() {
         
+        if let chosenTag = self.gagUserTag?["chosenTag"] as? PFObject {
+            self.labelTag?.text = chosenTag["value"] as? String
+            self.labelTag?.hidden = false
+        }
+        
         if let winningTag = self.gag["winningTag"] as? PFObject {
             self.labelTag?.text = winningTag["value"] as? String
             self.labelTag?.hidden = false
         }
         
-        if let chosenTag = self.gagUserTag?["chosenTag"] as? PFObject {
-            self.labelTag?.text = chosenTag["value"] as? String
-            self.labelTag?.hidden = false
+        if (self.newImage != nil) {
+            self.imageView.image = self.newImage
+        }
+        
+        if (self.gagImage != nil) {
+            self.imageView.image = self.gagImage
         }
         
     }
@@ -102,8 +112,8 @@ class GagViewController: UIViewController, UIImagePickerControllerDelegate, UINa
                         (imageData: NSData?, error: NSError?) -> Void in
                         if error == nil {
                             if let imageData = imageData {
-                                let image = UIImage(data:imageData)
-                                self.imageView.image = image
+                                self.gagImage = UIImage(data:imageData)
+                                self.updateUI()
                             }
                         }
                     })
@@ -166,41 +176,50 @@ class GagViewController: UIViewController, UIImagePickerControllerDelegate, UINa
     }
     
     func sendPhoto(users: [String:PFObject]) {
-        let imageData = UIImagePNGRepresentation(imageView.image)
-        let imageFile = PFFile(name:"photo.png", data:imageData)
-        self.progressView.hidden = false
-        self.imageView.alpha = CGFloat(0.25)
-        imageFile.saveInBackgroundWithBlock({
-            (succeeded: Bool, error: NSError?) -> Void in
-            // Handle success or failure here ...
-            if (succeeded) {
-                var gag = PFObject(className:"Gag")
-                gag["user"] = PFUser.currentUser()
-                var relation = gag.relationForKey("friends")
-                
-                for (key, value) in users {
-                    relation.addObject(value)
-                }
-                
-                gag["image"] = imageFile
-                gag.saveInBackgroundWithBlock({
-                    (succeeded: Bool, error: NSError?) -> Void in
-                    self.progressView.hidden = true
-                    self.imageView.alpha = CGFloat(1)
-                    if (succeeded) {
-                        println("Done")
-                        self.navigationController?.popViewControllerAnimated(true)
-                    } else {
-                        println(error)
+        
+        if (self.newImage != nil) {
+            
+            let imageData = UIImagePNGRepresentation(self.newImage)
+            let imageFile = PFFile(name:"photo.png", data:imageData)
+            self.progressView.hidden = false
+            self.imageView.alpha = CGFloat(0.25)
+            imageFile.saveInBackgroundWithBlock({
+                (succeeded: Bool, error: NSError?) -> Void in
+                // Handle success or failure here ...
+                if (succeeded) {
+                    var gag = PFObject(className:"Gag")
+                    gag["user"] = PFUser.currentUser()
+                    var relation = gag.relationForKey("friends")
+                    
+                    for (key, value) in users {
+                        relation.addObject(value)
                     }
-                })
-            }
-            }, progressBlock: {
-                (percentDone: Int32) -> Void in
-                // Update your progress spinner here. percentDone will be between 0 and 100.
-                print(percentDone)
-                self.progressView.progress = Float(percentDone) / 100
-        })
+                    
+                    gag["image"] = imageFile
+                    gag.saveInBackgroundWithBlock({
+                        (succeeded: Bool, error: NSError?) -> Void in
+                        self.progressView.hidden = true
+                        self.imageView.alpha = CGFloat(1)
+                        if (succeeded) {
+                            println("Done")
+                            self.navigationController?.popViewControllerAnimated(true)
+                        } else {
+                            println(error)
+                        }
+                    })
+                }
+                }, progressBlock: {
+                    (percentDone: Int32) -> Void in
+                    // Update your progress spinner here. percentDone will be between 0 and 100.
+                    print(percentDone)
+                    self.progressView.progress = Float(percentDone) / 100
+            })
+            
+        } else {
+            println("No image chosen")
+        }
+        
+
     }
     
     func showUsers() {
@@ -211,12 +230,10 @@ class GagViewController: UIViewController, UIImagePickerControllerDelegate, UINa
     
     // MARK:  UIImageIckerControllerDelegate
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [NSObject : AnyObject]) {
-        
         if let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
-            imageView.contentMode = .ScaleAspectFit
-            imageView.image = pickedImage
+            self.newImage = pickedImage
+            self.updateUI()
         }
-        
         dismissViewControllerAnimated(true, completion: nil)
     }
     

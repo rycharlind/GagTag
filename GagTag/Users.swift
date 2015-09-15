@@ -24,10 +24,15 @@ class UsersViewController: UIViewController, UITableViewDataSource, UITableViewD
     @IBOutlet weak var tableView: UITableView!
     
     // MARK: Actions
-    @IBAction func done(sender: AnyObject) {
+    
+    @IBAction func send(sender: AnyObject) {
         if let delegate = self.delegate {
             delegate.usersTableViewController(self, didSelectUsers: self.selectedObjects)
         }
+        self.dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    @IBAction func cancel(sender: AnyObject) {
         self.dismissViewControllerAnimated(true, completion: nil)
     }
     
@@ -36,7 +41,12 @@ class UsersViewController: UIViewController, UITableViewDataSource, UITableViewD
     }
     
     override func viewDidAppear(animated: Bool) {
+        queryUsers()
+    }
+    
+    func queryUsers() {
         var query = PFQuery(className: "_User")
+        query.whereKey("objectId", notEqualTo: PFUser.currentUser()!.objectId!)
         query.findObjectsInBackgroundWithBlock({
             (objects: [AnyObject]?, error: NSError?) -> Void in
             if (error == nil) {
@@ -100,18 +110,7 @@ class UsersViewController: UIViewController, UITableViewDataSource, UITableViewD
                 cell?.accessoryType = .Checkmark
             }
             
-            println(self.selectedObjects)
-            
         }
-        
-        
-        /*
-        selectedObjects.append(currentObject)
-        
-        if let username = currentObject["username"] as? String {
-            cell?.accessoryType = .Checkmark
-        }
-        */
         
         
     }

@@ -88,7 +88,7 @@
                                     <constraint firstAttribute="height" constant="21" id="t93-k1-p0o"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
@@ -200,9 +200,14 @@
                                 <rect key="frame" x="0.0" y="20" width="600" height="44"/>
                                 <items>
                                     <navigationItem title="Users" id="fiA-XL-W9P">
-                                        <barButtonItem key="rightBarButtonItem" title="Done" id="5Nz-SM-LjG">
+                                        <barButtonItem key="leftBarButtonItem" title="Cancel" id="ocP-NQ-Zfs">
                                             <connections>
-                                                <action selector="done:" destination="KDc-oW-z0H" id="hjd-Da-YC8"/>
+                                                <action selector="cancel:" destination="KDc-oW-z0H" id="cc7-eb-mPZ"/>
+                                            </connections>
+                                        </barButtonItem>
+                                        <barButtonItem key="rightBarButtonItem" title="Send" id="5Nz-SM-LjG">
+                                            <connections>
+                                                <action selector="send:" destination="KDc-oW-z0H" id="7or-eV-MqQ"/>
                                             </connections>
                                         </barButtonItem>
                                     </navigationItem>

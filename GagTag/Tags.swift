@@ -49,11 +49,14 @@ class TagsViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     override func viewDidAppear(animated: Bool) {
         
-        if let user : PFObject = self.gag["user"] as? PFObject {
-            if (user.objectId == PFUser.currentUser()?.objectId) {
-                queryChosenTags()
-            } else {
-                queryDealtTags()
+        if (self.gag != nil) {
+            if let user : PFObject = self.gag["user"] as? PFObject {
+                println("got gag user")   
+                if (user.objectId == PFUser.currentUser()?.objectId) {
+                    queryChosenTags()
+                } else {
+                    queryDealtTags()
+                }
             }
         }
         
