@@ -9,63 +9,22 @@
 import UIKit
 import Parse
 
-class GagViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UsersViewControllerDelegate, TagsViewControllerDelegate {
+class GagViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UsersViewControllerDelegate, TagsViewControllerDelegate, DealtTagsViewControllerDelegate, ChosenTagsViewControllerDelegate {
     
     // MARK:  Properties
     @IBOutlet weak var labelTag: UILabel!
-    @IBOutlet weak var barButtonPhoto: UIBarButtonItem!
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var progressView: UIProgressView!
+    @IBOutlet weak var barButtonSend: UIBarButtonItem!
+    @IBOutlet weak var barButtonTags: UIBarButtonItem!
+    @IBOutlet weak var barButtonChoose: UIBarButtonItem!
+    @IBOutlet weak var barButtonCamera: UIBarButtonItem!
     var gag : PFObject!
     var gagUserTag : PFObject!
     var gagImage : UIImage!
     var newImage : UIImage!
     var imagePicker = UIImagePickerController()
     
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
-        
-        self.progressView.hidden = true
-        self.imagePicker.delegate = self
-        self.imageView.contentMode = .ScaleAspectFit
-    
-    }
-    
-    override func viewDidAppear(animated: Bool) {
-        
-        if (self.gag != nil) {
-            println(self.gag)
-            self.updateUI()
-            queryGagImage()
-            queryGagUserTag()
-        }
-        
-    }
-    
-    func updateUI() {
-        
-        if let chosenTag = self.gagUserTag?["chosenTag"] as? PFObject {
-            self.labelTag?.text = chosenTag["value"] as? String
-            self.labelTag?.hidden = false
-        }
-        
-        if let winningTag = self.gag["winningTag"] as? PFObject {
-            self.labelTag?.text = winningTag["value"] as? String
-            self.labelTag?.hidden = false
-        }
-        
-        if (self.newImage != nil) {
-            self.imageView.image = self.newImage
-        }
-        
-        if (self.gagImage != nil) {
-            self.imageView.image = self.gagImage
-        }
-        
-    }
     
     // MARK: Actions
     @IBAction func actionSend(sender: AnyObject) {
@@ -79,9 +38,140 @@ class GagViewController: UIViewController, UIImagePickerControllerDelegate, UINa
     }
     
     @IBAction func actionTags(sender: AnyObject) {
-        showTags()
+        if let user = self.gag["user"] as? PFObject {
+            // If this is the current user's gag then show chosen tags
+            if (user.objectId == PFUser.currentUser()?.objectId) {
+                self.showChosenTags()
+            } else { // Else show the dealt tags
+                self.showDealtTags()
+            }
+        }
     }
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        // Do any additional setup after loading the view.
+        self.imagePicker.delegate = self
+        self.imageView.contentMode = .ScaleAspectFit
+    
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        
+        if (self.gag != nil) {
+            println(self.gag)
+            queryGagImage()
+            queryGagUserTag()
+        }
+        self.updateUI()
+        
+    }
+    
+    func updateUI() {
+        
+        // Check if there is a chosen tag
+        if let chosenTag = self.gagUserTag?["chosenTag"] as? PFObject {
+            println("has chosen tag")
+            self.labelTag?.text = chosenTag["value"] as? String
+            self.labelTag?.hidden = false
+            self.barButtonTags.enabled = false
+        } else {
+            println("no chosen tag")
+            self.barButtonTags.enabled = true
+        }
+        
+        // Check if there is a winning tag
+        if let winningTag = self.gag?["winningTag"] as? PFObject {
+            println("has winning tag")
+            self.labelTag?.text = winningTag["value"] as? String
+            self.labelTag?.hidden = false
+            self.barButtonTags.enabled = false
+        } else {
+            println("no winning tag")
+            self.barButtonTags.enabled = true
+        }
+        
+        // If there is a NEW image then display it
+        if (self.newImage != nil) {
+            self.imageView.image = self.newImage
+        }
+        
+        // If there is already an image then display it
+        if (self.gagImage != nil) {
+            println("has gag image")
+            self.imageView.image = self.gagImage
+            self.barButtonSend.enabled = false
+            self.barButtonCamera.enabled = false
+            self.barButtonChoose.enabled = false
+        } else {
+            println("no gag image")
+            self.barButtonSend.enabled = true
+            self.barButtonCamera.enabled = true
+            self.barButtonChoose.enabled = true
+            self.barButtonTags.enabled = false
+        }
+        
+        // Check if all words are subimtted
+        
+        
+    }
+    
+    // MARK:  Show Views
+    func showDealtTags() {
+        var dealtTagsViewController = self.storyboard?.instantiateViewControllerWithIdentifier("dealtTags") as! DealtTagsViewController
+        dealtTagsViewController.gag = self.gag
+        dealtTagsViewController.delegate = self;
+        self.presentViewController(dealtTagsViewController, animated: true, completion: nil)
+    }
+    
+    func showChosenTags() {
+        var chosenTagsViewController = self.storyboard?.instantiateViewControllerWithIdentifier("chosenTags") as! ChosenTagsViewController
+        chosenTagsViewController.gag = self.gag
+        chosenTagsViewController.delegate = self
+        self.presentViewController(chosenTagsViewController, animated: true, completion: nil)
+    }
+    
+    func showTags() {
+        var tagsViewController = self.storyboard?.instantiateViewControllerWithIdentifier("tags") as! TagsViewController
+        tagsViewController.gag = self.gag
+        tagsViewController.delegate = self
+        self.presentViewController(tagsViewController, animated: true, completion: nil)
+    }
+    
+    func showUsers() {
+        var usersViewController = self.storyboard?.instantiateViewControllerWithIdentifier("users") as! UsersViewController
+        usersViewController.delegate = self
+        self.presentViewController(usersViewController, animated: true, completion: nil)
+    }
+    
+    
+    func sendChosenTag(tag : PFObject) {
+        var query = PFQuery(className: "GagUserTag")
+        query.whereKey("gag", equalTo: self.gag)
+        query.whereKey("user", equalTo: PFUser.currentUser()!)
+        query.getFirstObjectInBackgroundWithBlock({
+            (object: PFObject?, error: NSError?) -> Void in
+            if error != nil || object == nil {
+                println("The getFirstObject request failed.")
+            } else {
+                // The find succeeded.
+                println("Found first object.")
+                object?.setObject(tag, forKey: "chosenTag")
+                object?.saveInBackgroundWithBlock({
+                    (success: Bool, error: NSError?) -> Void in
+                    if (success) {
+                        // The object has been saved.
+                    } else {
+                        // There was a problem, check error.description
+                    }
+                })
+                
+            }
+        })
+    }
+    
+    // MARK: Query Data
     func queryGagUserTag() {
         var query = PFQuery(className: "GagUserTag")
         query.whereKey("gag", equalTo: self.gag)
@@ -124,42 +214,10 @@ class GagViewController: UIViewController, UIImagePickerControllerDelegate, UINa
                 println(error)
             }
         })
-        
-    }
-    
-    func showTags() {
-        var tagsViewController = self.storyboard?.instantiateViewControllerWithIdentifier("tags") as! TagsViewController
-        tagsViewController.gag = self.gag
-        tagsViewController.delegate = self
-        self.presentViewController(tagsViewController, animated: true, completion: nil)
     }
     
     
-    func sendChosenTag(tag : PFObject) {
-        var query = PFQuery(className: "GagUserTag")
-        query.whereKey("gag", equalTo: self.gag)
-        query.whereKey("user", equalTo: PFUser.currentUser()!)
-        query.getFirstObjectInBackgroundWithBlock({
-            (object: PFObject?, error: NSError?) -> Void in
-            if error != nil || object == nil {
-                println("The getFirstObject request failed.")
-            } else {
-                // The find succeeded.
-                println("Found first object.")
-                object?.setObject(tag, forKey: "chosenTag")
-                object?.saveInBackgroundWithBlock({
-                    (success: Bool, error: NSError?) -> Void in
-                    if (success) {
-                        // The object has been saved.
-                    } else {
-                        // There was a problem, check error.description
-                    }
-                })
-                
-            }
-        })
-    }
-    
+    // MARK:  Send Data
     func sendWinningTag(tag : PFObject) {
         self.gag.setObject(tag, forKey: "winningTag")
         self.gag.saveInBackgroundWithBlock({
@@ -222,11 +280,6 @@ class GagViewController: UIViewController, UIImagePickerControllerDelegate, UINa
 
     }
     
-    func showUsers() {
-        var usersViewController = self.storyboard?.instantiateViewControllerWithIdentifier("users") as! UsersViewController
-        usersViewController.delegate = self
-        self.presentViewController(usersViewController, animated: true, completion: nil)
-    }
     
     // MARK:  UIImageIckerControllerDelegate
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [NSObject : AnyObject]) {
@@ -241,6 +294,7 @@ class GagViewController: UIViewController, UIImagePickerControllerDelegate, UINa
         dismissViewControllerAnimated(true, completion: nil)
     }
     
+    
     // MARK: UsersTableViewControllerDelegate
     func usersTableViewController(controller: UsersViewController, didSelectUsers users: [String:PFObject]) {
         println(users)
@@ -249,9 +303,28 @@ class GagViewController: UIViewController, UIImagePickerControllerDelegate, UINa
     
     // MARK: TagsViewControllerDelegate
     func tagsViewController(controller: TagsViewController, didSelectTag tag: PFObject) {
-        //sendChosenTag(tag)
-        sendWinningTag(tag)
+        
+        if let user = self.gag["user"] as? PFObject {
+            // If this is the current user's gag then send winning tag
+            if (user.objectId == PFUser.currentUser()?.objectId) {
+                self.sendWinningTag(tag)
+            } else {
+                self.sendChosenTag(tag)
+            }
+            
+        }
     }
+    
+    // MARK: DealtTagsViewController
+    func dealtTagsViewController(controller: DealtTagsViewController, didSelectTag tag: PFObject) {
+        self.sendChosenTag(tag)
+    }
+    
+    // MARK: ChosenTagsViewController
+    func chosenTagsViewController(controller: ChosenTagsViewController, didSelectTag tag: PFObject) {
+        self.sendWinningTag(tag)
+    }
+    
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()

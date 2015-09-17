@@ -26,6 +26,8 @@
 		94460F3B1B9C6E7A009F254B /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 94460F3A1B9C6E7A009F254B /* libsqlite3.dylib */; };
 		94460F3D1B9C73FA009F254B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 94460F3C1B9C73FA009F254B /* Main.storyboard */; };
 		94460F3F1B9E1DB6009F254B /* Gag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94460F3E1B9E1DB6009F254B /* Gag.swift */; };
+		946CEAA51BAA1D620049313C /* DealtTags.swift in Sources */ = {isa = PBXBuildFile; fileRef = 946CEAA41BAA1D620049313C /* DealtTags.swift */; };
+		947DBCB71BAA293300F3BF66 /* ChosenTags.swift in Sources */ = {isa = PBXBuildFile; fileRef = 947DBCB61BAA293300F3BF66 /* ChosenTags.swift */; };
 		949AE6B01B9F5AF7001ACEEE /* Tags.swift in Sources */ = {isa = PBXBuildFile; fileRef = 949AE6AF1B9F5AF7001ACEEE /* Tags.swift */; };
 		949AE6B41BA071F6001ACEEE /* LogIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 949AE6B31BA071F6001ACEEE /* LogIn.swift */; };
 		949AE6B61BA074CE001ACEEE /* Users.swift in Sources */ = {isa = PBXBuildFile; fileRef = 949AE6B51BA074CE001ACEEE /* Users.swift */; };
@@ -67,6 +69,8 @@
 		94460F3A1B9C6E7A009F254B /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		94460F3C1B9C73FA009F254B /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		94460F3E1B9E1DB6009F254B /* Gag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Gag.swift; sourceTree = "<group>"; };
+		946CEAA41BAA1D620049313C /* DealtTags.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DealtTags.swift; sourceTree = "<group>"; };
+		947DBCB61BAA293300F3BF66 /* ChosenTags.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChosenTags.swift; sourceTree = "<group>"; };
 		949AE6AF1B9F5AF7001ACEEE /* Tags.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tags.swift; sourceTree = "<group>"; };
 		949AE6B31BA071F6001ACEEE /* LogIn.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogIn.swift; sourceTree = "<group>"; };
 		949AE6B51BA074CE001ACEEE /* Users.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Users.swift; sourceTree = "<group>"; };
@@ -134,6 +138,8 @@
 				949AE6B51BA074CE001ACEEE /* Users.swift */,
 				94460F3E1B9E1DB6009F254B /* Gag.swift */,
 				949AE6AF1B9F5AF7001ACEEE /* Tags.swift */,
+				946CEAA41BAA1D620049313C /* DealtTags.swift */,
+				947DBCB61BAA293300F3BF66 /* ChosenTags.swift */,
 				949AF9701BA293C90066CDBD /* Reel.swift */,
 				94460EE61B9A78DD009F254B /* Images.xcassets */,
 				94460EE81B9A78DD009F254B /* LaunchScreen.xib */,
@@ -287,6 +293,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				947DBCB71BAA293300F3BF66 /* ChosenTags.swift in Sources */,
+				946CEAA51BAA1D620049313C /* DealtTags.swift in Sources */,
 				94460F3F1B9E1DB6009F254B /* Gag.swift in Sources */,
 				949AF9711BA293C90066CDBD /* Reel.swift in Sources */,
 				94460EE01B9A78DD009F254B /* AppDelegate.swift in Sources */,

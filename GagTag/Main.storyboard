@@ -38,9 +38,6 @@
                             </connections>
                         </barButtonItem>
                     </navigationItem>
-                    <userDefinedRuntimeAttributes>
-                        <userDefinedRuntimeAttribute type="string" keyPath="parseClassName" value="GameUser"/>
-                    </userDefinedRuntimeAttributes>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dIT-de-Znk" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -64,22 +61,22 @@
                             <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="uzH-Dp-rdD">
                                 <rect key="frame" x="0.0" y="556" width="600" height="44"/>
                                 <items>
-                                    <barButtonItem title="Choose" id="7H1-4w-26L">
+                                    <barButtonItem enabled="NO" title="Choose" id="7H1-4w-26L">
                                         <connections>
                                             <action selector="actionChoose:" destination="GpD-xn-6oQ" id="NMY-Wh-Pjo"/>
                                         </connections>
                                     </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="FWg-GC-9TJ"/>
-                                    <barButtonItem title="Tags" id="UaL-6Q-Mjf">
+                                    <barButtonItem enabled="NO" title="Tags" id="UaL-6Q-Mjf">
                                         <connections>
                                             <action selector="actionTags:" destination="GpD-xn-6oQ" id="bt8-I4-E0m"/>
                                         </connections>
                                     </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="vcH-vp-xuD"/>
-                                    <barButtonItem title="Camera" id="mXo-Rf-A04"/>
+                                    <barButtonItem enabled="NO" title="Camera" id="mXo-Rf-A04"/>
                                 </items>
                             </toolbar>
-                            <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="Tm2-Ri-oJQ">
+                            <progressView hidden="YES" opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="Tm2-Ri-oJQ">
                                 <rect key="frame" x="16" y="309" width="568" height="2"/>
                             </progressView>
                             <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kSv-KQ-aEe">
@@ -110,14 +107,17 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Gag" id="LXO-nD-saR">
-                        <barButtonItem key="rightBarButtonItem" title="Send" id="g99-tX-0nb">
+                        <barButtonItem key="rightBarButtonItem" enabled="NO" title="Send" id="g99-tX-0nb">
                             <connections>
                                 <action selector="actionSend:" destination="GpD-xn-6oQ" id="fjI-PZ-qn0"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <outlet property="barButtonPhoto" destination="g99-tX-0nb" id="Mqa-Yy-der"/>
+                        <outlet property="barButtonCamera" destination="mXo-Rf-A04" id="VaX-VL-XDf"/>
+                        <outlet property="barButtonChoose" destination="7H1-4w-26L" id="i4t-BP-CRf"/>
+                        <outlet property="barButtonSend" destination="g99-tX-0nb" id="kQc-rB-jDp"/>
+                        <outlet property="barButtonTags" destination="UaL-6Q-Mjf" id="kbw-eF-g9H"/>
                         <outlet property="imageView" destination="SsS-OZ-N71" id="tF4-9e-F9r"/>
                         <outlet property="labelTag" destination="kSv-KQ-aEe" id="K5M-W9-3ZY"/>
                         <outlet property="progressView" destination="Tm2-Ri-oJQ" id="5LS-23-Vnl"/>
@@ -183,6 +183,124 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="pJf-3r-dEU" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="3975" y="374"/>
+        </scene>
+        <!--Dealt Tags View Controller-->
+        <scene sceneID="wU7-e9-ajh">
+            <objects>
+                <viewController storyboardIdentifier="dealtTags" id="aqj-IY-fRg" customClass="DealtTagsViewController" customModule="GagTag" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="tsy-9D-9ko"/>
+                        <viewControllerLayoutGuide type="bottom" id="OIG-Ew-32i"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="VXR-Tf-7cX">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="OO8-yx-8nU">
+                                <rect key="frame" x="0.0" y="20" width="600" height="44"/>
+                                <items>
+                                    <navigationItem title="Dealt Tags" id="xG0-XN-cBP">
+                                        <barButtonItem key="leftBarButtonItem" title="Cancel" id="r0W-Ny-RXb">
+                                            <connections>
+                                                <action selector="cancel:" destination="aqj-IY-fRg" id="oWJ-MB-Kdy"/>
+                                            </connections>
+                                        </barButtonItem>
+                                        <barButtonItem key="rightBarButtonItem" title="Choose" id="Wrl-Mo-VtK">
+                                            <connections>
+                                                <action selector="choose:" destination="aqj-IY-fRg" id="0H7-Pf-02f"/>
+                                            </connections>
+                                        </barButtonItem>
+                                    </navigationItem>
+                                </items>
+                            </navigationBar>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="Jv8-7r-cUd">
+                                <rect key="frame" x="0.0" y="64" width="600" height="536"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <connections>
+                                    <outlet property="dataSource" destination="aqj-IY-fRg" id="9Ge-Mr-rEm"/>
+                                    <outlet property="delegate" destination="aqj-IY-fRg" id="CU2-og-1Cg"/>
+                                </connections>
+                            </tableView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="OO8-yx-8nU" firstAttribute="top" secondItem="tsy-9D-9ko" secondAttribute="bottom" id="0U4-ax-gZ0"/>
+                            <constraint firstItem="OO8-yx-8nU" firstAttribute="leading" secondItem="VXR-Tf-7cX" secondAttribute="leading" id="Bbt-tF-WN5"/>
+                            <constraint firstItem="Jv8-7r-cUd" firstAttribute="top" secondItem="OO8-yx-8nU" secondAttribute="bottom" id="F26-L4-ET0"/>
+                            <constraint firstItem="Jv8-7r-cUd" firstAttribute="trailing" secondItem="OO8-yx-8nU" secondAttribute="trailing" id="VNT-dO-5Up"/>
+                            <constraint firstItem="Jv8-7r-cUd" firstAttribute="bottom" secondItem="OIG-Ew-32i" secondAttribute="top" id="k5O-fR-r5x"/>
+                            <constraint firstItem="OO8-yx-8nU" firstAttribute="leading" secondItem="Jv8-7r-cUd" secondAttribute="leading" id="vTP-sc-60g"/>
+                            <constraint firstAttribute="trailing" secondItem="Jv8-7r-cUd" secondAttribute="trailing" id="w6N-a1-Jct"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="barButtonCancel" destination="r0W-Ny-RXb" id="rDn-Ux-5uk"/>
+                        <outlet property="barButtonChoose" destination="Wrl-Mo-VtK" id="Kvi-pI-DH1"/>
+                        <outlet property="tableView" destination="Jv8-7r-cUd" id="Yc2-7Y-AmQ"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="mcC-4V-z55" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="4712" y="374"/>
+        </scene>
+        <!--Chosen Tags View Controller-->
+        <scene sceneID="DMn-k9-2MC">
+            <objects>
+                <viewController storyboardIdentifier="chosenTags" id="gs4-hN-Ixp" customClass="ChosenTagsViewController" customModule="GagTag" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="PK2-Nb-3V3"/>
+                        <viewControllerLayoutGuide type="bottom" id="3cf-UO-LhZ"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="mcl-g0-zXw">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ik7-SP-Li3">
+                                <rect key="frame" x="0.0" y="20" width="600" height="44"/>
+                                <items>
+                                    <navigationItem title="Chosen Tags" id="hrc-JF-cEJ">
+                                        <barButtonItem key="leftBarButtonItem" title="Cancel" id="Xbf-pj-Ysp">
+                                            <connections>
+                                                <action selector="cancel:" destination="gs4-hN-Ixp" id="YLo-U1-7NC"/>
+                                            </connections>
+                                        </barButtonItem>
+                                        <barButtonItem key="rightBarButtonItem" enabled="NO" title="Choose" id="yI4-ce-JA7">
+                                            <connections>
+                                                <action selector="choose:" destination="gs4-hN-Ixp" id="kjp-l3-tLY"/>
+                                            </connections>
+                                        </barButtonItem>
+                                    </navigationItem>
+                                </items>
+                            </navigationBar>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="TA9-k1-2R2">
+                                <rect key="frame" x="0.0" y="64" width="600" height="536"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <connections>
+                                    <outlet property="dataSource" destination="gs4-hN-Ixp" id="dMG-Ki-ibo"/>
+                                    <outlet property="delegate" destination="gs4-hN-Ixp" id="9mB-Dq-hpH"/>
+                                </connections>
+                            </tableView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="Ik7-SP-Li3" firstAttribute="trailing" secondItem="TA9-k1-2R2" secondAttribute="trailing" id="DJa-XG-KuY"/>
+                            <constraint firstItem="Ik7-SP-Li3" firstAttribute="top" secondItem="PK2-Nb-3V3" secondAttribute="bottom" id="NJE-eU-sEc"/>
+                            <constraint firstAttribute="trailing" secondItem="Ik7-SP-Li3" secondAttribute="trailing" id="QNF-vP-xfg"/>
+                            <constraint firstItem="TA9-k1-2R2" firstAttribute="leading" secondItem="Ik7-SP-Li3" secondAttribute="leading" id="Rjb-8n-Rte"/>
+                            <constraint firstItem="TA9-k1-2R2" firstAttribute="top" secondItem="Ik7-SP-Li3" secondAttribute="bottom" id="kao-5B-y3l"/>
+                            <constraint firstItem="TA9-k1-2R2" firstAttribute="bottom" secondItem="3cf-UO-LhZ" secondAttribute="top" id="n2t-x2-FLy"/>
+                            <constraint firstItem="TA9-k1-2R2" firstAttribute="leading" secondItem="mcl-g0-zXw" secondAttribute="leading" id="sDg-Pd-CyO"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="barButtonCancel" destination="Xbf-pj-Ysp" id="U8U-bx-2K6"/>
+                        <outlet property="barButtonChoose" destination="yI4-ce-JA7" id="LMn-k1-vI1"/>
+                        <outlet property="tableView" destination="TA9-k1-2R2" id="fYt-oU-PnO"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="VYd-Fw-vRJ" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="5426" y="374"/>
         </scene>
         <!--Users View Controller-->
         <scene sceneID="qZk-Bc-fto">

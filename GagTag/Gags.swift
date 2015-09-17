@@ -6,13 +6,18 @@
 //  Copyright (c) 2015 Inndevers. All rights reserved.
 //
 
+// Display gag that was sent by you and all friends have responded
+// Display gag that was sent by you but NOT all friends have responded
+// Display finsihed gag - Ones that have a winningTag
+
 import UIKit
 import Parse
 import ParseUI
 
-class GagsTableViewController: PFQueryTableViewController, PFLogInViewControllerDelegate, PFSignUpViewControllerDelegate {
+class GagsTableViewController: UITableViewController, PFLogInViewControllerDelegate, PFSignUpViewControllerDelegate {
     
     // MARK: Properties
+    var gags : [PFObject]!
     
     // Mark: Actions
     @IBAction func logout(sender: UIBarButtonItem) {
@@ -23,18 +28,19 @@ class GagsTableViewController: PFQueryTableViewController, PFLogInViewController
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+        
+        self.gags = [PFObject]()
     }
     
     override func viewDidAppear(animated: Bool) {
-        //showGagReel()
-        //showTags()
         
         var currentUser = PFUser.currentUser()
         if currentUser == nil {
             showParseLogin()
         } else {
-            self.loadObjects()
-            println("Current User \(PFUser.currentUser()!)")
+            self.queryGags()
+            self.navigationItem.title = PFUser.currentUser()?.username
+            //self.tableView.reloadData()
         }
     }
     
@@ -96,40 +102,168 @@ class GagsTableViewController: PFQueryTableViewController, PFLogInViewController
         self.dismissViewControllerAnimated(true, completion: nil)
     }
     
-    override func queryForTable() -> PFQuery {
+    func queryGags() {
         let predicate = NSPredicate(format: "user = %@ OR friends = %@", PFUser.currentUser()!, PFUser.currentUser()!)
         var query = PFQuery(className: "Gag", predicate: predicate)
         query.includeKey("user")
         query.includeKey("winningTag")
         query.addDescendingOrder("createdAt")
-        return query
+        query.findObjectsInBackgroundWithBlock({
+            (objects: [AnyObject]?, error: NSError?) -> Void in
+            if (error == nil) {
+                if let objects = objects as? [PFObject] {
+                    self.gags = objects
+                    println(self.gags)
+                    self.tableView.reloadData()
+                }
+            }
+        })
+    }
+    
+    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+        // #warning Potentially incomplete method implementation.
+        // Return the number of sections.
+        return 1
+    }
+    
+    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        // #warning Incomplete method implementation.
+        // Return the number of rows in the section.
+        return self.gags.count
+    }
+    
+    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        
+        var cell = tableView.dequeueReusableCellWithIdentifier("Cell") as! UITableViewCell!
+        if cell == nil {
+            cell = UITableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: "Cell")
+        }
+        
+        if let object = self.gags[indexPath.row] as? PFObject {
+            
+            if let user = object["user"] as? PFObject {
+                cell?.textLabel?.text = user["username"] as? String
+            }
+            
+            // Check to see if a winning tag has been submitted
+            if let winningTag = object["winningTag"] as? PFObject {
+                cell?.detailTextLabel?.text = winningTag["value"] as? String
+            } else {
+                
+                var queryGagUserTags = PFQuery(className: "GagUserTag")
+                queryGagUserTags.whereKey("gag", equalTo: object)
+                queryGagUserTags.includeKey("chosenTag")
+                queryGagUserTags.findObjectsInBackgroundWithBlock({
+                    (objects: [AnyObject]?, error: NSError?) -> Void in
+                    if (error == nil) {
+                        println("GagUserTags: \(objects)")
+                        
+                        // Check all GagUserTag's to see if they have a chosenTag
+                        if let objects = objects as? [PFObject] {
+                            
+                            // Get chosenTag count
+                            var tagCount = 0
+                            for object in objects {
+                                if let chosenTag = object["chosenTag"] as? PFObject {
+                                    tagCount++
+                                }
+                            }
+                            
+                            // Compare tagCount against total number of GagUserTag objects
+                            if (tagCount == objects.count) {
+                                cell?.detailTextLabel?.text = "Ready"
+                            } else {
+                                cell?.detailTextLabel?.text = "Not Ready"
+                            }
+                        }
+                        
+                        //cell?.detailTextLabel?.text = "GagUserTag"
+                    } else {
+                        println("Error: \(error!) \(error!.userInfo!)")
+                    }
+                })
+                
+            }
+            
+        }
+        
+        return cell
+        
+        
     }
 
+    /*
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath, object: PFObject?) -> PFTableViewCell? {
         
         var cell = tableView.dequeueReusableCellWithIdentifier("Cell") as! PFTableViewCell!
         if cell == nil {
-            cell = PFTableViewCell(style: UITableViewCellStyle.Default, reuseIdentifier: "Cell")
+            cell = PFTableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: "Cell")
         }
+        
+        println(object)
         
         if let user = object?["user"] as? PFObject {
             cell?.textLabel?.text = user["username"] as? String
         }
         
+        // Check to see if a winning tag has been submitted
+        if let winningTag = object?["winningTag"] as? PFObject {
+            cell?.detailTextLabel?.text = winningTag["value"] as? String
+        } else {
+            
+            var queryGagUserTags = PFQuery(className: "GagUserTag")
+            queryGagUserTags.whereKey("gag", equalTo: object!)
+            queryGagUserTags.includeKey("chosenTag")
+            queryGagUserTags.findObjectsInBackgroundWithBlock({
+                (objects: [AnyObject]?, error: NSError?) -> Void in
+                if (error == nil) {
+                    println("GagUserTags: \(objects)")
+                    
+                    // Check all GagUserTag's to see if they have a chosenTag
+                    if let objects = objects as? [PFObject] {
+                        
+                        // Get chosenTag count
+                        var tagCount = 0
+                        for object in objects {
+                            if let chosenTag = object["chosenTag"] as? PFObject {
+                                tagCount++
+                            }
+                        }
+                        
+                        // Compare tagCount against total number of GagUserTag objects
+                        if (tagCount == objects.count) {
+                            cell?.detailTextLabel?.text = "Ready"
+                        } else {
+                            cell?.detailTextLabel?.text = "Not Ready"
+                        }
+                    }
+                    
+                    //cell?.detailTextLabel?.text = "GagUserTag"
+                } else {
+                    println("Error: \(error!) \(error!.userInfo!)")
+                }
+            })
+            
+        }
+        
+        
+        
+        
         return cell
         
     }
+    */
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         
-        //let cell = tableView.cellForRowAtIndexPath(indexPath)
+        let cell = tableView.cellForRowAtIndexPath(indexPath)
         let row = Int(indexPath.row)
         
-        let gag = (objects?[row] as! PFObject)
-        
-        let gagViewController : GagViewController! = self.storyboard?.instantiateViewControllerWithIdentifier("gag") as! GagViewController
-        gagViewController.gag = gag
-        self.showViewController(gagViewController as GagViewController, sender: self)
+        if let gag = self.gags[row] as? PFObject {
+            let gagViewController : GagViewController! = self.storyboard?.instantiateViewControllerWithIdentifier("gag") as! GagViewController
+            gagViewController.gag = gag
+            self.showViewController(gagViewController as GagViewController, sender: self)
+        }
         
         
     }

@@ -18,14 +18,15 @@ class TagsViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     // MARK: Properties
     var gag : PFObject!
-    var tags : [PFObject]!
+    var gagUser : PFObject!
+    var tags : [AnyObject]!
+    var gagUserTags : [PFObject]!
     var selectedObjects : [String:PFObject]!
     var selectedTag : PFObject!
     var delegate: TagsViewControllerDelegate?
     @IBOutlet weak var tableView: UITableView!
     
     // MARK: Actions
-    
     @IBAction func choose(sender: AnyObject) {
         if let delegate = self.delegate {
             delegate.tagsViewController(self, didSelectTag: self.selectedTag)
@@ -44,29 +45,68 @@ class TagsViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         // Do any additional setup after loading the view.
         self.tags = [PFObject]()
+        self.gagUserTags = [PFObject]()
         self.selectedObjects = [String:PFObject]()
     }
     
     override func viewDidAppear(animated: Bool) {
-        
         if (self.gag != nil) {
             if let user : PFObject = self.gag["user"] as? PFObject {
-                println("got gag user")   
-                if (user.objectId == PFUser.currentUser()?.objectId) {
-                    queryChosenTags()
+                self.gagUser = user
+                if (self.gagUser.objectId == PFUser.currentUser()?.objectId) {
+                    self.queryGagUserTags()
                 } else {
-                    queryDealtTags()
+                    self.queryDealtTags()
                 }
             }
         }
-        
+    }
+    
+    func queryGagUserTags() {
+        println("Query Gag User Tags")
+        var query = PFQuery(className: "GagUserTag")
+        query.whereKey("gag", equalTo: self.gag)
+        query.includeKey("user")
+        query.includeKey("dealtTags")
+        query.includeKey("chosenTag")
+        query.findObjectsInBackgroundWithBlock({
+            (objects: [AnyObject]?, error: NSError?) -> Void in
+            if (error == nil) {
+                if let objects = objects as? [PFObject] {
+                    self.gagUserTags = objects
+                    self.tableView.reloadData()
+                }
+            }
+        })
     }
     
     func queryDealtTags() {
+        println("Query Dealt Tags")
         var query = PFQuery(className: "GagUserTag")
         query.whereKey("gag", equalTo: self.gag)
         query.whereKey("user", equalTo: PFUser.currentUser()!)
         query.includeKey("dealtTags")
+        
+        query.getFirstObjectInBackgroundWithBlock({
+            (object: PFObject?, error: NSError?) -> Void in
+            if error != nil || object == nil {
+                println("The getFirstObject request failed.")
+            } else {
+                // The find succeeded.
+                println("Successfully retrieved the object. \(object)")
+                //self.tags = object?["dealtTags"] as! [PFObject]
+                
+                if let dealtTags = object?["dealtTags"] as? [AnyObject] {
+                    //println("Dealt Tags: \(dealtTags)")
+                    self.tags = dealtTags
+                    self.tableView.reloadData()
+                }
+                println("My Tags: \(self.tags)")
+                
+            }
+        })
+        
+        /*
         query.findObjectsInBackgroundWithBlock({
             (objects: [AnyObject]?, error: NSError?) -> Void in
             if (error == nil) {
@@ -79,12 +119,14 @@ class TagsViewController: UIViewController, UITableViewDelegate, UITableViewData
                 self.tableView.reloadData()
             }
         })
+        */
     }
     
     func queryChosenTags() {
         var query = PFQuery(className: "GagUserTag")
         query.whereKey("gag", equalTo: self.gag)
         query.includeKey("chosenTag")
+        query.includeKey("user")
         query.findObjectsInBackgroundWithBlock({
             (objects: [AnyObject]?, error: NSError?) -> Void in
             if (error == nil) {
@@ -110,7 +152,18 @@ class TagsViewController: UIViewController, UITableViewDelegate, UITableViewData
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete method implementation.
         // Return the number of rows in the section.
-        return self.tags.count
+        
+        if (self.gagUser?.objectId == PFUser.currentUser()?.objectId) {
+            return self.gagUserTags.count
+        } else {
+            if (self.tags?.count > 0) {
+                return self.tags.count
+            }
+        }
+        
+        return 0
+        
+        
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -120,15 +173,43 @@ class TagsViewController: UIViewController, UITableViewDelegate, UITableViewData
             cell = PFTableViewCell(style: UITableViewCellStyle.Default, reuseIdentifier: "Cell")
         }
         
-        if (self.tags.count > 0) {
-            let tag = self.tags[indexPath.row] as PFObject
-            cell?.textLabel?.text = tag["value"] as? String
+        
+        
+        // Current user's gag - View chosen tags or usernames
+        if (self.gagUser?.objectId == PFUser.currentUser()?.objectId) {
             
-            if (tag.objectId == self.selectedTag?.objectId) {
-                cell?.accessoryType = .Checkmark
-            } else {
-                cell?.accessoryType = .None
+            // Display username and status if NOT all chosenTags are available
+            if (self.gagUserTags.count > 0) {
+                if let gagUserTag = self.gagUserTags[indexPath.row] as? PFObject {
+                    if let chosenTag = gagUserTag["chosenTag"] as? PFObject {
+                        cell?.textLabel?.text = chosenTag["value"] as? String
+                    } else {
+                        
+                        if let user = gagUserTag["user"] as? PFObject {
+                            cell?.textLabel?.text = user["username"] as? String
+                        }
+                    }
+                }
             }
+            
+            
+        // Other user's gag - View dealt tags
+        } else {
+        
+            
+            if (self.tags?.count > 0) {
+                if let tag = self.tags[indexPath.row] as? PFObject {
+                    cell?.textLabel?.text = tag["value"] as? String
+                    
+                    if (tag.objectId == self.selectedTag?.objectId) {
+                        cell?.accessoryType = .Checkmark
+                    } else {
+                        cell?.accessoryType = .None
+                    }
+                }
+            }
+
+            
             
         }
         
@@ -141,11 +222,15 @@ class TagsViewController: UIViewController, UITableViewDelegate, UITableViewData
         let cell = tableView.cellForRowAtIndexPath(indexPath)
         let row = Int(indexPath.row)
         
-        let currentObject = self.tags[row] as PFObject
-        
-        if let objId = currentObject.objectId {
-            self.selectedTag = currentObject
-            self.tableView.reloadData()
+        if (self.gagUser?.objectId != PFUser.currentUser()?.objectId) {
+            
+            let currentObject = self.tags[row] as! PFObject
+            
+            if let objId = currentObject.objectId {
+                self.selectedTag = currentObject
+                self.tableView.reloadData()
+            }
+            
         }
         
         
