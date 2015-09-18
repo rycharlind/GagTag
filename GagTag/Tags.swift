@@ -173,8 +173,6 @@ class TagsViewController: UIViewController, UITableViewDelegate, UITableViewData
             cell = PFTableViewCell(style: UITableViewCellStyle.Default, reuseIdentifier: "Cell")
         }
         
-        
-        
         // Current user's gag - View chosen tags or usernames
         if (self.gagUser?.objectId == PFUser.currentUser()?.objectId) {
             
@@ -182,7 +180,7 @@ class TagsViewController: UIViewController, UITableViewDelegate, UITableViewData
             if (self.gagUserTags.count > 0) {
                 if let gagUserTag = self.gagUserTags[indexPath.row] as? PFObject {
                     if let chosenTag = gagUserTag["chosenTag"] as? PFObject {
-                        cell?.textLabel?.text = chosenTag["value"] as? String
+                        cell?.textLabel?.text = "#" + (chosenTag["value"] as? String)!
                     } else {
                         
                         if let user = gagUserTag["user"] as? PFObject {

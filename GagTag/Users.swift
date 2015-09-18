@@ -51,6 +51,7 @@ class UsersViewController: UIViewController, UITableViewDataSource, UITableViewD
     func queryUsers() {
         var query = PFQuery(className: "_User")
         query.whereKey("objectId", notEqualTo: PFUser.currentUser()!.objectId!)
+        query.orderByAscending("username")
         query.findObjectsInBackgroundWithBlock({
             (objects: [AnyObject]?, error: NSError?) -> Void in
             if (error == nil) {

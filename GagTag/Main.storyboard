@@ -61,7 +61,7 @@
                             <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="uzH-Dp-rdD">
                                 <rect key="frame" x="0.0" y="556" width="600" height="44"/>
                                 <items>
-                                    <barButtonItem enabled="NO" title="Choose" id="7H1-4w-26L">
+                                    <barButtonItem enabled="NO" title="Photos" id="7H1-4w-26L">
                                         <connections>
                                             <action selector="actionChoose:" destination="GpD-xn-6oQ" id="NMY-Wh-Pjo"/>
                                         </connections>
@@ -73,19 +73,24 @@
                                         </connections>
                                     </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="vcH-vp-xuD"/>
-                                    <barButtonItem enabled="NO" title="Camera" id="mXo-Rf-A04"/>
+                                    <barButtonItem enabled="NO" title="Camera" id="mXo-Rf-A04">
+                                        <connections>
+                                            <action selector="actionCamera:" destination="GpD-xn-6oQ" id="KLt-g1-OE1"/>
+                                        </connections>
+                                    </barButtonItem>
                                 </items>
                             </toolbar>
                             <progressView hidden="YES" opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="Tm2-Ri-oJQ">
                                 <rect key="frame" x="16" y="309" width="568" height="2"/>
                             </progressView>
-                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kSv-KQ-aEe">
-                                <rect key="frame" x="16" y="299" width="568" height="21"/>
+                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" alpha="0.64999999999999969" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kSv-KQ-aEe">
+                                <rect key="frame" x="16" y="240" width="568" height="21"/>
+                                <color key="backgroundColor" cocoaTouchSystemColor="scrollViewTexturedBackgroundColor"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="21" id="t93-k1-p0o"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
@@ -99,7 +104,7 @@
                             <constraint firstItem="Tm2-Ri-oJQ" firstAttribute="leading" secondItem="6zt-OQ-EXw" secondAttribute="leadingMargin" id="J3I-Si-vk7"/>
                             <constraint firstItem="uzH-Dp-rdD" firstAttribute="top" secondItem="SsS-OZ-N71" secondAttribute="bottom" id="Ptz-wQ-1xf"/>
                             <constraint firstItem="Tm2-Ri-oJQ" firstAttribute="centerY" secondItem="SsS-OZ-N71" secondAttribute="centerY" id="QvQ-pg-fmQ"/>
-                            <constraint firstItem="kSv-KQ-aEe" firstAttribute="top" secondItem="RKl-Od-0Bx" secondAttribute="bottom" constant="235" id="XdM-91-TCo"/>
+                            <constraint firstItem="kSv-KQ-aEe" firstAttribute="top" secondItem="RKl-Od-0Bx" secondAttribute="bottom" constant="176" id="XdM-91-TCo"/>
                             <constraint firstItem="kSv-KQ-aEe" firstAttribute="leading" secondItem="Tm2-Ri-oJQ" secondAttribute="leading" id="Zbj-sZ-g1p"/>
                             <constraint firstItem="Tm2-Ri-oJQ" firstAttribute="centerX" secondItem="uzH-Dp-rdD" secondAttribute="centerX" id="cHs-IY-A9U"/>
                             <constraint firstItem="uzH-Dp-rdD" firstAttribute="leading" secondItem="SsS-OZ-N71" secondAttribute="leading" id="fbl-sm-TsC"/>
@@ -205,7 +210,7 @@
                                                 <action selector="cancel:" destination="aqj-IY-fRg" id="oWJ-MB-Kdy"/>
                                             </connections>
                                         </barButtonItem>
-                                        <barButtonItem key="rightBarButtonItem" title="Choose" id="Wrl-Mo-VtK">
+                                        <barButtonItem key="rightBarButtonItem" enabled="NO" title="Choose" id="Wrl-Mo-VtK">
                                             <connections>
                                                 <action selector="choose:" destination="aqj-IY-fRg" id="0H7-Pf-02f"/>
                                             </connections>

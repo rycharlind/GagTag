@@ -122,7 +122,7 @@ class ChosenTagsViewController: UIViewController, UITableViewDelegate, UITableVi
                     
                     if let chosenTag = gagUserTag["chosenTag"] as? PFObject {
                         
-                        cell?.textLabel?.text = chosenTag["value"] as? String
+                        cell?.textLabel?.text = "#" + (chosenTag["value"] as? String)!
                         
                         // Check the chosen Tag
                         if (chosenTag.objectId == self.selectedTag?.objectId) {
@@ -144,18 +144,6 @@ class ChosenTagsViewController: UIViewController, UITableViewDelegate, UITableVi
                         }
                     }
                 }
-                
-                
-                /*
-                if let chosenTag = gagUserTag["chosenTag"] as? PFObject {
-                    cell?.textLabel?.text = chosenTag["value"] as? String
-                } else {
-                    
-                    if let user = gagUserTag["user"] as? PFObject {
-                        cell?.textLabel?.text = user["username"] as? String
-                    }
-                }
-                */
             }
         }
         

@@ -98,7 +98,7 @@ class DealtTagsViewController: UIViewController, UITableViewDataSource, UITableV
             
         if (self.tags?.count > 0) {
             if let tag = self.tags[indexPath.row] as? PFObject {
-                cell?.textLabel?.text = tag["value"] as? String
+                cell?.textLabel?.text = "#" + (tag["value"] as? String)!
                 
                 if (tag.objectId == self.selectedTag?.objectId) {
                     cell?.accessoryType = .Checkmark
@@ -122,6 +122,7 @@ class DealtTagsViewController: UIViewController, UITableViewDataSource, UITableV
         
         if let objId = currentObject.objectId {
             self.selectedTag = currentObject
+            self.barButtonChoose.enabled = true
             self.tableView.reloadData()
         }
         

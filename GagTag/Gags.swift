@@ -40,7 +40,6 @@ class GagsTableViewController: UITableViewController, PFLogInViewControllerDeleg
         } else {
             self.queryGags()
             self.navigationItem.title = PFUser.currentUser()?.username
-            //self.tableView.reloadData()
         }
     }
     
@@ -107,7 +106,7 @@ class GagsTableViewController: UITableViewController, PFLogInViewControllerDeleg
         var query = PFQuery(className: "Gag", predicate: predicate)
         query.includeKey("user")
         query.includeKey("winningTag")
-        query.addDescendingOrder("createdAt")
+        query.addDescendingOrder("updatedAt")
         query.findObjectsInBackgroundWithBlock({
             (objects: [AnyObject]?, error: NSError?) -> Void in
             if (error == nil) {
@@ -139,15 +138,26 @@ class GagsTableViewController: UITableViewController, PFLogInViewControllerDeleg
             cell = UITableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: "Cell")
         }
         
+        cell?.imageView?.image = UIImage(named: "glyphicons-274-drink")
+        
         if let object = self.gags[indexPath.row] as? PFObject {
             
+            
+            // textLabel
             if let user = object["user"] as? PFObject {
-                cell?.textLabel?.text = user["username"] as? String
+                // Check if current user sent the gag
+                if (user.objectId == PFUser.currentUser()?.objectId) {
+                   cell?.textLabel?.text = "I sent this"
+                } else {
+                    cell?.textLabel?.text = user["username"] as? String
+                }
             }
             
+            // detailTextLabel
             // Check to see if a winning tag has been submitted
             if let winningTag = object["winningTag"] as? PFObject {
-                cell?.detailTextLabel?.text = winningTag["value"] as? String
+                cell?.detailTextLabel?.text = "#" + (winningTag["value"] as? String)!
+                cell?.backgroundColor = UIColor(red: CGFloat(204) / 255, green: CGFloat(229) / 255, blue: CGFloat(255) / 255, alpha: 1)
             } else {
                 
                 var queryGagUserTags = PFQuery(className: "GagUserTag")
@@ -172,12 +182,45 @@ class GagsTableViewController: UITableViewController, PFLogInViewControllerDeleg
                             // Compare tagCount against total number of GagUserTag objects
                             if (tagCount == objects.count) {
                                 cell?.detailTextLabel?.text = "Ready"
+                                cell?.backgroundColor = UIColor(red: CGFloat(204) / 255, green: CGFloat(255) / 255, blue: CGFloat(204) / 255, alpha: 1)
                             } else {
-                                cell?.detailTextLabel?.text = "Not Ready"
+                                
+                                if let user = object["user"] as? PFObject {
+                                    // GagUser is current user
+                                    if (user.objectId == PFUser.currentUser()?.objectId) {
+                                        cell?.detailTextLabel?.text = "Not Ready"
+                                        cell?.backgroundColor = UIColor(red: CGFloat(255) / 255, green: CGFloat(204) / 255, blue: CGFloat(204) / 255, alpha: 1)
+                                    } else { // GagUser is NOT current user
+                                        
+                                        
+                                        // Check if the current use has chosen a tag
+                                        var currentUserChoseTag = false
+                                        for object in objects {
+                                            if let chosenTag = object["chosenTag"] as? PFObject {
+                                                if let user = object["user"] as? PFObject {
+                                                    if (user.objectId == PFUser.currentUser()?.objectId) {
+                                                        currentUserChoseTag = true
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        
+                                        if (currentUserChoseTag == true) {
+                                            cell?.detailTextLabel?.text = "Not Ready"
+                                            cell?.backgroundColor = UIColor(red: CGFloat(255) / 255, green: CGFloat(204) / 255, blue: CGFloat(204) / 255, alpha: 1)
+                                        } else {
+                                            cell?.detailTextLabel?.text = "Ready"
+                                            cell?.backgroundColor = UIColor(red: CGFloat(204) / 255, green: CGFloat(255) / 255, blue: CGFloat(204) / 255, alpha: 1)
+                                        }
+                                        
+                                    }
+                                }
+
                             }
+                            
                         }
                         
-                        //cell?.detailTextLabel?.text = "GagUserTag"
+                        
                     } else {
                         println("Error: \(error!) \(error!.userInfo!)")
                     }
@@ -191,68 +234,6 @@ class GagsTableViewController: UITableViewController, PFLogInViewControllerDeleg
         
         
     }
-
-    /*
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath, object: PFObject?) -> PFTableViewCell? {
-        
-        var cell = tableView.dequeueReusableCellWithIdentifier("Cell") as! PFTableViewCell!
-        if cell == nil {
-            cell = PFTableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: "Cell")
-        }
-        
-        println(object)
-        
-        if let user = object?["user"] as? PFObject {
-            cell?.textLabel?.text = user["username"] as? String
-        }
-        
-        // Check to see if a winning tag has been submitted
-        if let winningTag = object?["winningTag"] as? PFObject {
-            cell?.detailTextLabel?.text = winningTag["value"] as? String
-        } else {
-            
-            var queryGagUserTags = PFQuery(className: "GagUserTag")
-            queryGagUserTags.whereKey("gag", equalTo: object!)
-            queryGagUserTags.includeKey("chosenTag")
-            queryGagUserTags.findObjectsInBackgroundWithBlock({
-                (objects: [AnyObject]?, error: NSError?) -> Void in
-                if (error == nil) {
-                    println("GagUserTags: \(objects)")
-                    
-                    // Check all GagUserTag's to see if they have a chosenTag
-                    if let objects = objects as? [PFObject] {
-                        
-                        // Get chosenTag count
-                        var tagCount = 0
-                        for object in objects {
-                            if let chosenTag = object["chosenTag"] as? PFObject {
-                                tagCount++
-                            }
-                        }
-                        
-                        // Compare tagCount against total number of GagUserTag objects
-                        if (tagCount == objects.count) {
-                            cell?.detailTextLabel?.text = "Ready"
-                        } else {
-                            cell?.detailTextLabel?.text = "Not Ready"
-                        }
-                    }
-                    
-                    //cell?.detailTextLabel?.text = "GagUserTag"
-                } else {
-                    println("Error: \(error!) \(error!.userInfo!)")
-                }
-            })
-            
-        }
-        
-        
-        
-        
-        return cell
-        
-    }
-    */
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         
