@@ -33,6 +33,9 @@ class GagViewController: UIViewController, UIImagePickerControllerDelegate, UINa
     var newImage : UIImage!
     var imagePicker = UIImagePickerController()
     
+    @IBAction func actionUsers(sender: AnyObject) {
+        showGagUsers()
+    }
     
     // MARK: Actions
     @IBAction func actionSend(sender: AnyObject) {
@@ -62,6 +65,8 @@ class GagViewController: UIViewController, UIImagePickerControllerDelegate, UINa
             }
         }
     }
+    
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -124,6 +129,7 @@ class GagViewController: UIViewController, UIImagePickerControllerDelegate, UINa
             self.imageView.image = self.gagImage
             self.barButtonSend.enabled = false
             self.barButtonChoose.enabled = false
+            self.barButtonCamera.enabled = false
         } else {
             println("gagImage: nil")
             self.barButtonSend.enabled = true
@@ -135,6 +141,12 @@ class GagViewController: UIViewController, UIImagePickerControllerDelegate, UINa
     }
     
     // MARK:  Show Views
+    func showGagUsers() {
+        var gagUsersViewController = self.storyboard?.instantiateViewControllerWithIdentifier("gagUsers") as! GagUsersViewController
+        gagUsersViewController.gag = self.gag
+        self.presentViewController(gagUsersViewController, animated: true, completion: nil)
+    }
+    
     func showDealtTags() {
         var dealtTagsViewController = self.storyboard?.instantiateViewControllerWithIdentifier("dealtTags") as! DealtTagsViewController
         dealtTagsViewController.gag = self.gag

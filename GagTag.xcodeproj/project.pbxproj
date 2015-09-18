@@ -28,6 +28,7 @@
 		94460F3F1B9E1DB6009F254B /* Gag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94460F3E1B9E1DB6009F254B /* Gag.swift */; };
 		946CEAA51BAA1D620049313C /* DealtTags.swift in Sources */ = {isa = PBXBuildFile; fileRef = 946CEAA41BAA1D620049313C /* DealtTags.swift */; };
 		947DBCB71BAA293300F3BF66 /* ChosenTags.swift in Sources */ = {isa = PBXBuildFile; fileRef = 947DBCB61BAA293300F3BF66 /* ChosenTags.swift */; };
+		948471021BACD04300C2BC71 /* GagUsers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 948471011BACD04300C2BC71 /* GagUsers.swift */; };
 		949AE6B01B9F5AF7001ACEEE /* Tags.swift in Sources */ = {isa = PBXBuildFile; fileRef = 949AE6AF1B9F5AF7001ACEEE /* Tags.swift */; };
 		949AE6B41BA071F6001ACEEE /* LogIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 949AE6B31BA071F6001ACEEE /* LogIn.swift */; };
 		949AE6B61BA074CE001ACEEE /* Users.swift in Sources */ = {isa = PBXBuildFile; fileRef = 949AE6B51BA074CE001ACEEE /* Users.swift */; };
@@ -71,6 +72,7 @@
 		94460F3E1B9E1DB6009F254B /* Gag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Gag.swift; sourceTree = "<group>"; };
 		946CEAA41BAA1D620049313C /* DealtTags.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DealtTags.swift; sourceTree = "<group>"; };
 		947DBCB61BAA293300F3BF66 /* ChosenTags.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChosenTags.swift; sourceTree = "<group>"; };
+		948471011BACD04300C2BC71 /* GagUsers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GagUsers.swift; sourceTree = "<group>"; };
 		949AE6AF1B9F5AF7001ACEEE /* Tags.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tags.swift; sourceTree = "<group>"; };
 		949AE6B31BA071F6001ACEEE /* LogIn.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogIn.swift; sourceTree = "<group>"; };
 		949AE6B51BA074CE001ACEEE /* Users.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Users.swift; sourceTree = "<group>"; };
@@ -141,6 +143,7 @@
 				946CEAA41BAA1D620049313C /* DealtTags.swift */,
 				947DBCB61BAA293300F3BF66 /* ChosenTags.swift */,
 				949AF9701BA293C90066CDBD /* Reel.swift */,
+				948471011BACD04300C2BC71 /* GagUsers.swift */,
 				94460EE61B9A78DD009F254B /* Images.xcassets */,
 				94460EE81B9A78DD009F254B /* LaunchScreen.xib */,
 				94460EDD1B9A78DD009F254B /* Supporting Files */,
@@ -300,6 +303,7 @@
 				949AF9711BA293C90066CDBD /* Reel.swift in Sources */,
 				94460EE01B9A78DD009F254B /* AppDelegate.swift in Sources */,
 				949AE6B41BA071F6001ACEEE /* LogIn.swift in Sources */,
+				948471021BACD04300C2BC71 /* GagUsers.swift in Sources */,
 				949AE6B81BA07545001ACEEE /* Gags.swift in Sources */,
 				949AE6B61BA074CE001ACEEE /* Users.swift in Sources */,
 				949AE6B01B9F5AF7001ACEEE /* Tags.swift in Sources */,
@@ -434,6 +438,7 @@
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = GagTag/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
@@ -456,6 +461,7 @@
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = GagTag/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
