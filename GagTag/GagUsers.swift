@@ -69,6 +69,8 @@ class GagUsersViewController: UIViewController, UITableViewDelegate, UITableView
         }
         
         
+        
+        
         if let gagUser = self.gagUsers[indexPath.row] as? PFObject {
             if let user = gagUser["user"] as? PFObject {
                 cell?.textLabel?.text = user["username"] as? String

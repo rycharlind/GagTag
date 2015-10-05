@@ -14,21 +14,27 @@ import UIKit
 import Parse
 import ParseUI
 
-class GagsTableViewController: UITableViewController, PFLogInViewControllerDelegate, PFSignUpViewControllerDelegate {
+class GagsViewController: UIViewController, PFLogInViewControllerDelegate, PFSignUpViewControllerDelegate, UITableViewDelegate, UITableViewDataSource {
     
     // MARK: Properties
     var gags : [PFObject]!
+    @IBOutlet weak var tableView: UITableView!
+    
     
     // Mark: Actions
     @IBAction func logout(sender: UIBarButtonItem) {
         PFUser.logOut()
         showParseLogin()
     }
-
+    
+    @IBAction func findFriends(sender: AnyObject) {
+        //self.showFindFriends()
+        self.showFriendsMenuNav()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        
         self.gags = [PFObject]()
     }
     
@@ -41,6 +47,16 @@ class GagsTableViewController: UITableViewController, PFLogInViewControllerDeleg
             self.queryGags()
             self.navigationItem.title = PFUser.currentUser()?.username
         }
+    }
+    
+    func showFriendsMenuNav() {
+        var friendsMenuNavViewController = self.storyboard?.instantiateViewControllerWithIdentifier("friendsMenuNav") as! UINavigationController
+        self.presentViewController(friendsMenuNavViewController, animated: true, completion: nil)
+    }
+    
+    func showFindFriends() {
+        var findFreindsViewController = self.storyboard?.instantiateViewControllerWithIdentifier("findFriends") as! FindFriendsViewController
+        self.presentViewController(findFreindsViewController, animated: true, completion: nil)
     }
     
     func showTags() {
@@ -99,6 +115,13 @@ class GagsTableViewController: UITableViewController, PFLogInViewControllerDeleg
     
     func signUpViewController(signUpController: PFSignUpViewController, didSignUpUser user: PFUser) {
         self.dismissViewControllerAnimated(true, completion: nil)
+        
+        let userNotiicationTypes : UIUserNotificationType = (UIUserNotificationType.Alert | UIUserNotificationType.Badge | UIUserNotificationType.Sound)
+        
+        let settings : UIUserNotificationSettings = UIUserNotificationSettings(forTypes: userNotiicationTypes, categories: nil)
+        
+        UIApplication.sharedApplication().registerUserNotificationSettings(settings)
+        UIApplication.sharedApplication().registerForRemoteNotifications()
     }
     
     func queryGags() {
@@ -119,19 +142,19 @@ class GagsTableViewController: UITableViewController, PFLogInViewControllerDeleg
         })
     }
     
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         // #warning Potentially incomplete method implementation.
         // Return the number of sections.
         return 1
     }
     
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete method implementation.
         // Return the number of rows in the section.
         return self.gags.count
     }
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
         var cell = tableView.dequeueReusableCellWithIdentifier("Cell") as! UITableViewCell!
         if cell == nil {
@@ -212,15 +235,10 @@ class GagsTableViewController: UITableViewController, PFLogInViewControllerDeleg
                                             cell?.detailTextLabel?.text = "Ready"
                                             cell?.backgroundColor = UIColor(red: CGFloat(204) / 255, green: CGFloat(255) / 255, blue: CGFloat(204) / 255, alpha: 1)
                                         }
-                                        
                                     }
                                 }
-
                             }
-                            
                         }
-                        
-                        
                     } else {
                         println("Error: \(error!) \(error!.userInfo!)")
                     }
@@ -235,7 +253,7 @@ class GagsTableViewController: UITableViewController, PFLogInViewControllerDeleg
         
     }
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         
         let cell = tableView.cellForRowAtIndexPath(indexPath)
         let row = Int(indexPath.row)
