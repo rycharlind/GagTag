@@ -39,6 +39,9 @@
                         <state key="normal" image="glyphicons-198-remove">
                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                         </state>
+                        <connections>
+                            <action selector="close:" destination="l7X-LC-m2s" eventType="touchUpInside" id="0kW-Yh-1ED"/>
+                        </connections>
                     </button>
                 </subviews>
                 <constraints>

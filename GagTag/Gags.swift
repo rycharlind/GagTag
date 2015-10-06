@@ -32,6 +32,9 @@ class GagsViewController: UIViewController, PFLogInViewControllerDelegate, PFSig
         self.showFriendsMenuNav()
     }
     
+    @IBAction func feed(sender: AnyObject) {
+        self.showMyGagFeed()
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
@@ -47,6 +50,11 @@ class GagsViewController: UIViewController, PFLogInViewControllerDelegate, PFSig
             self.queryGags()
             self.navigationItem.title = PFUser.currentUser()?.username
         }
+    }
+    
+    func showMyGagFeed() {
+        var gagFeedViewController = self.storyboard?.instantiateViewControllerWithIdentifier("gagFeed") as! GagFeedViewController
+        self.presentViewController(gagFeedViewController, animated: true, completion: nil)
     }
     
     func showFriendsMenuNav() {
@@ -135,7 +143,7 @@ class GagsViewController: UIViewController, PFLogInViewControllerDelegate, PFSig
             if (error == nil) {
                 if let objects = objects as? [PFObject] {
                     self.gags = objects
-                    println(self.gags)
+                    //println(self.gags)
                     self.tableView.reloadData()
                 }
             }
@@ -189,7 +197,7 @@ class GagsViewController: UIViewController, PFLogInViewControllerDelegate, PFSig
                 queryGagUserTags.findObjectsInBackgroundWithBlock({
                     (objects: [AnyObject]?, error: NSError?) -> Void in
                     if (error == nil) {
-                        println("GagUserTags: \(objects)")
+                        //println("GagUserTags: \(objects)")
                         
                         // Check all GagUserTag's to see if they have a chosenTag
                         if let objects = objects as? [PFObject] {

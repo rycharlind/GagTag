@@ -40,8 +40,10 @@ class FriendsMenuViewController: UITableViewController {
             self.showFindFriends()
         case 1:
             self.showFriendRequests()
+        case 2:
+            self.showMyFriends()
         default:
-            self.showFindFriends()
+            println("default selected")
         }
         
     }
@@ -56,6 +58,11 @@ class FriendsMenuViewController: UITableViewController {
     func showFriendRequests() {
         var friendRequestsViewController = self.storyboard?.instantiateViewControllerWithIdentifier("friendRequests") as! FriendRequestsViewController
         self.navigationController?.pushViewController(friendRequestsViewController, animated: true)
+    }
+    
+    func showMyFriends() {
+        var myFriendsViewController = self.storyboard?.instantiateViewControllerWithIdentifier("myFriends") as! MyFriendsViewController
+        self.navigationController?.pushViewController(myFriendsViewController, animated: true)
     }
 
 

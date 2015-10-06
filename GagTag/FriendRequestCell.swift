@@ -19,6 +19,10 @@ class FriendRequestCell: UITableViewCell {
         self.approve()
     }
     
+    @IBAction func close(sender: AnyObject) {
+        self.dismiss()
+    }
+    
     func approve() {
         var query = PFQuery(className: "Friends")
         query.getObjectInBackgroundWithId(self.friendRequest.objectId!, block: {

@@ -34,52 +34,7 @@ class FindFriendsViewController: UIViewController, UITableViewDataSource, UITabl
     }
     
     override func viewDidAppear(animated: Bool) {
-        //self.queryNonFriends()
         self.queryUsers()
-    }
-    
-    func queryNonFriends() {
-        
-        // Query all the current users friends
-        var queryFriends = PFQuery(className: "Friends")
-        queryFriends.whereKey("user", equalTo: PFUser.currentUser()!)
-        queryFriends.includeKey("friend")
-        queryFriends.findObjectsInBackgroundWithBlock({
-            (objects: [AnyObject]?, error: NSError?) -> Void in
-            if (error == nil) {
-                
-                // Create an array of the friends objectIds
-                var friendsObjectIds = [String]()
-                if let objects = objects as? [PFObject] {
-                    for object in objects {
-                        var friend = object["friend"] as! PFObject
-                        friendsObjectIds.append(friend.objectId!)
-                    }
-                }
-                
-                
-                // Query all users excluding the current users friends objectIds
-                var query = PFQuery(className: "_User")
-                query.whereKey("objectId", notEqualTo: PFUser.currentUser()!.objectId!)
-                query.whereKey("objectId", notContainedIn: friendsObjectIds)
-                query.orderByAscending("username")
-                query.findObjectsInBackgroundWithBlock({
-                    (objects: [AnyObject]?, error: NSError?) -> Void in
-                    if (error == nil) {
-                        //self.users = objects as! [PFObject]
-                        self.tableView.reloadData()
-                    } else {
-                        println("Error: \(error!) \(error!.userInfo!)")
-                    }
-                })
-                
-                
-            } else {
-                println("Error: \(error!) \(error!.userInfo!)")
-            }
-            
-        })
-        
     }
     
     func queryUsers() {
@@ -105,7 +60,6 @@ class FindFriendsViewController: UIViewController, UITableViewDataSource, UITabl
                 // Query all users
                 var query = PFQuery(className: "_User")
                 query.whereKey("objectId", notEqualTo: PFUser.currentUser()!.objectId!)
-                //query.whereKey("objectId", notContainedIn: friendsObjectIds)
                 query.orderByAscending("username")
                 query.findObjectsInBackgroundWithBlock({
                     (objects: [AnyObject]?, error: NSError?) -> Void in
@@ -113,12 +67,12 @@ class FindFriendsViewController: UIViewController, UITableViewDataSource, UITabl
                         
                         
                         // Iterate through each user and check if they are a friend
-                        if let objects = objects as? [PFObject] {
+                        if let objects = objects as? [PFUser] {
                             for pfuser in objects {
                                 var user = User()
                                 
                                 user.username = pfuser["username"] as! String
-                                
+                                user.pfuser = pfuser
                                 
                                 if contains(friendsObjectIds, pfuser.objectId!) {
                                     user.isFriend = true
@@ -162,15 +116,15 @@ class FindFriendsViewController: UIViewController, UITableViewDataSource, UITabl
             cell = FindFriendsCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: "findFriendscell")
         }
         
-        if (self.users.count > 0) {
-            let user = self.users[indexPath.row] as User
-            cell?.labelUsername.text = user.username
-            if (user.isFriend == true) {
-                println("got a friend")
-                cell?.buttonAction.setTitle("Remove", forState: UIControlState.Normal)
-            }
+        
+        let user = self.users[indexPath.row] as User
+        cell?.labelUsername.text = user.username
+        cell?.friend = user.pfuser
+        if (user.isFriend == true) {
+            cell?.buttonAction.setTitle("Remove", forState: UIControlState.Normal)
             
         }
+            
         
         return cell
         

@@ -23,8 +23,9 @@ class DealtTagsViewController: UIViewController, UITableViewDataSource, UITableV
     var gag : PFObject!
     var tags : [PFObject]!
     var selectedTag : PFObject!
-    // MARK:  Actions
     
+    
+    // MARK:  Actions
     @IBAction func choose(sender: AnyObject) {
         if let delegate = self.delegate {
             delegate.dealtTagsViewController(self, didSelectTag: self.selectedTag)
@@ -45,11 +46,12 @@ class DealtTagsViewController: UIViewController, UITableViewDataSource, UITableV
     }
     
     override func viewDidAppear(animated: Bool) {
-        self.queryDealtTags()
+        //self.queryDealtTags()
+        self.dealTags()
+        println("view did appear")
     }
     
     func queryDealtTags() {
-        println("Query Dealt Tags")
         var query = PFQuery(className: "GagUserTag")
         query.whereKey("gag", equalTo: self.gag)
         query.whereKey("user", equalTo: PFUser.currentUser()!)
@@ -75,6 +77,25 @@ class DealtTagsViewController: UIViewController, UITableViewDataSource, UITableV
         
     }
     
+    func dealTags() {
+        println("dealTags")
+        var query = PFQuery(className: "Tag")
+        query.countObjectsInBackgroundWithBlock({
+            (c: Int32, error: NSError?) -> Void in
+            if error == nil {
+                //let randomNumber = arc4random_uniform(count)
+                var count = UInt32(c)
+                let randomNumber = Int(arc4random_uniform(count))
+                var randomNumberCast = Int(randomNumber)
+                println(randomNumberCast)
+                
+                
+                
+            }
+        })
+        
+    }
+    
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         // #warning Potentially incomplete method implementation.
         // Return the number of sections.
@@ -93,8 +114,6 @@ class DealtTagsViewController: UIViewController, UITableViewDataSource, UITableV
         if cell == nil {
             cell = UITableViewCell(style: UITableViewCellStyle.Default, reuseIdentifier: "Cell")
         }
-        
-            
             
         if (self.tags?.count > 0) {
             if let tag = self.tags[indexPath.row] as? PFObject {

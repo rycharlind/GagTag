@@ -14,19 +14,20 @@ class FindFriendsCell: UITableViewCell {
     
     @IBOutlet weak var buttonAction: UIButton!
     @IBOutlet weak var labelUsername: UILabel!
-    var friend : PFObject!
+    var friend : PFUser!
     
     @IBAction func add(sender: AnyObject) {
         self.sendFriendRequest()
     }
     
     func sendFriendRequest() {
-        var friend = PFObject(className: "Friends")
-        friend.setObject(PFUser.currentUser()!, forKey: "user")
-        friend.setObject(self.friend, forKey: "friend")
-        friend.setObject(false, forKey: "approved")
-        friend.setObject(false, forKey: "dismissed")
-        friend.saveInBackgroundWithBlock({
+        
+        var friendRequest = PFObject(className: "Friends")
+        friendRequest.setObject(PFUser.currentUser()!, forKey: "user")
+        friendRequest.setObject(self.friend, forKey: "friend")
+        friendRequest.setObject(false, forKey: "approved")
+        friendRequest.setObject(false, forKey: "dismissed")
+        friendRequest.saveInBackgroundWithBlock({
             (success: Bool, error: NSError?) -> Void in
             if (success) {
                 // The object has been saved.

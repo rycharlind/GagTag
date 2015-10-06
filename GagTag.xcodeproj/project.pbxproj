@@ -12,6 +12,10 @@
 		943915EC1BC20F66000244F1 /* FriendRequests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 943915EB1BC20F66000244F1 /* FriendRequests.swift */; };
 		943915EE1BC230BC000244F1 /* FriendRequestCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 943915ED1BC230BC000244F1 /* FriendRequestCell.swift */; };
 		943915F21BC232A2000244F1 /* FriendRequestCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 943915F11BC232A2000244F1 /* FriendRequestCell.xib */; };
+		943915F41BC341ED000244F1 /* MyFriends.swift in Sources */ = {isa = PBXBuildFile; fileRef = 943915F31BC341ED000244F1 /* MyFriends.swift */; };
+		943915F61BC349DF000244F1 /* GagFeed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 943915F51BC349DF000244F1 /* GagFeed.swift */; };
+		943915F91BC34B1B000244F1 /* GagFeedCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 943915F81BC34B1B000244F1 /* GagFeedCell.swift */; };
+		943915FB1BC34B35000244F1 /* GagFeedCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 943915FA1BC34B35000244F1 /* GagFeedCell.xib */; };
 		94460EE01B9A78DD009F254B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94460EDF1B9A78DD009F254B /* AppDelegate.swift */; };
 		94460EE71B9A78DD009F254B /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 94460EE61B9A78DD009F254B /* Images.xcassets */; };
 		94460EEA1B9A78DD009F254B /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 94460EE81B9A78DD009F254B /* LaunchScreen.xib */; };
@@ -60,6 +64,10 @@
 		943915EB1BC20F66000244F1 /* FriendRequests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendRequests.swift; sourceTree = "<group>"; };
 		943915ED1BC230BC000244F1 /* FriendRequestCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendRequestCell.swift; sourceTree = "<group>"; };
 		943915F11BC232A2000244F1 /* FriendRequestCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FriendRequestCell.xib; sourceTree = "<group>"; };
+		943915F31BC341ED000244F1 /* MyFriends.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyFriends.swift; sourceTree = "<group>"; };
+		943915F51BC349DF000244F1 /* GagFeed.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GagFeed.swift; sourceTree = "<group>"; };
+		943915F81BC34B1B000244F1 /* GagFeedCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GagFeedCell.swift; sourceTree = "<group>"; };
+		943915FA1BC34B35000244F1 /* GagFeedCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GagFeedCell.xib; sourceTree = "<group>"; };
 		94460EDA1B9A78DD009F254B /* GagTag.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GagTag.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		94460EDE1B9A78DD009F254B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		94460EDF1B9A78DD009F254B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -139,6 +147,7 @@
 			isa = PBXGroup;
 			children = (
 				943915E91BC20D08000244F1 /* FriendsMenu.swift */,
+				943915F31BC341ED000244F1 /* MyFriends.swift */,
 				943915EF1BC23240000244F1 /* FindFriends */,
 				943915F01BC2325F000244F1 /* FriendRequests */,
 			);
@@ -163,6 +172,16 @@
 				943915F11BC232A2000244F1 /* FriendRequestCell.xib */,
 			);
 			name = FriendRequests;
+			sourceTree = "<group>";
+		};
+		943915F71BC34AFF000244F1 /* GagFeed */ = {
+			isa = PBXGroup;
+			children = (
+				943915F51BC349DF000244F1 /* GagFeed.swift */,
+				943915F81BC34B1B000244F1 /* GagFeedCell.swift */,
+				943915FA1BC34B35000244F1 /* GagFeedCell.xib */,
+			);
+			name = GagFeed;
 			sourceTree = "<group>";
 		};
 		94460ED11B9A78DD009F254B = {
@@ -198,6 +217,7 @@
 				947DBCB61BAA293300F3BF66 /* ChosenTags.swift */,
 				949AF9701BA293C90066CDBD /* Reel.swift */,
 				948471011BACD04300C2BC71 /* GagUsers.swift */,
+				943915F71BC34AFF000244F1 /* GagFeed */,
 				943915E81BC20A4D000244F1 /* Friends */,
 				943915E71BC20099000244F1 /* Models */,
 				94460EE61B9A78DD009F254B /* Images.xcassets */,
@@ -336,6 +356,7 @@
 				943915F21BC232A2000244F1 /* FriendRequestCell.xib in Resources */,
 				94460F3D1B9C73FA009F254B /* Main.storyboard in Resources */,
 				94AC184A1BAF9FB300EC160F /* FindFriendsCell.xib in Resources */,
+				943915FB1BC34B35000244F1 /* GagFeedCell.xib in Resources */,
 				94460EEA1B9A78DD009F254B /* LaunchScreen.xib in Resources */,
 				94460EE71B9A78DD009F254B /* Images.xcassets in Resources */,
 			);
@@ -359,6 +380,7 @@
 				943915EC1BC20F66000244F1 /* FriendRequests.swift in Sources */,
 				943915EA1BC20D08000244F1 /* FriendsMenu.swift in Sources */,
 				943915EE1BC230BC000244F1 /* FriendRequestCell.swift in Sources */,
+				943915F61BC349DF000244F1 /* GagFeed.swift in Sources */,
 				946CEAA51BAA1D620049313C /* DealtTags.swift in Sources */,
 				94460F3F1B9E1DB6009F254B /* Gag.swift in Sources */,
 				943915E61BBE3F71000244F1 /* User.swift in Sources */,
@@ -369,6 +391,8 @@
 				94AC18461BAF929A00EC160F /* FindFriends.swift in Sources */,
 				948471021BACD04300C2BC71 /* GagUsers.swift in Sources */,
 				949AE6B81BA07545001ACEEE /* Gags.swift in Sources */,
+				943915F41BC341ED000244F1 /* MyFriends.swift in Sources */,
+				943915F91BC34B1B000244F1 /* GagFeedCell.swift in Sources */,
 				949AE6B61BA074CE001ACEEE /* Users.swift in Sources */,
 				949AE6B01B9F5AF7001ACEEE /* Tags.swift in Sources */,
 			);
