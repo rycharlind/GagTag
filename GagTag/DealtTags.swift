@@ -27,10 +27,14 @@ class DealtTagsViewController: UIViewController, UITableViewDataSource, UITableV
     
     // MARK:  Actions
     @IBAction func choose(sender: AnyObject) {
+        
+        self.sendChosenTag(self.selectedTag)
+        /*
         if let delegate = self.delegate {
             delegate.dealtTagsViewController(self, didSelectTag: self.selectedTag)
         }
         self.dismissViewControllerAnimated(true, completion: nil)
+        */
     }
     
     @IBAction func cancel(sender: AnyObject) {
@@ -48,7 +52,7 @@ class DealtTagsViewController: UIViewController, UITableViewDataSource, UITableV
     override func viewDidAppear(animated: Bool) {
         //self.queryDealtTags()
         self.dealTags()
-        println("view did appear")
+        println(self.gag)
     }
     
     func queryDealtTags() {
@@ -56,6 +60,7 @@ class DealtTagsViewController: UIViewController, UITableViewDataSource, UITableV
         query.whereKey("gag", equalTo: self.gag)
         query.whereKey("user", equalTo: PFUser.currentUser()!)
         query.includeKey("dealtTags")
+        
         
         query.getFirstObjectInBackgroundWithBlock({
             (object: PFObject?, error: NSError?) -> Void in
@@ -78,22 +83,126 @@ class DealtTagsViewController: UIViewController, UITableViewDataSource, UITableV
     }
     
     func dealTags() {
-        println("dealTags")
-        var query = PFQuery(className: "Tag")
-        query.countObjectsInBackgroundWithBlock({
-            (c: Int32, error: NSError?) -> Void in
-            if error == nil {
-                //let randomNumber = arc4random_uniform(count)
-                var count = UInt32(c)
-                let randomNumber = Int(arc4random_uniform(count))
-                var randomNumberCast = Int(randomNumber)
-                println(randomNumberCast)
+        
+        // Queries all the GagUserTag objects related to this gag
+        // If the current user already has an object created then use those dealtTags
+        // Else
+        // Query new tags excluding all the current dealtTag to other users
+        // Then 
+        // Select 5 random tags
+            // Iterate 5 times
+            // Generate radndom index
+            // Get Tag from all Tags
+            // Remove tag from all Tags
+            // Repeat
+        
+        var queryGagUserTag = PFQuery(className: "GagUserTag")
+        queryGagUserTag.whereKey("gag", equalTo: self.gag)
+        queryGagUserTag.includeKey("user")
+        queryGagUserTag.includeKey("dealtTags")
+        queryGagUserTag.findObjectsInBackgroundWithBlock({
+            (objects: [AnyObject]?, error: NSError?) -> Void in
+            if (error == nil) {
                 
-                
-                
+                if let objects = objects as? [PFObject] {
+                    
+                    var currentDealTagsObjectIds = [String]()
+                    var dealtTags = [PFObject]()
+                    
+                    // Iterate through each GagUserTag and check if current user has dealtTags
+                    var hasDealtTags = false
+                    for object in objects {
+                        let user = object["user"] as! PFUser
+                        if (user.objectId == PFUser.currentUser()?.objectId) {
+                            hasDealtTags = true
+                            dealtTags = object["dealtTags"] as! [PFObject]
+                        }
+                    }
+                    
+                    
+                    if (hasDealtTags == true) {
+                        
+                        println("User has dealt tags")
+                        //println(dealtTags)
+                        self.tags = dealtTags
+                        self.tableView.reloadData()
+                        
+                    } else {
+                        
+                        // Concatenate all the dealt tags
+                        for dealtTag in dealtTags {
+                            currentDealTagsObjectIds.append(dealtTag.objectId!)
+                        }
+                        
+                        // Query all tags not contained inside currentDealtTags
+                        var query = PFQuery(className: "Tag")
+                        query.whereKey("objectId", notContainedIn: currentDealTagsObjectIds)
+                        query.limit = 1000
+                        query.findObjectsInBackgroundWithBlock({
+                            (objects: [AnyObject]?, error: NSError?) -> Void in
+                            if (error == nil) {
+                                
+                                if var objects = objects as? [PFObject] {
+                                    
+                                    let numOfTags = 5
+                                    for (var x = 0; x < numOfTags; x++) {
+                                        var count = UInt32(objects.count)
+                                        var index = Int(arc4random_uniform(count))
+                                        self.tags.append(objects[index])
+                                        objects.removeAtIndex(5)
+                                    }
+                                    
+                                    println(self.tags)
+                                    self.tableView.reloadData()
+                                    
+                                }
+                                
+                                // Create new GagUserTag with newly dealtTags
+                                var gagUserTag = PFObject(className: "GagUserTag")
+                                gagUserTag["user"] = PFUser.currentUser()!
+                                gagUserTag["gag"] = self.gag
+                                gagUserTag["dealtTags"] = self.tags
+                                gagUserTag.saveInBackground()
+                                
+                            } else {
+                                println("Error: \(error!) \(error!.userInfo!)")
+                            }
+                            
+                        })
+                        
+                    }
+                }
+            } else {
+                println("Error: \(error!) \(error!.userInfo!)")
             }
         })
         
+    }
+    
+    func sendChosenTag(tag : PFObject) {
+        println("sendChosenTag")
+        var query = PFQuery(className: "GagUserTag")
+        query.whereKey("gag", equalTo: self.gag)
+        query.whereKey("user", equalTo: PFUser.currentUser()!)
+        query.getFirstObjectInBackgroundWithBlock({
+            (object: PFObject?, error: NSError?) -> Void in
+            if error != nil || object == nil {
+                println("The getFirstObject request failed.")
+            } else {
+                // The find succeeded.
+                object?.setObject(tag, forKey: "chosenTag")
+                object?.saveInBackgroundWithBlock({
+                    (success: Bool, error: NSError?) -> Void in
+                    if (success) {
+                        // The object has been saved.
+                        self.dismissViewControllerAnimated(true, completion: nil)
+                    } else {
+                        // There was a problem, check error.description
+                    }
+                })
+                
+            }
+        })
     }
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
@@ -114,19 +223,16 @@ class DealtTagsViewController: UIViewController, UITableViewDataSource, UITableV
         if cell == nil {
             cell = UITableViewCell(style: UITableViewCellStyle.Default, reuseIdentifier: "Cell")
         }
-            
-        if (self.tags?.count > 0) {
-            if let tag = self.tags[indexPath.row] as? PFObject {
-                cell?.textLabel?.text = "#" + (tag["value"] as? String)!
-                
-                if (tag.objectId == self.selectedTag?.objectId) {
-                    cell?.accessoryType = .Checkmark
-                } else {
-                    cell?.accessoryType = .None
-                }
-            }
-        }
         
+        let tag = self.tags[indexPath.row] as PFObject
+        cell?.textLabel?.text = "#" + (tag["value"] as? String)!
+        
+        if (tag.objectId == self.selectedTag?.objectId) {
+            cell?.accessoryType = .Checkmark
+        } else {
+            cell?.accessoryType = .None
+        }
+    
         
         return cell
         

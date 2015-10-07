@@ -34,6 +34,7 @@ class GagsViewController: UIViewController, PFLogInViewControllerDelegate, PFSig
     
     @IBAction func feed(sender: AnyObject) {
         self.showMyGagFeed()
+        //self.showDealtTags()
     }
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -50,6 +51,12 @@ class GagsViewController: UIViewController, PFLogInViewControllerDelegate, PFSig
             self.queryGags()
             self.navigationItem.title = PFUser.currentUser()?.username
         }
+    }
+    
+    func showDealtTags() {
+        var dealtTagsViewController = self.storyboard?.instantiateViewControllerWithIdentifier("dealtTags") as! DealtTagsViewController
+        //dealtTagsViewController.gag = gag
+        self.presentViewController(dealtTagsViewController, animated: true, completion: nil)
     }
     
     func showMyGagFeed() {

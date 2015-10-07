@@ -133,12 +133,7 @@ class FindFriendsViewController: UIViewController, UITableViewDataSource, UITabl
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         
-        
-        
     }
-    
-    
-    
     
 
     override func didReceiveMemoryWarning() {

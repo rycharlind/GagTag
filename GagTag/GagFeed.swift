@@ -106,6 +106,7 @@ class GagFeedViewController: UIViewController, UITableViewDelegate, UITableViewD
         let gag = self.gags[indexPath.row] as PFObject
         var pfimage = gag["image"] as! PFFile
         
+        
         pfimage.getDataInBackgroundWithBlock({
             (result, error) in
             if (error == nil) {
@@ -116,7 +117,6 @@ class GagFeedViewController: UIViewController, UITableViewDelegate, UITableViewD
             }
         })
         
-        
         return cell
         
         
@@ -124,8 +124,10 @@ class GagFeedViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         
-        println("selected cell")
+        let gag = self.gags[indexPath.row] as PFObject
+        
         var dealtTagsViewController = self.storyboard?.instantiateViewControllerWithIdentifier("dealtTags") as! DealtTagsViewController
+        dealtTagsViewController.gag = gag
         self.presentViewController(dealtTagsViewController, animated: true, completion: nil)
         
     }

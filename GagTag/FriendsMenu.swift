@@ -42,6 +42,7 @@ class FriendsMenuViewController: UITableViewController {
             self.showFriendRequests()
         case 2:
             self.showMyFriends()
+            //self.showDealtTags()
         default:
             println("default selected")
         }
@@ -65,6 +66,11 @@ class FriendsMenuViewController: UITableViewController {
         self.navigationController?.pushViewController(myFriendsViewController, animated: true)
     }
 
+    func showDealtTags() {
+        var dealtTagsViewController = self.storyboard?.instantiateViewControllerWithIdentifier("dealtTags") as! DealtTagsViewController
+        //dealtTagsViewController.gag = gag
+        self.presentViewController(dealtTagsViewController, animated: true, completion: nil)
+    }
 
     
 
