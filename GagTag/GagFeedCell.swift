@@ -11,7 +11,8 @@ import UIKit
 class GagFeedCell: UITableViewCell {
     
     @IBOutlet weak var gagImageView: UIImageView!
-
+    @IBOutlet weak var labelTag: UILabel!
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         

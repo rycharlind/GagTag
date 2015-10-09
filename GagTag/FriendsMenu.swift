@@ -41,8 +41,8 @@ class FriendsMenuViewController: UITableViewController {
         case 1:
             self.showFriendRequests()
         case 2:
-            self.showMyFriends()
-            //self.showDealtTags()
+            //self.showMyFriends()
+            self.showDealtTags()
         default:
             println("default selected")
         }
@@ -71,7 +71,5 @@ class FriendsMenuViewController: UITableViewController {
         //dealtTagsViewController.gag = gag
         self.presentViewController(dealtTagsViewController, animated: true, completion: nil)
     }
-
-    
 
 }

@@ -74,9 +74,7 @@ class DealtTagsViewController: UIViewController, UITableViewDataSource, UITableV
                     self.tags = dealtTags
                     self.tableView.reloadData()
                 }
-                
                 println("My Tags: \(self.tags)")
-                
             }
         })
         
@@ -200,7 +198,6 @@ class DealtTagsViewController: UIViewController, UITableViewDataSource, UITableV
                         // There was a problem, check error.description
                     }
                 })
-                
             }
         })
     }
@@ -233,7 +230,6 @@ class DealtTagsViewController: UIViewController, UITableViewDataSource, UITableV
             cell?.accessoryType = .None
         }
     
-        
         return cell
         
     }
@@ -250,17 +246,13 @@ class DealtTagsViewController: UIViewController, UITableViewDataSource, UITableV
             self.barButtonChoose.enabled = true
             self.tableView.reloadData()
         }
-        
-        
     }
-    
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
     
-
     /*
     // MARK: - Navigation
 

@@ -29,13 +29,15 @@ class GagsViewController: UIViewController, PFLogInViewControllerDelegate, PFSig
     
     @IBAction func findFriends(sender: AnyObject) {
         //self.showFindFriends()
-        self.showFriendsMenuNav()
+        //self.showFriendsMenuNav()
+        self.showTutorial()
     }
     
     @IBAction func feed(sender: AnyObject) {
         self.showMyGagFeed()
         //self.showDealtTags()
     }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
@@ -51,6 +53,11 @@ class GagsViewController: UIViewController, PFLogInViewControllerDelegate, PFSig
             self.queryGags()
             self.navigationItem.title = PFUser.currentUser()?.username
         }
+    }
+    
+    func showTutorial() {
+        var tutorialViewController = self.storyboard?.instantiateViewControllerWithIdentifier("tutorial") as! TutorialViewController
+        self.presentViewController(tutorialViewController, animated: true, completion: nil)
     }
     
     func showDealtTags() {
