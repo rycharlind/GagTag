@@ -52,11 +52,11 @@ class DealtTagsViewController: UIViewController, UITableViewDataSource, UITableV
     override func viewDidAppear(animated: Bool) {
         //self.queryDealtTags()
         self.dealTags()
-        println(self.gag)
+        print(self.gag)
     }
     
     func queryDealtTags() {
-        var query = PFQuery(className: "GagUserTag")
+        let query = PFQuery(className: "GagUserTag")
         query.whereKey("gag", equalTo: self.gag)
         query.whereKey("user", equalTo: PFUser.currentUser()!)
         query.includeKey("dealtTags")
@@ -65,16 +65,16 @@ class DealtTagsViewController: UIViewController, UITableViewDataSource, UITableV
         query.getFirstObjectInBackgroundWithBlock({
             (object: PFObject?, error: NSError?) -> Void in
             if error != nil || object == nil {
-                println("The getFirstObject request failed.")
+                print("The getFirstObject request failed.")
             } else {
                 // The find succeeded.
-                println("Successfully retrieved the object. \(object)")
+                print("Successfully retrieved the object. \(object)")
                 
                 if let dealtTags = object?["dealtTags"] as? [PFObject] {
                     self.tags = dealtTags
                     self.tableView.reloadData()
                 }
-                println("My Tags: \(self.tags)")
+                print("My Tags: \(self.tags)")
             }
         })
         
@@ -94,7 +94,7 @@ class DealtTagsViewController: UIViewController, UITableViewDataSource, UITableV
             // Remove tag from all Tags
             // Repeat
         
-        var queryGagUserTag = PFQuery(className: "GagUserTag")
+        let queryGagUserTag = PFQuery(className: "GagUserTag")
         queryGagUserTag.whereKey("gag", equalTo: self.gag)
         queryGagUserTag.includeKey("user")
         queryGagUserTag.includeKey("dealtTags")
@@ -120,7 +120,7 @@ class DealtTagsViewController: UIViewController, UITableViewDataSource, UITableV
                     
                     if (hasDealtTags == true) {
                         
-                        println("User has dealt tags")
+                        print("User has dealt tags")
                         //println(dealtTags)
                         self.tags = dealtTags
                         self.tableView.reloadData()
@@ -133,7 +133,7 @@ class DealtTagsViewController: UIViewController, UITableViewDataSource, UITableV
                         }
                         
                         // Query all tags not contained inside currentDealtTags
-                        var query = PFQuery(className: "Tag")
+                        let query = PFQuery(className: "Tag")
                         query.whereKey("objectId", notContainedIn: currentDealTagsObjectIds)
                         query.limit = 1000
                         query.findObjectsInBackgroundWithBlock({
@@ -144,26 +144,26 @@ class DealtTagsViewController: UIViewController, UITableViewDataSource, UITableV
                                     
                                     let numOfTags = 5
                                     for (var x = 0; x < numOfTags; x++) {
-                                        var count = UInt32(objects.count)
-                                        var index = Int(arc4random_uniform(count))
+                                        let count = UInt32(objects.count)
+                                        let index = Int(arc4random_uniform(count))
                                         self.tags.append(objects[index])
                                         objects.removeAtIndex(5)
                                     }
                                     
-                                    println(self.tags)
+                                    print(self.tags)
                                     self.tableView.reloadData()
                                     
                                 }
                                 
                                 // Create new GagUserTag with newly dealtTags
-                                var gagUserTag = PFObject(className: "GagUserTag")
+                                let gagUserTag = PFObject(className: "GagUserTag")
                                 gagUserTag["user"] = PFUser.currentUser()!
                                 gagUserTag["gag"] = self.gag
                                 gagUserTag["dealtTags"] = self.tags
                                 gagUserTag.saveInBackground()
                                 
                             } else {
-                                println("Error: \(error!) \(error!.userInfo!)")
+                                print("Error: \(error!) \(error!.userInfo)")
                             }
                             
                         })
@@ -171,21 +171,21 @@ class DealtTagsViewController: UIViewController, UITableViewDataSource, UITableV
                     }
                 }
             } else {
-                println("Error: \(error!) \(error!.userInfo!)")
+                print("Error: \(error!) \(error!.userInfo)")
             }
         })
         
     }
     
     func sendChosenTag(tag : PFObject) {
-        println("sendChosenTag")
-        var query = PFQuery(className: "GagUserTag")
+        print("sendChosenTag")
+        let query = PFQuery(className: "GagUserTag")
         query.whereKey("gag", equalTo: self.gag)
         query.whereKey("user", equalTo: PFUser.currentUser()!)
         query.getFirstObjectInBackgroundWithBlock({
             (object: PFObject?, error: NSError?) -> Void in
             if error != nil || object == nil {
-                println("The getFirstObject request failed.")
+                print("The getFirstObject request failed.")
             } else {
                 // The find succeeded.
                 object?.setObject(tag, forKey: "chosenTag")
@@ -216,7 +216,7 @@ class DealtTagsViewController: UIViewController, UITableViewDataSource, UITableV
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
-        var cell = tableView.dequeueReusableCellWithIdentifier("Cell") as! UITableViewCell!
+        var cell = tableView.dequeueReusableCellWithIdentifier("Cell") as UITableViewCell!
         if cell == nil {
             cell = UITableViewCell(style: UITableViewCellStyle.Default, reuseIdentifier: "Cell")
         }

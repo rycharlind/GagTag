@@ -36,11 +36,11 @@ class MyFriendsViewController: UIViewController, UITableViewDelegate, UITableVie
             if (error == nil) {
                 if let objects = objects as? [PFObject] {
                     self.friends = objects
-                    println(self.friends)
+                    print(self.friends)
                     self.tableView.reloadData()
                 }
             } else {
-                println("Error: \(error!) \(error!.userInfo!)")
+                print("Error: \(error!) \(error!.userInfo)")
             }
         })
     }
@@ -56,7 +56,7 @@ class MyFriendsViewController: UIViewController, UITableViewDelegate, UITableVie
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
-        var cell = tableView.dequeueReusableCellWithIdentifier("Cell") as! UITableViewCell!
+        var cell = tableView.dequeueReusableCellWithIdentifier("Cell") as UITableViewCell!
         if cell == nil {
             cell = UITableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: "Cell")
         }

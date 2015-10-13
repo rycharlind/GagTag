@@ -10,6 +10,7 @@ import UIKit
 
 class ContentViewController: UIViewController {
     
+    
     @IBOutlet weak var labelTitle: UILabel!
     
     var pageIndex: Int!

@@ -59,7 +59,7 @@ class UsersViewController: UIViewController, UITableViewDataSource, UITableViewD
                 //println("Users: \(self.objects)")
                 self.tableView.reloadData()
             } else {
-                println("Error: \(error!) \(error!.userInfo!)")
+                print("Error: \(error!) \(error!.userInfo)")
             }
         })
     }

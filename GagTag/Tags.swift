@@ -63,8 +63,8 @@ class TagsViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func queryGagUserTags() {
-        println("Query Gag User Tags")
-        var query = PFQuery(className: "GagUserTag")
+        print("Query Gag User Tags")
+        let query = PFQuery(className: "GagUserTag")
         query.whereKey("gag", equalTo: self.gag)
         query.includeKey("user")
         query.includeKey("dealtTags")
@@ -81,8 +81,8 @@ class TagsViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func queryDealtTags() {
-        println("Query Dealt Tags")
-        var query = PFQuery(className: "GagUserTag")
+        print("Query Dealt Tags")
+        let query = PFQuery(className: "GagUserTag")
         query.whereKey("gag", equalTo: self.gag)
         query.whereKey("user", equalTo: PFUser.currentUser()!)
         query.includeKey("dealtTags")
@@ -90,10 +90,10 @@ class TagsViewController: UIViewController, UITableViewDelegate, UITableViewData
         query.getFirstObjectInBackgroundWithBlock({
             (object: PFObject?, error: NSError?) -> Void in
             if error != nil || object == nil {
-                println("The getFirstObject request failed.")
+                print("The getFirstObject request failed.")
             } else {
                 // The find succeeded.
-                println("Successfully retrieved the object. \(object)")
+                print("Successfully retrieved the object. \(object)")
                 //self.tags = object?["dealtTags"] as! [PFObject]
                 
                 if let dealtTags = object?["dealtTags"] as? [AnyObject] {
@@ -101,7 +101,7 @@ class TagsViewController: UIViewController, UITableViewDelegate, UITableViewData
                     self.tags = dealtTags
                     self.tableView.reloadData()
                 }
-                println("My Tags: \(self.tags)")
+                print("My Tags: \(self.tags)")
                 
             }
         })
@@ -123,7 +123,7 @@ class TagsViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func queryChosenTags() {
-        var query = PFQuery(className: "GagUserTag")
+        let query = PFQuery(className: "GagUserTag")
         query.whereKey("gag", equalTo: self.gag)
         query.includeKey("chosenTag")
         query.includeKey("user")
@@ -132,7 +132,7 @@ class TagsViewController: UIViewController, UITableViewDelegate, UITableViewData
             if (error == nil) {
                 if let objects = objects as? [PFObject] {
                     for object in objects {
-                        println(object.objectId)
+                        print(object.objectId)
                         if let tag = object["chosenTag"] as? PFObject {
                             self.tags.append(tag)
                         }

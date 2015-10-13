@@ -24,11 +24,11 @@ class FriendRequestCell: UITableViewCell {
     }
     
     func approve() {
-        var query = PFQuery(className: "Friends")
+        let query = PFQuery(className: "Friends")
         query.getObjectInBackgroundWithId(self.friendRequest.objectId!, block: {
             (friend: PFObject?, error: NSError?) -> Void in
             if error != nil {
-                println(error)
+                print(error)
             } else if let friend = friend {
                 friend["approved"] = true
                 friend["dismissed"] = true
@@ -36,7 +36,7 @@ class FriendRequestCell: UITableViewCell {
                     (success: Bool, error: NSError?) -> Void in
                     if (success) {
                         // The object has been saved.
-                        println("Friend Request Approved")
+                        print("Friend Request Approved")
                     } else {
                         // There was a problem, check error.description
                     }
@@ -46,11 +46,11 @@ class FriendRequestCell: UITableViewCell {
     }
     
     func dismiss() {
-        var query = PFQuery(className: "Friends")
+        let query = PFQuery(className: "Friends")
         query.getObjectInBackgroundWithId(self.friendRequest.objectId!, block: {
             (friend: PFObject?, error: NSError?) -> Void in
             if error != nil {
-                println(error)
+                print(error)
             } else if let friend = friend {
                 friend["approved"] = false
                 friend["dismissed"] = true
@@ -58,7 +58,7 @@ class FriendRequestCell: UITableViewCell {
                     (success: Bool, error: NSError?) -> Void in
                     if (success) {
                         // The object has been saved.
-                        println("Friend Request Approved")
+                        print("Friend Request Approved")
                     } else {
                         // There was a problem, check error.description
                     }

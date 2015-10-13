@@ -22,7 +22,7 @@ class FindFriendsCell: UITableViewCell {
     
     func sendFriendRequest() {
         
-        var friendRequest = PFObject(className: "Friends")
+        let friendRequest = PFObject(className: "Friends")
         friendRequest.setObject(PFUser.currentUser()!, forKey: "user")
         friendRequest.setObject(self.friend, forKey: "friend")
         friendRequest.setObject(false, forKey: "approved")
@@ -31,7 +31,7 @@ class FindFriendsCell: UITableViewCell {
             (success: Bool, error: NSError?) -> Void in
             if (success) {
                 // The object has been saved.
-                println("Friend added")
+                print("Friend added")
             } else {
                 // There was a problem, check error.description
             }

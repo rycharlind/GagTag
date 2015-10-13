@@ -27,7 +27,7 @@ class FriendRequestsViewController: UIViewController, UITableViewDelegate, UITab
         super.viewDidLoad()
        
         // Do any additional setup after loading the view.
-        var nib = UINib(nibName: "FriendRequestCell", bundle: nil)
+        let nib = UINib(nibName: "FriendRequestCell", bundle: nil)
         self.tableView.registerNib(nib, forCellReuseIdentifier: "friendRequestCell")
     }
     
@@ -48,11 +48,11 @@ class FriendRequestsViewController: UIViewController, UITableViewDelegate, UITab
             if (error == nil) {
                 if let objects = objects as? [PFObject] {
                     self.friendRequests = objects
-                    println(self.friendRequests)
+                    print(self.friendRequests)
                     self.tableView.reloadData()
                 }
             } else {
-                println("Error: \(error!) \(error!.userInfo!)")
+                print("Error: \(error!) \(error!.userInfo)")
             }
         })
     }

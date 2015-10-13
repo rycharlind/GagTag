@@ -46,7 +46,7 @@ class GagsViewController: UIViewController, PFLogInViewControllerDelegate, PFSig
     
     override func viewDidAppear(animated: Bool) {
         
-        var currentUser = PFUser.currentUser()
+        let currentUser = PFUser.currentUser()
         if currentUser == nil {
             showParseLogin()
         } else {
@@ -56,43 +56,43 @@ class GagsViewController: UIViewController, PFLogInViewControllerDelegate, PFSig
     }
     
     func showTutorial() {
-        var tutorialViewController = self.storyboard?.instantiateViewControllerWithIdentifier("tutorial") as! TutorialViewController
+        let tutorialViewController = self.storyboard?.instantiateViewControllerWithIdentifier("tutorial") as! TutorialViewController
         self.presentViewController(tutorialViewController, animated: true, completion: nil)
     }
     
     func showDealtTags() {
-        var dealtTagsViewController = self.storyboard?.instantiateViewControllerWithIdentifier("dealtTags") as! DealtTagsViewController
+        let dealtTagsViewController = self.storyboard?.instantiateViewControllerWithIdentifier("dealtTags") as! DealtTagsViewController
         //dealtTagsViewController.gag = gag
         self.presentViewController(dealtTagsViewController, animated: true, completion: nil)
     }
     
     func showMyGagFeed() {
-        var gagFeedViewController = self.storyboard?.instantiateViewControllerWithIdentifier("gagFeed") as! GagFeedViewController
+        let gagFeedViewController = self.storyboard?.instantiateViewControllerWithIdentifier("gagFeed") as! GagFeedViewController
         self.presentViewController(gagFeedViewController, animated: true, completion: nil)
     }
     
     func showFriendsMenuNav() {
-        var friendsMenuNavViewController = self.storyboard?.instantiateViewControllerWithIdentifier("friendsMenuNav") as! UINavigationController
+        let friendsMenuNavViewController = self.storyboard?.instantiateViewControllerWithIdentifier("friendsMenuNav") as! UINavigationController
         self.presentViewController(friendsMenuNavViewController, animated: true, completion: nil)
     }
     
     func showFindFriends() {
-        var findFreindsViewController = self.storyboard?.instantiateViewControllerWithIdentifier("findFriends") as! FindFriendsViewController
+        let findFreindsViewController = self.storyboard?.instantiateViewControllerWithIdentifier("findFriends") as! FindFriendsViewController
         self.presentViewController(findFreindsViewController, animated: true, completion: nil)
     }
     
     func showTags() {
-        var loginController = self.storyboard?.instantiateViewControllerWithIdentifier("tags") as! UITableViewController
+        let loginController = self.storyboard?.instantiateViewControllerWithIdentifier("tags") as! UITableViewController
         self.presentViewController(loginController, animated: true, completion: nil)
     }
     
     func showGagReel() {
-        var loginController = self.storyboard?.instantiateViewControllerWithIdentifier("reel") as! UITableViewController
+        let loginController = self.storyboard?.instantiateViewControllerWithIdentifier("reel") as! UITableViewController
         self.presentViewController(loginController, animated: true, completion: nil)
     }
     
     func showCustomLogin() {
-        var loginController = self.storyboard?.instantiateViewControllerWithIdentifier("loginNav") as! UINavigationController
+        let loginController = self.storyboard?.instantiateViewControllerWithIdentifier("loginNav") as! UINavigationController
         self.presentViewController(loginController, animated: true, completion: nil)
     }
     
@@ -107,11 +107,11 @@ class GagsViewController: UIViewController, PFLogInViewControllerDelegate, PFSig
         labelSignUpGagTag.text = "GagTag"
         labelSignUpGagTag.font = UIFont(name: labelSignUpGagTag.font.fontName, size: 40)
         
-        var parseLoginViewController = PFLogInViewController()
+        let parseLoginViewController = PFLogInViewController()
         parseLoginViewController.delegate = self
         parseLoginViewController.logInView?.logo = labelLoginGagTag
         
-        var parseSignUpViewController = PFSignUpViewController()
+        let parseSignUpViewController = PFSignUpViewController()
         parseSignUpViewController.delegate = self
         parseSignUpViewController.signUpView?.logo = labelSignUpGagTag
         
@@ -138,7 +138,7 @@ class GagsViewController: UIViewController, PFLogInViewControllerDelegate, PFSig
     func signUpViewController(signUpController: PFSignUpViewController, didSignUpUser user: PFUser) {
         self.dismissViewControllerAnimated(true, completion: nil)
         
-        let userNotiicationTypes : UIUserNotificationType = (UIUserNotificationType.Alert | UIUserNotificationType.Badge | UIUserNotificationType.Sound)
+        let userNotiicationTypes : UIUserNotificationType = ([UIUserNotificationType.Alert, UIUserNotificationType.Badge, UIUserNotificationType.Sound])
         
         let settings : UIUserNotificationSettings = UIUserNotificationSettings(forTypes: userNotiicationTypes, categories: nil)
         
@@ -148,7 +148,7 @@ class GagsViewController: UIViewController, PFLogInViewControllerDelegate, PFSig
     
     func queryGags() {
         let predicate = NSPredicate(format: "user = %@ OR friends = %@", PFUser.currentUser()!, PFUser.currentUser()!)
-        var query = PFQuery(className: "Gag", predicate: predicate)
+        let query = PFQuery(className: "Gag", predicate: predicate)
         query.includeKey("user")
         query.includeKey("winningTag")
         query.addDescendingOrder("updatedAt")
@@ -178,7 +178,7 @@ class GagsViewController: UIViewController, PFLogInViewControllerDelegate, PFSig
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
-        var cell = tableView.dequeueReusableCellWithIdentifier("Cell") as! UITableViewCell!
+        var cell = tableView.dequeueReusableCellWithIdentifier("Cell") as UITableViewCell!
         if cell == nil {
             cell = UITableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: "Cell")
         }
@@ -262,7 +262,7 @@ class GagsViewController: UIViewController, PFLogInViewControllerDelegate, PFSig
                             }
                         }
                     } else {
-                        println("Error: \(error!) \(error!.userInfo!)")
+                        print("Error: \(error!) \(error!.userInfo)")
                     }
                 })
                 

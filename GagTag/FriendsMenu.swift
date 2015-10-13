@@ -44,30 +44,30 @@ class FriendsMenuViewController: UITableViewController {
             //self.showMyFriends()
             self.showDealtTags()
         default:
-            println("default selected")
+            print("default selected")
         }
         
     }
     
     func showFindFriends() {
-        var findFreindsViewController = self.storyboard?.instantiateViewControllerWithIdentifier("findFriends") as! FindFriendsViewController
+        let findFreindsViewController = self.storyboard?.instantiateViewControllerWithIdentifier("findFriends") as! FindFriendsViewController
         findFreindsViewController.navigationItem.title = "Find Friends"
         //findFreindsViewController.navigationItem.backBarButtonItem = UIBarButtonItem(title: "Back", style: UIBarButtonItemStyle.Plain, target: nil, action: nil)
         self.navigationController?.pushViewController(findFreindsViewController, animated: true)
     }
     
     func showFriendRequests() {
-        var friendRequestsViewController = self.storyboard?.instantiateViewControllerWithIdentifier("friendRequests") as! FriendRequestsViewController
+        let friendRequestsViewController = self.storyboard?.instantiateViewControllerWithIdentifier("friendRequests") as! FriendRequestsViewController
         self.navigationController?.pushViewController(friendRequestsViewController, animated: true)
     }
     
     func showMyFriends() {
-        var myFriendsViewController = self.storyboard?.instantiateViewControllerWithIdentifier("myFriends") as! MyFriendsViewController
+        let myFriendsViewController = self.storyboard?.instantiateViewControllerWithIdentifier("myFriends") as! MyFriendsViewController
         self.navigationController?.pushViewController(myFriendsViewController, animated: true)
     }
 
     func showDealtTags() {
-        var dealtTagsViewController = self.storyboard?.instantiateViewControllerWithIdentifier("dealtTags") as! DealtTagsViewController
+        let dealtTagsViewController = self.storyboard?.instantiateViewControllerWithIdentifier("dealtTags") as! DealtTagsViewController
         //dealtTagsViewController.gag = gag
         self.presentViewController(dealtTagsViewController, animated: true, completion: nil)
     }

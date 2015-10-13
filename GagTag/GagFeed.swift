@@ -17,18 +17,16 @@ class GagFeedViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     @IBOutlet weak var tableView: UITableView!
     
-    // MARK: Actions
-    @IBAction func done(sender: AnyObject) {
-        self.dismissViewControllerAnimated(true, completion: nil)
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
         self.gags = [PFObject]()
-        var nib = UINib(nibName: "GagFeedCell", bundle: nil)
+        
+        // Congifure Nib or custom cell
+        let nib = UINib(nibName: "GagFeedCell", bundle: nil)
         self.tableView.registerNib(nib, forCellReuseIdentifier: "gagFeedCell")
+        
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -40,7 +38,7 @@ class GagFeedViewController: UIViewController, UITableViewDelegate, UITableViewD
     func queryGags() {
         
         // Query all the current users friends
-        var queryFriends = PFQuery(className: "Friends")
+        let queryFriends = PFQuery(className: "Friends")
         queryFriends.whereKey("user", equalTo: PFUser.currentUser()!)
         queryFriends.whereKey("approved", equalTo: true)
         queryFriends.includeKey("friend")
@@ -52,13 +50,13 @@ class GagFeedViewController: UIViewController, UITableViewDelegate, UITableViewD
                 var friends = [PFUser]()
                 if let objects = objects as? [PFObject] {
                     for object in objects {
-                        var friend = object["friend"] as! PFUser
+                        let friend = object["friend"] as! PFUser
                         friends.append(friend)
                     }
                 }
                 
                 // Query my friends Gags
-                var query = PFQuery(className: "Gag")
+                let query = PFQuery(className: "Gag")
                 query.whereKey("user", containedIn: friends)
                 query.includeKey("winningTag")
                 query.orderByDescending("createdAt")
@@ -70,11 +68,11 @@ class GagFeedViewController: UIViewController, UITableViewDelegate, UITableViewD
                             self.tableView.reloadData()
                         }
                     } else {
-                        println("Error: \(error!) \(error!.userInfo!)")
+                        print("Error: \(error!) \(error!.userInfo)")
                     }
                 })
             } else {
-                println("Error: \(error!) \(error!.userInfo!)")
+                print("Error: \(error!) \(error!.userInfo)")
             }
             
         })
@@ -87,7 +85,6 @@ class GagFeedViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.gags.count
-        //return 3
     }
     
     
@@ -104,22 +101,21 @@ class GagFeedViewController: UIViewController, UITableViewDelegate, UITableViewD
         
         
         let gag = self.gags[indexPath.row] as PFObject
-        var pfimage = gag["image"] as! PFFile
+        let pfimage = gag["image"] as! PFFile
         
         // Query Gag image
         pfimage.getDataInBackgroundWithBlock({
             (result, error) in
             if (error == nil) {
-                println("got image")
+                print("got image")
                 cell?.gagImageView.image = UIImage(data: result!)
             } else {
-                println("Error: \(error!) \(error!.userInfo!)")
+                print("Error: \(error!) \(error!.userInfo)")
             }
         })
         
-        
         // Query GagUserTag for chosenTag
-        var query = PFQuery(className: "GagUserTag")
+        let query = PFQuery(className: "GagUserTag")
         query.whereKey("gag", equalTo: gag)
         query.includeKey("user")
         query.includeKey("chosenTag")
@@ -127,7 +123,7 @@ class GagFeedViewController: UIViewController, UITableViewDelegate, UITableViewD
             (objects: [AnyObject]?, error: NSError?) -> Void in
             if (error == nil) {
                 if let objects = objects as? [PFObject] {
-                    let tagCount = objects.count
+                    //let tagCount = objects.count
                     for object in objects {
                         let user = object["user"] as! PFUser
                         if (user.objectId == PFUser.currentUser()?.objectId) {
@@ -140,7 +136,7 @@ class GagFeedViewController: UIViewController, UITableViewDelegate, UITableViewD
                     }
                 }
             } else {
-                println("Error: \(error!) \(error!.userInfo!)")
+                print("Error: \(error!) \(error!.userInfo)")
             }
         })
         
@@ -154,15 +150,12 @@ class GagFeedViewController: UIViewController, UITableViewDelegate, UITableViewD
         // Not sure why I have to use dispatch.  Explained in below StackOverflow
         // http://stackoverflow.com/questions/26165700/uitableviewcell-selection-storyboard-segue-is-slow-double-tapping-works-though
         
-        
         dispatch_async(dispatch_get_main_queue(), {
             let gag = self.gags[indexPath.row] as PFObject
-            var dealtTagsViewController = self.storyboard?.instantiateViewControllerWithIdentifier("dealtTags") as! DealtTagsViewController
+            let dealtTagsViewController = self.storyboard?.instantiateViewControllerWithIdentifier("dealtTags") as! DealtTagsViewController
             dealtTagsViewController.gag = gag
             self.presentViewController(dealtTagsViewController, animated: true, completion: nil)
         });
-        
-
         
     }
     

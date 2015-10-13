@@ -60,7 +60,7 @@ class ChosenTagsViewController: UIViewController, UITableViewDelegate, UITableVi
     
     // MARK:  Query data
     func queryGagUserTags() {
-        var query = PFQuery(className: "GagUserTag")
+        let query = PFQuery(className: "GagUserTag")
         query.whereKey("gag", equalTo: self.gag)
         query.includeKey("user")
         query.includeKey("dealtTags")
@@ -76,7 +76,7 @@ class ChosenTagsViewController: UIViewController, UITableViewDelegate, UITableVi
                     // Get chosenTag count
                     var tagCount = 0
                     for object in objects {
-                        if let chosenTag = object["chosenTag"] as? PFObject {
+                        if (object["chosenTag"] as? PFObject != nil) {
                             tagCount++
                         }
                     }
@@ -110,7 +110,7 @@ class ChosenTagsViewController: UIViewController, UITableViewDelegate, UITableVi
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
-        var cell = tableView.dequeueReusableCellWithIdentifier("Cell") as! UITableViewCell!
+        var cell = tableView.dequeueReusableCellWithIdentifier("Cell") as UITableViewCell!
         if cell == nil {
             cell = UITableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: "Cell")
         }

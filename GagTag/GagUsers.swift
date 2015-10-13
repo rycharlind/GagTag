@@ -34,7 +34,7 @@ class GagUsersViewController: UIViewController, UITableViewDelegate, UITableView
     }
     
     func queryGagUsers() {
-        var query = PFQuery(className: "GagUserTag")
+        let query = PFQuery(className: "GagUserTag")
         query.whereKey("gag", equalTo: self.gag)
         query.includeKey("user")
         query.findObjectsInBackgroundWithBlock({
@@ -63,7 +63,7 @@ class GagUsersViewController: UIViewController, UITableViewDelegate, UITableView
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
-        var cell = tableView.dequeueReusableCellWithIdentifier("Cell") as! UITableViewCell!
+        var cell = tableView.dequeueReusableCellWithIdentifier("Cell") as UITableViewCell!
         if cell == nil {
             cell = UITableViewCell(style: UITableViewCellStyle.Default, reuseIdentifier: "Cell")
         }

@@ -25,17 +25,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // [Optional] Track statistics around application opens.
         PFAnalytics.trackAppOpenedWithLaunchOptions(launchOptions)
         
-        var pageController = UIPageControl.appearance()
+        /*
+        let pageController = UIPageControl.appearance()
         pageController.pageIndicatorTintColor = UIColor.lightGrayColor()
         pageController.currentPageIndicatorTintColor = UIColor.blackColor()
         pageController.backgroundColor = UIColor.whiteColor()
+        */
+        
         
         return true
     }
     
     func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
         
-        println("didRegisterForRemoteNotifications: \(deviceToken)")
+        print("didRegisterForRemoteNotifications: \(deviceToken)")
         
         let installation = PFInstallation.currentInstallation()
         installation.setDeviceTokenFromData(deviceToken)

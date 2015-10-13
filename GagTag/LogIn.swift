@@ -27,10 +27,10 @@ class LoginViewController: UIViewController {
     }
     
     @IBAction func login(sender: UIButton) {
-        var username = usernameTextfField.text
-        var password = passwordTextField.text
+        let username = usernameTextfField.text
+        let password = passwordTextField.text
         
-        PFUser.logInWithUsernameInBackground(username, password:password) {
+        PFUser.logInWithUsernameInBackground(username!, password:password!) {
             (user: PFUser?, error: NSError?) -> Void in
             if user != nil {
                 // Do stuff after successful login.
@@ -38,8 +38,8 @@ class LoginViewController: UIViewController {
             } else {
                 
                 // The login failed. Check error to see why.
-                let errorString = error!.userInfo?["error"] as? NSString
-                var alert = UIAlertView(title: "Error", message: String(errorString!), delegate: self, cancelButtonTitle: "Ok")
+                let errorString = error!.userInfo["error"] as? NSString
+                let alert = UIAlertView(title: "Error", message: String(errorString!), delegate: self, cancelButtonTitle: "Ok")
                 alert.show()
                 
             }

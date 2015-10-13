@@ -29,7 +29,7 @@ class FindFriendsViewController: UIViewController, UITableViewDataSource, UITabl
         self.users = [User]()
         self.friendRequests = [User]()
         
-        var nib = UINib(nibName: "FindFriendsCell", bundle: nil)
+        let nib = UINib(nibName: "FindFriendsCell", bundle: nil)
         self.tableView.registerNib(nib, forCellReuseIdentifier: "findFriendsCell")
     }
     
@@ -74,7 +74,7 @@ class FindFriendsViewController: UIViewController, UITableViewDataSource, UITabl
                                 user.username = pfuser["username"] as! String
                                 user.pfuser = pfuser
                                 
-                                if contains(friendsObjectIds, pfuser.objectId!) {
+                                if friendsObjectIds.contains((pfuser.objectId!)) {
                                     user.isFriend = true
                                 }
                                 
@@ -88,13 +88,13 @@ class FindFriendsViewController: UIViewController, UITableViewDataSource, UITabl
                         self.tableView.reloadData()
                     
                     } else {
-                        println("Error: \(error!) \(error!.userInfo!)")
+                        print("Error: \(error!) \(error!.userInfo)")
                     }
                 })
                 
                 
             } else {
-                println("Error: \(error!) \(error!.userInfo!)")
+                print("Error: \(error!) \(error!.userInfo)")
             }
             
         })

@@ -42,12 +42,14 @@
 		949AE6B41BA071F6001ACEEE /* LogIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 949AE6B31BA071F6001ACEEE /* LogIn.swift */; };
 		949AE6B61BA074CE001ACEEE /* Users.swift in Sources */ = {isa = PBXBuildFile; fileRef = 949AE6B51BA074CE001ACEEE /* Users.swift */; };
 		949AE6B81BA07545001ACEEE /* Gags.swift in Sources */ = {isa = PBXBuildFile; fileRef = 949AE6B71BA07545001ACEEE /* Gags.swift */; };
-		949AF9711BA293C90066CDBD /* Reel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 949AF9701BA293C90066CDBD /* Reel.swift */; };
+		949AF9711BA293C90066CDBD /* GagReel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 949AF9701BA293C90066CDBD /* GagReel.swift */; };
 		94AC18461BAF929A00EC160F /* FindFriends.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94AC18451BAF929A00EC160F /* FindFriends.swift */; };
 		94AC18481BAF9D9B00EC160F /* FindFriendsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94AC18471BAF9D9B00EC160F /* FindFriendsCell.swift */; };
 		94AC184A1BAF9FB300EC160F /* FindFriendsCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 94AC18491BAF9FB300EC160F /* FindFriendsCell.xib */; };
 		94BACD241BC84CC9000A2671 /* TutorialViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94BACD231BC84CC9000A2671 /* TutorialViewController.swift */; };
 		94BACD261BC84E02000A2671 /* ContentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94BACD251BC84E02000A2671 /* ContentViewController.swift */; };
+		94BACD291BCB7103000A2671 /* Camera.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94BACD281BCB7103000A2671 /* Camera.swift */; };
+		94E680101BCCA5EC00D24344 /* Main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94E6800F1BCCA5EC00D24344 /* Main.swift */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -100,12 +102,14 @@
 		949AE6B31BA071F6001ACEEE /* LogIn.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogIn.swift; sourceTree = "<group>"; };
 		949AE6B51BA074CE001ACEEE /* Users.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Users.swift; sourceTree = "<group>"; };
 		949AE6B71BA07545001ACEEE /* Gags.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Gags.swift; sourceTree = "<group>"; };
-		949AF9701BA293C90066CDBD /* Reel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reel.swift; sourceTree = "<group>"; };
+		949AF9701BA293C90066CDBD /* GagReel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GagReel.swift; sourceTree = "<group>"; };
 		94AC18451BAF929A00EC160F /* FindFriends.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FindFriends.swift; sourceTree = "<group>"; };
 		94AC18471BAF9D9B00EC160F /* FindFriendsCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FindFriendsCell.swift; sourceTree = "<group>"; };
 		94AC18491BAF9FB300EC160F /* FindFriendsCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FindFriendsCell.xib; sourceTree = "<group>"; };
 		94BACD231BC84CC9000A2671 /* TutorialViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TutorialViewController.swift; sourceTree = "<group>"; };
 		94BACD251BC84E02000A2671 /* ContentViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentViewController.swift; sourceTree = "<group>"; };
+		94BACD281BCB7103000A2671 /* Camera.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Camera.swift; sourceTree = "<group>"; };
+		94E6800F1BCCA5EC00D24344 /* Main.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Main.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -212,6 +216,7 @@
 			children = (
 				94460F3C1B9C73FA009F254B /* Main.storyboard */,
 				94460EDF1B9A78DD009F254B /* AppDelegate.swift */,
+				94E6800F1BCCA5EC00D24344 /* Main.swift */,
 				949AE6B31BA071F6001ACEEE /* LogIn.swift */,
 				949AE6B71BA07545001ACEEE /* Gags.swift */,
 				949AE6B51BA074CE001ACEEE /* Users.swift */,
@@ -219,9 +224,10 @@
 				949AE6AF1B9F5AF7001ACEEE /* Tags.swift */,
 				946CEAA41BAA1D620049313C /* DealtTags.swift */,
 				947DBCB61BAA293300F3BF66 /* ChosenTags.swift */,
-				949AF9701BA293C90066CDBD /* Reel.swift */,
+				949AF9701BA293C90066CDBD /* GagReel.swift */,
 				948471011BACD04300C2BC71 /* GagUsers.swift */,
 				94BACD1C1BC6413E000A2671 /* Tutorial */,
+				94BACD271BCB70E4000A2671 /* Camera */,
 				943915F71BC34AFF000244F1 /* GagFeed */,
 				943915E81BC20A4D000244F1 /* Friends */,
 				943915E71BC20099000244F1 /* Models */,
@@ -286,6 +292,14 @@
 			name = Tutorial;
 			sourceTree = "<group>";
 		};
+		94BACD271BCB70E4000A2671 /* Camera */ = {
+			isa = PBXGroup;
+			children = (
+				94BACD281BCB7103000A2671 /* Camera.swift */,
+			);
+			name = Camera;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -330,6 +344,8 @@
 		94460ED21B9A78DD009F254B /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftMigration = 0700;
+				LastSwiftUpdateCheck = 0700;
 				LastUpgradeCheck = 0640;
 				ORGANIZATIONNAME = Inndevers;
 				TargetAttributes = {
@@ -391,6 +407,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				947DBCB71BAA293300F3BF66 /* ChosenTags.swift in Sources */,
+				94E680101BCCA5EC00D24344 /* Main.swift in Sources */,
 				94BACD241BC84CC9000A2671 /* TutorialViewController.swift in Sources */,
 				943915EC1BC20F66000244F1 /* FriendRequests.swift in Sources */,
 				943915EA1BC20D08000244F1 /* FriendsMenu.swift in Sources */,
@@ -399,8 +416,9 @@
 				946CEAA51BAA1D620049313C /* DealtTags.swift in Sources */,
 				94460F3F1B9E1DB6009F254B /* Gag.swift in Sources */,
 				943915E61BBE3F71000244F1 /* User.swift in Sources */,
-				949AF9711BA293C90066CDBD /* Reel.swift in Sources */,
+				949AF9711BA293C90066CDBD /* GagReel.swift in Sources */,
 				94AC18481BAF9D9B00EC160F /* FindFriendsCell.swift in Sources */,
+				94BACD291BCB7103000A2671 /* Camera.swift in Sources */,
 				94460EE01B9A78DD009F254B /* AppDelegate.swift in Sources */,
 				949AE6B41BA071F6001ACEEE /* LogIn.swift in Sources */,
 				94BACD261BC84E02000A2671 /* ContentViewController.swift in Sources */,
@@ -533,6 +551,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"/Users/ryan/Downloads/parse-library-1.8.2",
@@ -542,7 +561,7 @@
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = GagTag/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
@@ -556,6 +575,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"/Users/ryan/Downloads/parse-library-1.8.2",
@@ -565,7 +585,7 @@
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = GagTag/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
