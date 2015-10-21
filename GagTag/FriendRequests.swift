@@ -38,19 +38,17 @@ class FriendRequestsViewController: UIViewController, UITableViewDelegate, UITab
     }
     
     func queryFriendRequests() {
-        var query = PFQuery(className: "Friends")
-        query.whereKey("user", equalTo: PFUser.currentUser()!)
+        let query = PFQuery(className: "FriendRequest")
+        query.whereKey("toUser", equalTo: PFUser.currentUser()!)
         query.whereKey("approved", equalTo: false)
         query.whereKey("dismissed", equalTo: false)
-        query.includeKey("friend")
+        query.includeKey("fromUser")
         query.findObjectsInBackgroundWithBlock({
-            (objects: [AnyObject]?, error: NSError?) -> Void in
+            (objects: [PFObject]?, error: NSError?) -> Void in
             if (error == nil) {
-                if let objects = objects as? [PFObject] {
-                    self.friendRequests = objects
-                    print(self.friendRequests)
-                    self.tableView.reloadData()
-                }
+                self.friendRequests = objects!
+                print(self.friendRequests)
+                self.tableView.reloadData()
             } else {
                 print("Error: \(error!) \(error!.userInfo)")
             }
@@ -73,11 +71,10 @@ class FriendRequestsViewController: UIViewController, UITableViewDelegate, UITab
         }
         
         let friendRequest = self.friendRequests[indexPath.row] as PFObject
-        cell?.friendRequest = friendRequest
         
-        let friend = friendRequest["friend"] as! PFUser
-        cell?.labelUsername?.text = friend["username"] as? String
-        
+        let user = friendRequest["fromUser"] as! PFUser
+        cell?.labelUsername?.text = user["username"] as? String
+        cell?.friend = user
         
         return cell
         

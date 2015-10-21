@@ -13,7 +13,7 @@ class FriendRequestCell: UITableViewCell {
     
     @IBOutlet weak var buttonAction: UIButton!
     @IBOutlet weak var labelUsername: UILabel!
-    var friendRequest : PFObject!
+    var friend : PFUser!
     
     @IBAction func add(sender: AnyObject) {
         self.approve()
@@ -24,47 +24,87 @@ class FriendRequestCell: UITableViewCell {
     }
     
     func approve() {
-        let query = PFQuery(className: "Friends")
-        query.getObjectInBackgroundWithId(self.friendRequest.objectId!, block: {
-            (friend: PFObject?, error: NSError?) -> Void in
-            if error != nil {
-                print(error)
-            } else if let friend = friend {
-                friend["approved"] = true
-                friend["dismissed"] = true
-                friend.saveInBackgroundWithBlock({
-                    (success: Bool, error: NSError?) -> Void in
-                    if (success) {
-                        // The object has been saved.
-                        print("Friend Request Approved")
-                    } else {
-                        // There was a problem, check error.description
-                    }
-                })
+        print("approve")
+        
+        // Update/Add friend for Current User
+        let queryCurrentUser = PFQuery(className: "Friends")
+        queryCurrentUser.whereKey("user", equalTo: PFUser.currentUser()!)
+        queryCurrentUser.getFirstObjectInBackgroundWithBlock {
+            (object: PFObject?, error: NSError?) -> Void in
+            if error != nil || object == nil {
+            
+                let friends = PFObject(className: "Friends")
+                self.addFriend(friends, user: PFUser.currentUser()!, friend: self.friend)
+            
+            } else {
+                
+                self.addFriend(object!, user: PFUser.currentUser()!, friend: self.friend)
+                
             }
-        })
+        }
+        
+        // Update/Add friend for FromUser (User who sent the friend request)
+        let queryFromUser = PFQuery(className: "Friends")
+        queryFromUser.whereKey("user", equalTo: self.friend)
+        queryFromUser.getFirstObjectInBackgroundWithBlock {
+            (object: PFObject?, error: NSError?) -> Void in
+            if error != nil || object == nil {
+                
+                let friends = PFObject(className: "Friends")
+                self.addFriend(friends, user: self.friend, friend: PFUser.currentUser()!)
+                
+            } else {
+                
+                self.addFriend(object!, user: self.friend, friend: PFUser.currentUser()!)
+                
+            }
+        }
+        
+        self.updateFriendRequest(true)
+
     }
     
     func dismiss() {
-        let query = PFQuery(className: "Friends")
-        query.getObjectInBackgroundWithId(self.friendRequest.objectId!, block: {
-            (friend: PFObject?, error: NSError?) -> Void in
-            if error != nil {
+        
+    }
+    
+    func addFriend(friends: PFObject, user: PFObject, friend: PFObject) {
+        friends["user"] = user
+        
+        let friendsRelation = friends.relationForKey("friends")
+        friendsRelation.addObject(friend)
+        
+        friends.saveEventually({
+            (success: Bool, error: NSError?) -> Void in
+            if (success) {
+                // The object has been saved.
+                print("Friend Added")
+            } else {
+                // There was a problem, check error.description
                 print(error)
-            } else if let friend = friend {
-                friend["approved"] = false
-                friend["dismissed"] = true
-                friend.saveInBackgroundWithBlock({
+            }
+        })
+        
+    }
+    
+    func updateFriendRequest(approved: Bool) {
+        let query = PFQuery(className: "FriendRequest")
+        query.whereKey("fromUser", equalTo: self.friend)
+        query.getFirstObjectInBackgroundWithBlock({
+            (object: PFObject?, error: NSError?) -> Void in
+            if error != nil || object == nil {
+                print(error)
+            } else if let friendRequest = object {
+                friendRequest["approved"] = approved
+                friendRequest.saveEventually({
                     (success: Bool, error: NSError?) -> Void in
                     if (success) {
-                        // The object has been saved.
-                        print("Friend Request Approved")
-                    } else {
-                        // There was a problem, check error.description
+                        print("Friend Request Updated")
                     }
                 })
             }
         })
+        
     }
     
     override func awakeFromNib() {

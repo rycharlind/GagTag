@@ -99,76 +99,69 @@ class DealtTagsViewController: UIViewController, UITableViewDataSource, UITableV
         queryGagUserTag.includeKey("user")
         queryGagUserTag.includeKey("dealtTags")
         queryGagUserTag.findObjectsInBackgroundWithBlock({
-            (objects: [AnyObject]?, error: NSError?) -> Void in
+            (objects: [PFObject]?, error: NSError?) -> Void in
             if (error == nil) {
+                    
+                var currentDealTagsObjectIds = [String]()
+                var dealtTags = [PFObject]()
                 
-                if let objects = objects as? [PFObject] {
+                // Iterate through each GagUserTag and check if current user has dealtTags
+                var hasDealtTags = false
+                for object in objects! {
+                    let user = object["user"] as! PFUser
+                    if (user.objectId == PFUser.currentUser()?.objectId) {
+                        hasDealtTags = true
+                        dealtTags = object["dealtTags"] as! [PFObject]
+                    }
+                }
+                
+                
+                if (hasDealtTags == true) {
                     
-                    var currentDealTagsObjectIds = [String]()
-                    var dealtTags = [PFObject]()
+                    print("User has dealt tags")
+                    //println(dealtTags)
+                    self.tags = dealtTags
+                    self.tableView.reloadData()
                     
-                    // Iterate through each GagUserTag and check if current user has dealtTags
-                    var hasDealtTags = false
-                    for object in objects {
-                        let user = object["user"] as! PFUser
-                        if (user.objectId == PFUser.currentUser()?.objectId) {
-                            hasDealtTags = true
-                            dealtTags = object["dealtTags"] as! [PFObject]
-                        }
+                } else {
+                    
+                    // Concatenate all the dealt tags
+                    for dealtTag in dealtTags {
+                        currentDealTagsObjectIds.append(dealtTag.objectId!)
                     }
                     
-                    
-                    if (hasDealtTags == true) {
+                    // Query all tags not contained inside currentDealtTags
+                    let query = PFQuery(className: "Tag")
+                    query.whereKey("objectId", notContainedIn: currentDealTagsObjectIds)
+                    query.limit = 1000
+                    query.findObjectsInBackgroundWithBlock({
+                        (var objects: [PFObject]?, error: NSError?) -> Void in
+                        if (error == nil) {
                         
-                        print("User has dealt tags")
-                        //println(dealtTags)
-                        self.tags = dealtTags
-                        self.tableView.reloadData()
-                        
-                    } else {
-                        
-                        // Concatenate all the dealt tags
-                        for dealtTag in dealtTags {
-                            currentDealTagsObjectIds.append(dealtTag.objectId!)
-                        }
-                        
-                        // Query all tags not contained inside currentDealtTags
-                        let query = PFQuery(className: "Tag")
-                        query.whereKey("objectId", notContainedIn: currentDealTagsObjectIds)
-                        query.limit = 1000
-                        query.findObjectsInBackgroundWithBlock({
-                            (objects: [AnyObject]?, error: NSError?) -> Void in
-                            if (error == nil) {
-                                
-                                if var objects = objects as? [PFObject] {
-                                    
-                                    let numOfTags = 5
-                                    for (var x = 0; x < numOfTags; x++) {
-                                        let count = UInt32(objects.count)
-                                        let index = Int(arc4random_uniform(count))
-                                        self.tags.append(objects[index])
-                                        objects.removeAtIndex(5)
-                                    }
-                                    
-                                    print(self.tags)
-                                    self.tableView.reloadData()
-                                    
-                                }
-                                
-                                // Create new GagUserTag with newly dealtTags
-                                let gagUserTag = PFObject(className: "GagUserTag")
-                                gagUserTag["user"] = PFUser.currentUser()!
-                                gagUserTag["gag"] = self.gag
-                                gagUserTag["dealtTags"] = self.tags
-                                gagUserTag.saveInBackground()
-                                
-                            } else {
-                                print("Error: \(error!) \(error!.userInfo)")
+                            let numOfTags = 5
+                            for (var x = 0; x < numOfTags; x++) {
+                                let count = UInt32(objects!.count)
+                                let index = Int(arc4random_uniform(count))
+                                //self.tags.append(objects[index])
+                                objects?.removeAtIndex(index)
                             }
                             
-                        })
+                            print(self.tags)
+                            self.tableView.reloadData()
+                            
+                            // Create new GagUserTag with newly dealtTags
+                            let gagUserTag = PFObject(className: "GagUserTag")
+                            gagUserTag["user"] = PFUser.currentUser()!
+                            gagUserTag["gag"] = self.gag
+                            gagUserTag["dealtTags"] = self.tags
+                            gagUserTag.saveInBackground()
+                            
+                        } else {
+                            print("Error: \(error!) \(error!.userInfo)")
+                        }
                         
-                    }
+                    })
+                        
                 }
             } else {
                 print("Error: \(error!) \(error!.userInfo)")

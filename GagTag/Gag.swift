@@ -9,15 +9,7 @@
 import UIKit
 import Parse
 
-extension UIImage {
-    var highestQualityJPEGNSData:NSData { return UIImageJPEGRepresentation(self, 1.0)! }
-    var highQualityJPEGNSData:NSData    { return UIImageJPEGRepresentation(self, 0.75)!}
-    var mediumQualityJPEGNSData:NSData  { return UIImageJPEGRepresentation(self, 0.5)! }
-    var lowQualityJPEGNSData:NSData     { return UIImageJPEGRepresentation(self, 0.25)!}
-    var lowestQualityJPEGNSData:NSData  { return UIImageJPEGRepresentation(self, 0.0)! }
-}
-
-class GagViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UsersViewControllerDelegate, TagsViewControllerDelegate, DealtTagsViewControllerDelegate, ChosenTagsViewControllerDelegate {
+class GagViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UsersViewControllerDelegate, TagsViewControllerDelegate, DealtTagsViewControllerDelegate {
     
     // MARK:  Properties
     @IBOutlet weak var labelTag: UILabel!
@@ -59,7 +51,6 @@ class GagViewController: UIViewController, UIImagePickerControllerDelegate, UINa
         if let user = self.gag["user"] as? PFObject {
             // If this is the current user's gag then show chosen tags
             if (user.objectId == PFUser.currentUser()?.objectId) {
-                self.showChosenTags()
             } else { // Else show the dealt tags
                 self.showDealtTags()
             }
@@ -150,13 +141,6 @@ class GagViewController: UIViewController, UIImagePickerControllerDelegate, UINa
         dealtTagsViewController.gag = self.gag
         dealtTagsViewController.delegate = self;
         self.presentViewController(dealtTagsViewController, animated: true, completion: nil)
-    }
-    
-    func showChosenTags() {
-        let chosenTagsViewController = self.storyboard?.instantiateViewControllerWithIdentifier("chosenTags") as! ChosenTagsViewController
-        chosenTagsViewController.gag = self.gag
-        chosenTagsViewController.delegate = self
-        self.presentViewController(chosenTagsViewController, animated: true, completion: nil)
     }
     
     func showTags() {
@@ -276,53 +260,6 @@ class GagViewController: UIViewController, UIImagePickerControllerDelegate, UINa
         })
     }
     
-    func sendPhoto(users: [String:PFObject]) {
-        
-        if (self.newImage != nil) {
-            
-            let imageData = self.newImage.lowQualityJPEGNSData
-            let imageFile = PFFile(name:"photo.png", data:imageData)
-            self.progressView.hidden = false
-            self.imageView.alpha = CGFloat(0.25)
-            imageFile.saveInBackgroundWithBlock({
-                (succeeded: Bool, error: NSError?) -> Void in
-                // Handle success or failure here ...
-                if (succeeded) {
-                    let gag = PFObject(className:"Gag")
-                    gag["user"] = PFUser.currentUser()
-                    let relation = gag.relationForKey("friends")
-                    
-                    for (key, value) in users {
-                        relation.addObject(value)
-                    }
-                    
-                    gag["image"] = imageFile
-                    gag.saveInBackgroundWithBlock({
-                        (succeeded: Bool, error: NSError?) -> Void in
-                        self.progressView.hidden = true
-                        self.imageView.alpha = CGFloat(1)
-                        if (succeeded) {
-                            print("Done")
-                            self.navigationController?.popViewControllerAnimated(true)
-                        } else {
-                            print(error)
-                        }
-                    })
-                }
-                }, progressBlock: {
-                    (percentDone: Int32) -> Void in
-                    // Update your progress spinner here. percentDone will be between 0 and 100.
-                    print(percentDone, terminator: "")
-                    self.progressView.progress = Float(percentDone) / 100
-            })
-            
-        } else {
-            print("No image chosen")
-        }
-        
-
-    }
-    
     
     // MARK:  UIImageIckerControllerDelegate
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
@@ -341,7 +278,7 @@ class GagViewController: UIViewController, UIImagePickerControllerDelegate, UINa
     // MARK: UsersTableViewControllerDelegate
     func usersTableViewController(controller: UsersViewController, didSelectUsers users: [String:PFObject]) {
         print(users)
-        self.sendPhoto(users)
+        //self.sendPhoto(users)
     }
     
     // MARK: TagsViewControllerDelegate
@@ -361,11 +298,6 @@ class GagViewController: UIViewController, UIImagePickerControllerDelegate, UINa
     // MARK: DealtTagsViewController
     func dealtTagsViewController(controller: DealtTagsViewController, didSelectTag tag: PFObject) {
         self.sendChosenTag(tag)
-    }
-    
-    // MARK: ChosenTagsViewController
-    func chosenTagsViewController(controller: ChosenTagsViewController, didSelectTag tag: PFObject) {
-        self.sendWinningTag(tag)
     }
     
     override func didReceiveMemoryWarning() {

@@ -9,39 +9,44 @@
 import UIKit
 import Parse
 
+protocol FindFriendsCellDelegate: class {
+    func cell(cell: FindFriendsCell, didSelectFriendUser user: PFUser)
+    func cell(cell: FindFriendsCell, didSelectUnfriendUser user: PFUser)
+}
+
 class FindFriendsCell: UITableViewCell {
     
     
     @IBOutlet weak var buttonAction: UIButton!
     @IBOutlet weak var labelUsername: UILabel!
+    weak var delegate: FindFriendsCellDelegate?
+    
     var friend : PFUser!
     
-    @IBAction func add(sender: AnyObject) {
-        self.sendFriendRequest()
+    var user: PFUser? {
+        didSet {
+            labelUsername.text = user?.username
+        }
     }
     
-    func sendFriendRequest() {
-        
-        let friendRequest = PFObject(className: "Friends")
-        friendRequest.setObject(PFUser.currentUser()!, forKey: "user")
-        friendRequest.setObject(self.friend, forKey: "friend")
-        friendRequest.setObject(false, forKey: "approved")
-        friendRequest.setObject(false, forKey: "dismissed")
-        friendRequest.saveInBackgroundWithBlock({
-            (success: Bool, error: NSError?) -> Void in
-            if (success) {
-                // The object has been saved.
-                print("Friend added")
+    var canFriend: Bool? = true {
+        didSet {
+            if let canFriend = canFriend where canFriend == true {
+                buttonAction.setTitle("Add", forState: UIControlState.Normal)
             } else {
-                // There was a problem, check error.description
+                buttonAction.setTitle("Remove", forState: UIControlState.Normal)
             }
-        })
+        }
     }
     
-    func removeFriend() {
-        
-        
-        
+    @IBAction func add(sender: AnyObject) {
+        if let canFriend = canFriend where canFriend == true {
+            delegate?.cell(self, didSelectFriendUser: user!)
+            self.canFriend = false
+        } else {
+            delegate?.cell(self, didSelectUnfriendUser: user!)
+            self.canFriend = true
+        }
     }
 
     override func awakeFromNib() {

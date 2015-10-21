@@ -70,12 +70,10 @@ class TagsViewController: UIViewController, UITableViewDelegate, UITableViewData
         query.includeKey("dealtTags")
         query.includeKey("chosenTag")
         query.findObjectsInBackgroundWithBlock({
-            (objects: [AnyObject]?, error: NSError?) -> Void in
+            (objects: [PFObject]?, error: NSError?) -> Void in
             if (error == nil) {
-                if let objects = objects as? [PFObject] {
-                    self.gagUserTags = objects
-                    self.tableView.reloadData()
-                }
+                self.gagUserTags = objects
+                self.tableView.reloadData()
             }
         })
     }
@@ -105,21 +103,6 @@ class TagsViewController: UIViewController, UITableViewDelegate, UITableViewData
                 
             }
         })
-        
-        /*
-        query.findObjectsInBackgroundWithBlock({
-            (objects: [AnyObject]?, error: NSError?) -> Void in
-            if (error == nil) {
-                if let objects = objects as? [PFObject] {
-                    for object in objects {
-                        println(object.objectId)
-                        self.tags = object["dealtTags"] as? [PFObject]
-                    }
-                }
-                self.tableView.reloadData()
-            }
-        })
-        */
     }
     
     func queryChosenTags() {
@@ -128,14 +111,12 @@ class TagsViewController: UIViewController, UITableViewDelegate, UITableViewData
         query.includeKey("chosenTag")
         query.includeKey("user")
         query.findObjectsInBackgroundWithBlock({
-            (objects: [AnyObject]?, error: NSError?) -> Void in
+            (objects: [PFObject]?, error: NSError?) -> Void in
             if (error == nil) {
-                if let objects = objects as? [PFObject] {
-                    for object in objects {
-                        print(object.objectId)
-                        if let tag = object["chosenTag"] as? PFObject {
-                            self.tags.append(tag)
-                        }
+                for object in objects! {
+                    print(object.objectId)
+                    if let tag = object["chosenTag"] as? PFObject {
+                        self.tags.append(tag)
                     }
                 }
                 self.tableView.reloadData()

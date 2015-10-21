@@ -19,6 +19,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
         
         // Initialize Parse.
+        Parse.enableLocalDatastore()
         Parse.setApplicationId("PghiqKrReweFO6PzSIJNIyKHVSDUSsTGqvBm00S6",
             clientKey: "9WQgGSHHIkSBWR3NmkMZEZfCqxnLmJAVflf0kZyf")
         
@@ -48,9 +49,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
-        
         PFPush.handlePush(userInfo)
-        
     }
 
     func applicationWillResignActive(application: UIApplication) {

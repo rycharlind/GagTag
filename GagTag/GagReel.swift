@@ -12,8 +12,18 @@ import ParseUI
 
 class GagReelViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
+    // MARK: Properties
     var gags : [PFObject]!
     var gagUserTag : PFObject!
+    var mainNavDelegate : MainNavDelegate?
+    @IBOutlet weak var tableView: UITableView!
+    // MARK: Actions
+    
+    @IBAction func goToCamera(sender: AnyObject) {
+        if let delegate = self.mainNavDelegate {
+            delegate.goToController(1, direction: .Forward, animated: true)
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -21,16 +31,36 @@ class GagReelViewController: UIViewController, UITableViewDelegate, UITableViewD
         // Do any additional setup after loading the view.
         self.gags = [PFObject]()
         
+        // Congifure Nib or custom cell
+        let nib = UINib(nibName: "GagFeedCell", bundle: nil)
+        self.tableView.registerNib(nib, forCellReuseIdentifier: "gagFeedCell")
+        
     }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    
+    override func viewDidAppear(animated: Bool) {
+        self.queryMyGags()
+    }
+    
+    func queryMyGags() {
+        // Query my friends Gags
+        let query = PFQuery(className: "Gag")
+        query.whereKey("user", equalTo: PFUser.currentUser()!)
+        query.includeKey("winningTag")
+        query.orderByDescending("createdAt")
+        query.findObjectsInBackgroundWithBlock({
+            (objects: [PFObject]?, error: NSError?) -> Void in
+            if (error == nil) {
+                self.gags = objects
+                self.tableView.reloadData()
+            } else {
+                print("Error: \(error!) \(error!.userInfo)")
+            }
+        })
     }
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
@@ -53,9 +83,37 @@ class GagReelViewController: UIViewController, UITableViewDelegate, UITableViewD
             cell = GagFeedCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: "gagFeedCell")
         }
         
+        // Default to nil to fix from displaying other tag in reused cell
+        cell?.labelTag.text = nil
+        
+        let gag = self.gags[indexPath.row] as PFObject
+        
+        
+        if let tag = gag["winningTag"] as? PFObject {
+            let value = tag["value"] as! String
+            cell?.labelTag.text = value
+        }
+        
+    
+        // Query Gag Image
+        let pfimage = gag["image"] as! PFFile
+        pfimage.getDataInBackgroundWithBlock({
+            (result, error) in
+            if (error == nil) {
+                cell?.gagImageView.image = UIImage(data: result!)
+            } else {
+                print("Error: \(error!) \(error!.userInfo)")
+            }
+        })
+        
         return cell
         
         
+    }
+    
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
     }
     
 

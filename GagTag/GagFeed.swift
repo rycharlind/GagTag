@@ -14,8 +14,16 @@ class GagFeedViewController: UIViewController, UITableViewDelegate, UITableViewD
     // MARK: Properties
     var gags : [PFObject]!
     var gagUserTag : PFObject!
-    
+    var mainNavDelegate : MainNavDelegate?
     @IBOutlet weak var tableView: UITableView!
+    
+    // MARK: Actions
+    
+    @IBAction func goToCamera(sender: AnyObject) {
+        if let delegate = self.mainNavDelegate {
+            delegate.goToController(1, direction: .Reverse, animated: true)
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -43,16 +51,14 @@ class GagFeedViewController: UIViewController, UITableViewDelegate, UITableViewD
         queryFriends.whereKey("approved", equalTo: true)
         queryFriends.includeKey("friend")
         queryFriends.findObjectsInBackgroundWithBlock({
-            (objects: [AnyObject]?, error: NSError?) -> Void in
+            (objects: [PFObject]?, error: NSError?) -> Void in
             if (error == nil) {
                 
                 // Create an array of the friends
                 var friends = [PFUser]()
-                if let objects = objects as? [PFObject] {
-                    for object in objects {
-                        let friend = object["friend"] as! PFUser
-                        friends.append(friend)
-                    }
+                for object in objects! {
+                    let friend = object["friend"] as! PFUser
+                    friends.append(friend)
                 }
                 
                 // Query my friends Gags
@@ -61,12 +67,10 @@ class GagFeedViewController: UIViewController, UITableViewDelegate, UITableViewD
                 query.includeKey("winningTag")
                 query.orderByDescending("createdAt")
                 query.findObjectsInBackgroundWithBlock({
-                    (objects: [AnyObject]?, error: NSError?) -> Void in
+                    (objects: [PFObject]?, error: NSError?) -> Void in
                     if (error == nil) {
-                        if let objects = objects as? [PFObject] {
-                            self.gags = objects
-                            self.tableView.reloadData()
-                        }
+                        self.gags = objects
+                        self.tableView.reloadData()
                     } else {
                         print("Error: \(error!) \(error!.userInfo)")
                     }
@@ -99,6 +103,9 @@ class GagFeedViewController: UIViewController, UITableViewDelegate, UITableViewD
             cell = GagFeedCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: "gagFeedCell")
         }
         
+        // Default to nil to fix from displaying other tag in reused cell
+        cell?.labelTag.text = nil
+        
         
         let gag = self.gags[indexPath.row] as PFObject
         let pfimage = gag["image"] as! PFFile
@@ -120,21 +127,20 @@ class GagFeedViewController: UIViewController, UITableViewDelegate, UITableViewD
         query.includeKey("user")
         query.includeKey("chosenTag")
         query.findObjectsInBackgroundWithBlock({
-            (objects: [AnyObject]?, error: NSError?) -> Void in
+            (objects: [PFObject]?, error: NSError?) -> Void in
             if (error == nil) {
-                if let objects = objects as? [PFObject] {
-                    //let tagCount = objects.count
-                    for object in objects {
-                        let user = object["user"] as! PFUser
-                        if (user.objectId == PFUser.currentUser()?.objectId) {
-                            if let chosenTag = object["chosenTag"] as? PFObject {
-                                cell?.labelTag?.text = "#" + (chosenTag["value"] as? String)!
-                            } else {
-                                cell?.labelTag?.text = "Not Tagged"
-                            }
+                //let tagCount = objects.count
+                for object in objects! {
+                    let user = object["user"] as! PFUser
+                    if (user.objectId == PFUser.currentUser()?.objectId) {
+                        if let chosenTag = object["chosenTag"] as? PFObject {
+                            cell?.labelTag?.text = "#" + (chosenTag["value"] as? String)!
+                        } else {
+                            cell?.labelTag?.text = "Not Tagged"
                         }
                     }
                 }
+                
             } else {
                 print("Error: \(error!) \(error!.userInfo)")
             }

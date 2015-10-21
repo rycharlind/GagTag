@@ -38,12 +38,10 @@ class GagUsersViewController: UIViewController, UITableViewDelegate, UITableView
         query.whereKey("gag", equalTo: self.gag)
         query.includeKey("user")
         query.findObjectsInBackgroundWithBlock({
-            (objects: [AnyObject]?, error: NSError?) -> Void in
+            (objects: [PFObject]?, error: NSError?) -> Void in
             if (error == nil) {
-                if let objects = objects as? [PFObject] {
-                    self.gagUsers = objects
-                    self.tableView.reloadData()
-                }
+                self.gagUsers = objects
+                self.tableView.reloadData()
             }
         })
         

@@ -22,29 +22,15 @@ class MyFriendsViewController: UIViewController, UITableViewDelegate, UITableVie
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
-        
-        self.queryFriends()
+        //self.query()
+        ParseHelper.getFriendsForUser(PFUser.currentUser()!, completionBlock: self.updateList)
     }
     
-    func queryFriends() {
-        var query = PFQuery(className: "Friends")
-        query.whereKey("user", equalTo: PFUser.currentUser()!)
-        query.whereKey("approved", equalTo: true)
-        query.includeKey("friend")
-        query.findObjectsInBackgroundWithBlock({
-            (objects: [AnyObject]?, error: NSError?) -> Void in
-            if (error == nil) {
-                if let objects = objects as? [PFObject] {
-                    self.friends = objects
-                    print(self.friends)
-                    self.tableView.reloadData()
-                }
-            } else {
-                print("Error: \(error!) \(error!.userInfo)")
-            }
-        })
+    func updateList(objects: [PFObject]?, error: NSError?) {
+        print(objects)
+        self.friends = objects!
+        self.tableView.reloadData()
     }
-
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 1
@@ -61,10 +47,8 @@ class MyFriendsViewController: UIViewController, UITableViewDelegate, UITableVie
             cell = UITableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: "Cell")
         }
         
-        let friendRequest = self.friends[indexPath.row] as PFObject
-        let friend = friendRequest["friend"] as! PFObject
+        let friend = self.friends[indexPath.row] as PFObject
         cell?.textLabel?.text = friend["username"] as? String
-        
         
         return cell
         

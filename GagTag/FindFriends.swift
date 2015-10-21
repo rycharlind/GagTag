@@ -9,104 +9,106 @@
 import UIKit
 import Parse
 
-class FindFriendsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+class FindFriendsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, FindFriendsCellDelegate {
     
-    //var friends : [PFObject]!
-    var users : [User]!
-    var friendRequests : [User]!
+    // MARK: Properties
+    // stores all the users that match the current search query
+    var users: [PFUser]?
     @IBOutlet weak var tableView: UITableView!
     
     
+    // MARK: Actions
     @IBAction func done(sender: AnyObject) {
         self.dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    /*
+    This is a local cache. It stores all the users this user is following.
+    It is used to update the UI immediately upon user interaction, instead of waiting
+    for a server response.
+    */
+    var friendUsers: [PFUser]? {
+        didSet {
+            /**
+            the list of following users may be fetched after the tableView has displayed
+            cells. In this case, we reload the data to reflect "following" status
+            */
+            tableView.reloadData()
+        }
+    }
+    
+    var pendingUsers: [PFUser]? {
+        didSet {
+            tableView.reloadData()
+        }
+    }
+    
+    // the current parse query
+    var query: PFQuery? {
+        didSet {
+            // whenever we assign a new query, cancel any previous requests
+            oldValue?.cancel()
+        }
+    }
+    
+    // this view can be in two different states
+    enum State {
+        case DefaultMode
+        case SearchMode
+    }
+    
+    
+    // whenever the state changes, perform one of the two queries and update the list
+    var state: State = .DefaultMode {
+        didSet {
+            switch (state) {
+            case .DefaultMode:
+                query = ParseHelper.allUsers(updateList)
+                
+            case .SearchMode:
+                query = ParseHelper.allUsers(updateList)
+                //let searchText = searchBar?.text ?? ""
+                //query = ParseHelper.searchUsers(searchText, completionBlock:updateList)
+            }
+        }
+    }
+    
+    func updateList(objects: [PFObject]?, error: NSError?) {
+        self.users = objects as? [PFUser] ?? []
+        self.tableView.reloadData()
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        //self.friends = [PFObject]()
-        self.users = [User]()
-        self.friendRequests = [User]()
+        self.users = [PFUser]()
         
-        let nib = UINib(nibName: "FindFriendsCell", bundle: nil)
-        self.tableView.registerNib(nib, forCellReuseIdentifier: "findFriendsCell")
     }
     
     override func viewDidAppear(animated: Bool) {
-        self.queryUsers()
-    }
-    
-    func queryUsers() {
+        super.viewDidAppear(animated)
         
-        // Query all the current users friends
-        var queryFriends = PFQuery(className: "Friends")
-        queryFriends.whereKey("user", equalTo: PFUser.currentUser()!)
-        queryFriends.includeKey("friend")
-        queryFriends.findObjectsInBackgroundWithBlock({
-            (objects: [AnyObject]?, error: NSError?) -> Void in
-            if (error == nil) {
-
-                // Create an array of the friends objectIds
-                var friendsObjectIds = [String]()
-                if let objects = objects as? [PFObject] {
-                    for object in objects {
-                        var friend = object["friend"] as! PFObject
-                        friendsObjectIds.append(friend.objectId!)
-                    }
-                }
-                
-                
-                // Query all users
-                var query = PFQuery(className: "_User")
-                query.whereKey("objectId", notEqualTo: PFUser.currentUser()!.objectId!)
-                query.orderByAscending("username")
-                query.findObjectsInBackgroundWithBlock({
-                    (objects: [AnyObject]?, error: NSError?) -> Void in
-                    if (error == nil) {
-                        
-                        
-                        // Iterate through each user and check if they are a friend
-                        if let objects = objects as? [PFUser] {
-                            for pfuser in objects {
-                                var user = User()
-                                
-                                user.username = pfuser["username"] as! String
-                                user.pfuser = pfuser
-                                
-                                if friendsObjectIds.contains((pfuser.objectId!)) {
-                                    user.isFriend = true
-                                }
-                                
-                                self.users.append(user)
-                            }
-                        }
-
-                        
-                        //println("New Users: \(self.users)")
-                        
-                        self.tableView.reloadData()
-                    
-                    } else {
-                        print("Error: \(error!) \(error!.userInfo)")
-                    }
-                })
-                
-                
-            } else {
-                print("Error: \(error!) \(error!.userInfo)")
-            }
-            
+        state = .DefaultMode
+        
+        ParseHelper.getFriendsForUser(PFUser.currentUser()!, completionBlock: {
+            (objects: [PFObject]?, errror: NSError?) -> Void in
+            self.friendUsers = objects as? [PFUser]
         })
-
+        
+        ParseHelper.getPendingFriendRequest({
+            (objects: [PFObject]?, errror: NSError?) -> Void in
+            self.pendingUsers = objects as? [PFUser]
+        })
     }
     
+
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 1
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.users.count
+        return self.users?.count ?? 0
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -116,25 +118,42 @@ class FindFriendsViewController: UIViewController, UITableViewDataSource, UITabl
             cell = FindFriendsCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: "findFriendscell")
         }
         
+        let user = users![indexPath.row]
+        cell.user = user
         
-        let user = self.users[indexPath.row] as User
-        cell?.labelUsername.text = user.username
-        cell?.friend = user.pfuser
-        if (user.isFriend == true) {
-            cell?.buttonAction.setTitle("Remove", forState: UIControlState.Normal)
-            
+        if let friendUsers = friendUsers {
+            // check if current user is already friends with displayed user
+            // change button appereance based on result
+            cell.canFriend = !friendUsers.contains(user)
         }
-            
+        
+        cell.delegate = self
         
         return cell
         
         
     }
     
+    // MARK: FindFriendsCellDelegate
+    func cell(cell: FindFriendsCell, didSelectFriendUser user: PFUser) {
+        ParseHelper.sendFriendRequestToUser(user, completionBlock: nil)
+        friendUsers?.append(user)
+    }
+    
+    func cell(cell: FindFriendsCell, didSelectUnfriendUser user: PFUser) {
+        /*
+        if var followingUsers = followingUsers {
+            ParseHelper.removeFollowRelationshipFromUser(PFUser.currentUser()!, toUser: user)
+            // update local cache
+            removeObject(user, fromArray: &followingUsers)
+            self.followingUsers = followingUsers
+        }
+        */
+    }
+    
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         
     }
-    
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
