@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		541CB1261BD898A600489C94 /* TutPageController1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 541CB1251BD898A600489C94 /* TutPageController1.swift */; settings = {ASSET_TAGS = (); }; };
 		943915E61BBE3F71000244F1 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 943915E51BBE3F71000244F1 /* User.swift */; };
 		943915EA1BC20D08000244F1 /* FriendsMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 943915E91BC20D08000244F1 /* FriendsMenu.swift */; };
 		943915EC1BC20F66000244F1 /* FriendRequests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 943915EB1BC20F66000244F1 /* FriendRequests.swift */; };
@@ -63,6 +64,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		541CB1251BD898A600489C94 /* TutPageController1.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TutPageController1.swift; sourceTree = "<group>"; };
 		943915E51BBE3F71000244F1 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		943915E91BC20D08000244F1 /* FriendsMenu.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendsMenu.swift; sourceTree = "<group>"; };
 		943915EB1BC20F66000244F1 /* FriendRequests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendRequests.swift; sourceTree = "<group>"; };
@@ -288,6 +290,7 @@
 			children = (
 				94BACD231BC84CC9000A2671 /* TutorialViewController.swift */,
 				94BACD251BC84E02000A2671 /* ContentViewController.swift */,
+				541CB1251BD898A600489C94 /* TutPageController1.swift */,
 			);
 			name = Tutorial;
 			sourceTree = "<group>";
@@ -416,6 +419,7 @@
 				946CEAA51BAA1D620049313C /* DealtTags.swift in Sources */,
 				94460F3F1B9E1DB6009F254B /* Gag.swift in Sources */,
 				943915E61BBE3F71000244F1 /* User.swift in Sources */,
+				541CB1261BD898A600489C94 /* TutPageController1.swift in Sources */,
 				949AF9711BA293C90066CDBD /* GagReel.swift in Sources */,
 				94AC18481BAF9D9B00EC160F /* FindFriendsCell.swift in Sources */,
 				94BACD291BCB7103000A2671 /* Camera.swift in Sources */,

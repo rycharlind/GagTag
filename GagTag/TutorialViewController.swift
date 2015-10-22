@@ -8,85 +8,107 @@
 
 import UIKit
 
-class TutorialViewController: UIViewController, UIPageViewControllerDataSource {
+class TutorialViewController: UIViewController, UIPageViewControllerDataSource, MainNavDelegate {
     
     var pageViewController : UIPageViewController!
     var pageTitles: NSArray!
+    var viewControllers : [UIViewController]!
+    var currentPageIndex: Int = 0
     
     
+
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
-        self.pageTitles = NSArray(objects: "Explore", "Today Widget")
         
-        self.pageViewController = self.storyboard?.instantiateViewControllerWithIdentifier("pageViewController") as! UIPageViewController
+        // Do any additional setup after loading the view.
+        
+        let tutPage1VC = self.storyboard?.instantiateViewControllerWithIdentifier("tutPage1")
+        let tutPage2VC = self.storyboard?.instantiateViewControllerWithIdentifier("tutPage2")
+        let tutPage3VC = self.storyboard?.instantiateViewControllerWithIdentifier("tutPage3")
+        
+        // Create an array of ViewController that the PageViewController will use as it's datasource
+        self.viewControllers = [UIViewController]()
+        self.viewControllers.append(tutPage1VC!)
+        self.viewControllers.append(tutPage2VC!)
+        self.viewControllers.append(tutPage3VC!)
+        
+        // Get PageViewController from the storyboard and set the datasource to self
+        self.pageViewController = self.storyboard?.instantiateViewControllerWithIdentifier("tutorialPageViewController") as! UIPageViewController
         self.pageViewController.dataSource = self
         
-        let startVC = self.viewControllerAtIndex(0) as ContentViewController
-        let viewControllers = NSArray(object: startVC)
+        // Set the starting ViewContrller for the PageViewController
+        let starterViewControllerArray = NSArray(object: tutPage1VC!)
+        self.pageViewController.setViewControllers(starterViewControllerArray as? [UIViewController], direction: .Forward, animated: true, completion: nil)
         
-        self.pageViewController.setViewControllers(viewControllers as? [UIViewController], direction: .Forward, animated: true, completion: nil)
-        
+        // Add the PageViewController to self
         self.addChildViewController(self.pageViewController)
         self.view.addSubview(self.pageViewController.view)
         self.pageViewController.didMoveToParentViewController(self)
         
     }
-    
-    func viewControllerAtIndex(index : Int) -> ContentViewController {
-        
-        if ((self.pageTitles.count == 0) || index >= self.pageTitles.count) {
-            return ContentViewController()
-        }
-        
-        let vc: ContentViewController = self.storyboard?.instantiateViewControllerWithIdentifier("contentViewController") as! ContentViewController
-        
-        vc.pageIndex = index
-        vc.titleText = self.pageTitles[index] as! String
-        
-        return vc
-    }
-    
+
     // MARK:  PageViewControllerDataSource
     func pageViewController(pageViewController: UIPageViewController, viewControllerBeforeViewController viewController: UIViewController) -> UIViewController? {
+
+        var index = Int(self.viewControllers.indexOf(viewController)!)
+        self.currentPageIndex = index
+        self.prefersStatusBarHidden()
         
-        let vc = viewController as! ContentViewController
-        var index = vc.pageIndex as Int
-        
-        if (index == 0 || index == NSNotFound) {
+        if((index == NSNotFound) || index == 0){
             return nil
         }
         
         index--
-        return self.viewControllerAtIndex(index)
+        return self.viewControllers[index]
         
     }
     
     func pageViewController(pageViewController: UIPageViewController, viewControllerAfterViewController viewController: UIViewController) -> UIViewController? {
         
-        let vc = viewController as! ContentViewController
-        var index = vc.pageIndex as Int
+        var index = Int(self.viewControllers.indexOf(viewController)!)
+        self.currentPageIndex = index
+        self.prefersStatusBarHidden()
         
-        if (index == NSNotFound) {
+        if(index == NSNotFound){
             return nil
         }
-        
         index++
         
-        if (index == self.pageTitles.count) {
+        if (index == self.viewControllers.count){
             return nil
         }
         
-        return self.viewControllerAtIndex(index)
+        return self.viewControllers[index]
+        
+    }
+    
+    override func prefersStatusBarHidden() -> Bool {
+        print(self.currentPageIndex)
+        
+        if(self.currentPageIndex != 1 ){
+            return false
+        }
+    
+        return true
+    }
+    
+    override func preferredStatusBarUpdateAnimation() -> UIStatusBarAnimation {
+        return UIStatusBarAnimation.Fade
     }
     
     func presentationCountForPageViewController(pageViewController: UIPageViewController) -> Int {
-        return self.pageTitles.count
+        return self.viewControllers.count
     }
     
     func presentationIndexForPageViewController(pageViewController: UIPageViewController) -> Int {
-        return 0
+        return self.currentPageIndex
+    }
+    
+    // MARK: MainNavController
+    func goToController(index: Int, direction: UIPageViewControllerNavigationDirection, animated: Bool){
+        let vc = self.viewControllers[index] as UIViewController
+        let starterViewControllerArray = NSArray(object: vc)
+        self.pageViewController.setViewControllers(starterViewControllerArray as? [UIViewController], direction: direction, animated: animated, completion: nil)
     }
 
     override func didReceiveMemoryWarning() {
@@ -94,15 +116,5 @@ class TutorialViewController: UIViewController, UIPageViewControllerDataSource {
         // Dispose of any resources that can be recreated.
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
 
 }

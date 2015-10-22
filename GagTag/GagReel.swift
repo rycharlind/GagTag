@@ -97,7 +97,6 @@ class GagReelViewController: UIViewController, UITableViewDelegate, UITableViewD
                 print("Error: \(error!) \(error!.userInfo)")
             }
         })
-        
         return cell
         
         
