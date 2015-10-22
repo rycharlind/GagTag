@@ -17,8 +17,8 @@ class GagReelViewController: UIViewController, UITableViewDelegate, UITableViewD
     var gagUserTag : PFObject!
     var mainNavDelegate : MainNavDelegate?
     @IBOutlet weak var tableView: UITableView!
-    // MARK: Actions
     
+    // MARK: Actions
     @IBAction func goToCamera(sender: AnyObject) {
         if let delegate = self.mainNavDelegate {
             delegate.goToController(1, direction: .Forward, animated: true)
@@ -43,24 +43,16 @@ class GagReelViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     override func viewDidAppear(animated: Bool) {
-        self.queryMyGags()
+        ParseHelper.getMyGags(self.newFunction)
     }
     
-    func queryMyGags() {
-        // Query my friends Gags
-        let query = PFQuery(className: "Gag")
-        query.whereKey("user", equalTo: PFUser.currentUser()!)
-        query.includeKey("winningTag")
-        query.orderByDescending("createdAt")
-        query.findObjectsInBackgroundWithBlock({
-            (objects: [PFObject]?, error: NSError?) -> Void in
-            if (error == nil) {
-                self.gags = objects
-                self.tableView.reloadData()
-            } else {
-                print("Error: \(error!) \(error!.userInfo)")
-            }
-        })
+    func newFunction(objects: [PFObject]?, error: NSError?) {
+        if (error == nil) {
+            self.gags = objects
+            self.tableView.reloadData()
+        } else {
+            print("Error: \(error!) \(error!.userInfo)")
+        }
     }
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {

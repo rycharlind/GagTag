@@ -74,4 +74,15 @@ class ParseHelper {
         query.findObjectsInBackgroundWithBlock(completionBlock)
     }
     
+    
+    // MARK: Gags
+    static func getMyGags(completionBlock: PFQueryArrayResultBlock) {
+        let query = PFQuery(className: "Gag")
+        query.whereKey("user", equalTo: PFUser.currentUser()!)
+        query.includeKey("winningTag")
+        query.orderByDescending("createdAt")
+        query.findObjectsInBackgroundWithBlock(completionBlock)
+        
+    }
+    
 }
