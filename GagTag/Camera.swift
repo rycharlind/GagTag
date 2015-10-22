@@ -91,10 +91,8 @@ class CameraViewController: UIViewController {
         vc.modalTransitionStyle = UIModalTransitionStyle.CoverVertical
         self.presentViewController(vc, animated: true, completion: nil)
         
-        
     }
     
-
     func updateUI(cameraStatus: CameraViewStatus) {
         switch (cameraStatus) {
         case CameraViewStatus.Running:

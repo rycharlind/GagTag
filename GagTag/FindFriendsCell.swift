@@ -14,6 +14,12 @@ protocol FindFriendsCellDelegate: class {
     func cell(cell: FindFriendsCell, didSelectUnfriendUser user: PFUser)
 }
 
+enum Relationship {
+    case Friends
+    case Pending
+    case None
+}
+
 class FindFriendsCell: UITableViewCell {
     
     
@@ -29,8 +35,19 @@ class FindFriendsCell: UITableViewCell {
         }
     }
     
-    enum RelationState {
-        case Pending
+    var relationshipStatus: Relationship = Relationship.None {
+        didSet {
+            switch relationshipStatus {
+            case .Friends:
+                print("Friends")
+                buttonAction.setTitle("Remove", forState: UIControlState.Normal)
+            case .Pending:
+                print("Pending")
+                buttonAction.setTitle("Pending", forState: UIControlState.Normal)
+            case .None:
+                buttonAction.setTitle("Add", forState: UIControlState.Normal)
+            }
+        }
     }
     
     var canFriend: Bool? = true {
@@ -52,6 +69,20 @@ class FindFriendsCell: UITableViewCell {
     }
     
     @IBAction func add(sender: AnyObject) {
+        
+        switch relationshipStatus {
+        case Relationship.Friends:
+            print("Friends")
+            delegate?.cell(self, didSelectUnfriendUser: user!)
+        case Relationship.Pending:
+            print("Pending")
+        case Relationship.None:
+            print("None")
+            delegate?.cell(self, didSelectFriendUser: user!)
+            
+        }
+        
+        /*
         if let canFriend = canFriend where canFriend == true {
             delegate?.cell(self, didSelectFriendUser: user!)
             self.canFriend = false
@@ -59,6 +90,7 @@ class FindFriendsCell: UITableViewCell {
             delegate?.cell(self, didSelectUnfriendUser: user!)
             self.canFriend = true
         }
+        */
     }
 
     override func awakeFromNib() {
