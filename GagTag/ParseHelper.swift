@@ -28,7 +28,6 @@ class ParseHelper {
         
         return query
         
-        
     }
     
     // Query all friends
@@ -58,6 +57,21 @@ class ParseHelper {
         friendRequest.saveEventually(completionBlock)
     }
     
+    static func removeFriend(user: PFUser, completionBlock: PFBooleanResultBlock?) {
+        let query = PFQuery(className: "Friends")
+        query.whereKey("user", equalTo: PFUser.currentUser()!)
+        query.getFirstObjectInBackgroundWithBlock({
+            (object: PFObject?, error: NSError?) -> Void in
+            if (error == nil) {
+                let relation = object?.relationForKey("friends")
+                relation?.removeObject(user)
+                object?.saveEventually(completionBlock)
+            } else {
+                print(error)
+            }
+        })
+    }
+    
     // Update friend request
     static func updateFriendRequest(friendRequest: PFObject, approved: Bool, dismissed: Bool, completionBlock: PFBooleanResultBlock?) {
         friendRequest["approved"] = approved
@@ -66,12 +80,27 @@ class ParseHelper {
     }
     
     // Get pending friend request
-    static func getPendingFriendRequest(completionBlock: PFQueryArrayResultBlock) {
+    static func getPendingFriendRequestUsers(completionBlock: (users: [PFUser]) ->()) {
         let query = PFQuery(className: "FriendRequest")
-        query.whereKey("user", equalTo: PFUser.currentUser()!)
+        query.whereKey("fromUser", equalTo: PFUser.currentUser()!)
         query.whereKey("approved", equalTo: false)
         query.whereKey("dismissed", equalTo: false)
-        query.findObjectsInBackgroundWithBlock(completionBlock)
+        query.includeKey("toUser")
+        query.findObjectsInBackgroundWithBlock({
+            (objects: [PFObject]?, error: NSError?) -> Void in
+            
+            // map out the users and pass to completionBlock
+            
+            var users = [PFUser]()
+            for object in objects! {
+                let user = object["toUser"] as! PFUser
+                users.append(user)
+            }
+            
+            completionBlock(users: users)
+        
+        
+        })
     }
     
     

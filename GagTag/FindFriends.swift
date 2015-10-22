@@ -94,12 +94,15 @@ class FindFriendsViewController: UIViewController, UITableViewDataSource, UITabl
         ParseHelper.getFriendsForUser(PFUser.currentUser()!, completionBlock: {
             (objects: [PFObject]?, errror: NSError?) -> Void in
             self.friendUsers = objects as? [PFUser]
+            print(self.friendUsers)
         })
-        
-        ParseHelper.getPendingFriendRequest({
-            (objects: [PFObject]?, errror: NSError?) -> Void in
-            self.pendingUsers = objects as? [PFUser]
+    
+        ParseHelper.getPendingFriendRequestUsers({
+            (users: [PFUser]) -> Void in
+            self.pendingUsers = users
+            print(self.pendingUsers)
         })
+
     }
     
 
@@ -120,39 +123,39 @@ class FindFriendsViewController: UIViewController, UITableViewDataSource, UITabl
         
         let user = users![indexPath.row]
         cell.user = user
+        cell.relationshipStatus = Relationship.None
+        cell.delegate = self
         
         // Check if user is a friend
         if let friendUsers = friendUsers {
-            cell.canFriend = !friendUsers.contains(user)
+            //cell.canFriend = !friendUsers.contains(user)
+            if friendUsers.contains(user) {
+               cell.relationshipStatus = Relationship.Friends
+            }
         }
         
         // Check if you have a pending friend request
         if let pendingUsers = pendingUsers {
-            cell.isPending = pendingUsers.contains(user)
+            //cell.isPending = pendingUsers.contains(user)
+            if pendingUsers.contains(user) {
+                cell.relationshipStatus = Relationship.Pending
+            }
         }
         
-        cell.delegate = self
-        
         return cell
-        
         
     }
     
     // MARK: FindFriendsCellDelegate
     func cell(cell: FindFriendsCell, didSelectFriendUser user: PFUser) {
         ParseHelper.sendFriendRequestToUser(user, completionBlock: nil)
-        friendUsers?.append(user)
+        pendingUsers?.append(user)
     }
     
     func cell(cell: FindFriendsCell, didSelectUnfriendUser user: PFUser) {
-        /*
-        if var followingUsers = followingUsers {
-            ParseHelper.removeFollowRelationshipFromUser(PFUser.currentUser()!, toUser: user)
-            // update local cache
-            removeObject(user, fromArray: &followingUsers)
-            self.followingUsers = followingUsers
-        }
-        */
+        ParseHelper.removeFriend(user, completionBlock: nil)
+        let index = friendUsers?.indexOf(user)
+        friendUsers?.removeAtIndex(index!)
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
