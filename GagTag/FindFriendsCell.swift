@@ -39,6 +39,14 @@ class FindFriendsCell: UITableViewCell {
         }
     }
     
+    var isPending: Bool? = false {
+        didSet {
+            if let isPending = isPending where isPending == true {
+                buttonAction.setTitle("Pending", forState: UIControlState.Normal)
+            }
+        }
+    }
+    
     @IBAction func add(sender: AnyObject) {
         if let canFriend = canFriend where canFriend == true {
             delegate?.cell(self, didSelectFriendUser: user!)

@@ -121,10 +121,14 @@ class FindFriendsViewController: UIViewController, UITableViewDataSource, UITabl
         let user = users![indexPath.row]
         cell.user = user
         
+        // Check if user is a friend
         if let friendUsers = friendUsers {
-            // check if current user is already friends with displayed user
-            // change button appereance based on result
             cell.canFriend = !friendUsers.contains(user)
+        }
+        
+        // Check if you have a pending friend request
+        if let pendingUsers = pendingUsers {
+            cell.isPending = pendingUsers.contains(user)
         }
         
         cell.delegate = self

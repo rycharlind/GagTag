@@ -11,7 +11,7 @@ import Parse
 
 class MyFriendsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
-    var friends = [PFObject]()
+    var users = [PFUser]()
     @IBOutlet weak var tableView: UITableView!
     
     override func viewDidLoad() {
@@ -22,13 +22,13 @@ class MyFriendsViewController: UIViewController, UITableViewDelegate, UITableVie
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
-        //self.query()
+        
         ParseHelper.getFriendsForUser(PFUser.currentUser()!, completionBlock: self.updateList)
     }
     
     func updateList(objects: [PFObject]?, error: NSError?) {
         print(objects)
-        self.friends = objects!
+        self.users = objects as! [PFUser]
         self.tableView.reloadData()
     }
     
@@ -37,7 +37,7 @@ class MyFriendsViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.friends.count
+        return self.users.count
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -47,16 +47,10 @@ class MyFriendsViewController: UIViewController, UITableViewDelegate, UITableVie
             cell = UITableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: "Cell")
         }
         
-        let friend = self.friends[indexPath.row] as PFObject
-        cell?.textLabel?.text = friend["username"] as? String
+        let user = self.users[indexPath.row] as PFObject
+        cell?.textLabel?.text = user["username"] as? String
         
         return cell
-        
-        
-    }
-    
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        
         
         
     }
