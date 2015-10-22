@@ -29,6 +29,10 @@ class FindFriendsCell: UITableViewCell {
         }
     }
     
+    enum RelationState {
+        case Pending
+    }
+    
     var canFriend: Bool? = true {
         didSet {
             if let canFriend = canFriend where canFriend == true {
