@@ -14,21 +14,21 @@ class TutorialViewController: UIViewController, UIPageViewControllerDataSource, 
     var pageTitles: NSArray!
     var viewControllers : [UIViewController]!
     var currentPageIndex: Int = 0
-    
-    
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
         // Do any additional setup after loading the view.
         
-        let tutPage1VC = self.storyboard?.instantiateViewControllerWithIdentifier("tutPage1")
+        let tutPage1VC = self.storyboard?.instantiateViewControllerWithIdentifier("tutPage1") as! TutPageController1
+        tutPage1VC.mainNavDelegate = self
+        
         let tutPage2VC = self.storyboard?.instantiateViewControllerWithIdentifier("tutPage2")
         let tutPage3VC = self.storyboard?.instantiateViewControllerWithIdentifier("tutPage3")
         
         // Create an array of ViewController that the PageViewController will use as it's datasource
         self.viewControllers = [UIViewController]()
-        self.viewControllers.append(tutPage1VC!)
+        self.viewControllers.append(tutPage1VC)
         self.viewControllers.append(tutPage2VC!)
         self.viewControllers.append(tutPage3VC!)
         
@@ -37,7 +37,7 @@ class TutorialViewController: UIViewController, UIPageViewControllerDataSource, 
         self.pageViewController.dataSource = self
         
         // Set the starting ViewContrller for the PageViewController
-        let starterViewControllerArray = NSArray(object: tutPage1VC!)
+        let starterViewControllerArray = NSArray(object: tutPage1VC)
         self.pageViewController.setViewControllers(starterViewControllerArray as? [UIViewController], direction: .Forward, animated: true, completion: nil)
         
         // Add the PageViewController to self

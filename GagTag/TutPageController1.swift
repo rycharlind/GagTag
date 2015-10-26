@@ -9,11 +9,19 @@
 import UIKit
 
 class TutPageController1: UIViewController {
-
+    
+    var mainNavDelegate: MainNavDelegate?
+    
     @IBAction func next(sender: AnyObject) {
         //go to the second page
         
+        print("button pressed")
+        print(index)
         
+        if let delegate = self.mainNavDelegate {
+            delegate.goToController(1, direction: .Forward, animated: true)
+            print("complete")
+        }
     }
     
     override func viewDidLoad() {
