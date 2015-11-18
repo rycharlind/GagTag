@@ -157,7 +157,6 @@ class ParseHelper {
         query.includeKey("winningTag")
         query.orderByDescending("createdAt")
         query.findObjectsInBackgroundWithBlock(completionBlock)
-        
     }
     
     static func getMyGagFeed(completionBlock: PFQueryArrayResultBlock) {

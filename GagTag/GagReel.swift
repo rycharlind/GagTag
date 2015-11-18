@@ -41,16 +41,13 @@ class GagReelViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     override func viewDidAppear(animated: Bool) {
-        ParseHelper.getMyGags(self.newFunction)
-    }
-    
-    func newFunction(objects: [PFObject]?, error: NSError?) {
-        if (error == nil) {
-            self.gags = objects
-            self.tableView.reloadData()
-        } else {
-            print("Error: \(error!) \(error!.userInfo)")
-        }
+        ParseHelper.getMyGags({
+            (objects: [PFObject]?, error: NSError?) -> Void in
+            if (objects != nil) {
+                self.gags = objects
+                self.tableView.reloadData()
+            }
+        })
     }
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
