@@ -22,7 +22,6 @@ enum Relationship {
 
 class FindFriendsCell: UITableViewCell {
     
-    
     @IBOutlet weak var buttonAction: UIButton!
     @IBOutlet weak var labelUsername: UILabel!
     weak var delegate: FindFriendsCellDelegate?
@@ -39,10 +38,8 @@ class FindFriendsCell: UITableViewCell {
         didSet {
             switch relationshipStatus {
             case .Friends:
-                print("Friends")
                 buttonAction.setTitle("Remove", forState: UIControlState.Normal)
             case .Pending:
-                print("Pending")
                 buttonAction.setTitle("Pending", forState: UIControlState.Normal)
             case .None:
                 buttonAction.setTitle("Add", forState: UIControlState.Normal)
@@ -81,16 +78,6 @@ class FindFriendsCell: UITableViewCell {
             delegate?.cell(self, didSelectFriendUser: user!)
             
         }
-        
-        /*
-        if let canFriend = canFriend where canFriend == true {
-            delegate?.cell(self, didSelectFriendUser: user!)
-            self.canFriend = false
-        } else {
-            delegate?.cell(self, didSelectUnfriendUser: user!)
-            self.canFriend = true
-        }
-        */
     }
 
     override func awakeFromNib() {

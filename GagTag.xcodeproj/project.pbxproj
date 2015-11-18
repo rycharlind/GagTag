@@ -11,11 +11,9 @@
 		943915EA1BC20D08000244F1 /* FriendsMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 943915E91BC20D08000244F1 /* FriendsMenu.swift */; };
 		943915EC1BC20F66000244F1 /* FriendRequests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 943915EB1BC20F66000244F1 /* FriendRequests.swift */; };
 		943915EE1BC230BC000244F1 /* FriendRequestCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 943915ED1BC230BC000244F1 /* FriendRequestCell.swift */; };
-		943915F21BC232A2000244F1 /* FriendRequestCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 943915F11BC232A2000244F1 /* FriendRequestCell.xib */; };
 		943915F41BC341ED000244F1 /* MyFriends.swift in Sources */ = {isa = PBXBuildFile; fileRef = 943915F31BC341ED000244F1 /* MyFriends.swift */; };
 		943915F61BC349DF000244F1 /* GagFeed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 943915F51BC349DF000244F1 /* GagFeed.swift */; };
 		943915F91BC34B1B000244F1 /* GagFeedCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 943915F81BC34B1B000244F1 /* GagFeedCell.swift */; };
-		943915FB1BC34B35000244F1 /* GagFeedCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 943915FA1BC34B35000244F1 /* GagFeedCell.xib */; };
 		94460EE01B9A78DD009F254B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94460EDF1B9A78DD009F254B /* AppDelegate.swift */; };
 		94460EE71B9A78DD009F254B /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 94460EE61B9A78DD009F254B /* Images.xcassets */; };
 		94460EEA1B9A78DD009F254B /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 94460EE81B9A78DD009F254B /* LaunchScreen.xib */; };
@@ -41,7 +39,6 @@
 		949AF9711BA293C90066CDBD /* GagReel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 949AF9701BA293C90066CDBD /* GagReel.swift */; };
 		94AC18461BAF929A00EC160F /* FindFriends.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94AC18451BAF929A00EC160F /* FindFriends.swift */; };
 		94AC18481BAF9D9B00EC160F /* FindFriendsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94AC18471BAF9D9B00EC160F /* FindFriendsCell.swift */; };
-		94AC184A1BAF9FB300EC160F /* FindFriendsCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 94AC18491BAF9FB300EC160F /* FindFriendsCell.xib */; };
 		94BACD241BC84CC9000A2671 /* TutorialViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94BACD231BC84CC9000A2671 /* TutorialViewController.swift */; };
 		94BACD261BC84E02000A2671 /* ContentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94BACD251BC84E02000A2671 /* ContentViewController.swift */; };
 		94BACD291BCB7103000A2671 /* Camera.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94BACD281BCB7103000A2671 /* Camera.swift */; };
@@ -67,11 +64,9 @@
 		943915E91BC20D08000244F1 /* FriendsMenu.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendsMenu.swift; sourceTree = "<group>"; };
 		943915EB1BC20F66000244F1 /* FriendRequests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendRequests.swift; sourceTree = "<group>"; };
 		943915ED1BC230BC000244F1 /* FriendRequestCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendRequestCell.swift; sourceTree = "<group>"; };
-		943915F11BC232A2000244F1 /* FriendRequestCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FriendRequestCell.xib; sourceTree = "<group>"; };
 		943915F31BC341ED000244F1 /* MyFriends.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyFriends.swift; sourceTree = "<group>"; };
 		943915F51BC349DF000244F1 /* GagFeed.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GagFeed.swift; sourceTree = "<group>"; };
 		943915F81BC34B1B000244F1 /* GagFeedCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GagFeedCell.swift; sourceTree = "<group>"; };
-		943915FA1BC34B35000244F1 /* GagFeedCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GagFeedCell.xib; sourceTree = "<group>"; };
 		94460EDA1B9A78DD009F254B /* GagTag.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GagTag.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		94460EDE1B9A78DD009F254B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		94460EDF1B9A78DD009F254B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -101,7 +96,6 @@
 		949AF9701BA293C90066CDBD /* GagReel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GagReel.swift; sourceTree = "<group>"; };
 		94AC18451BAF929A00EC160F /* FindFriends.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FindFriends.swift; sourceTree = "<group>"; };
 		94AC18471BAF9D9B00EC160F /* FindFriendsCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FindFriendsCell.swift; sourceTree = "<group>"; };
-		94AC18491BAF9FB300EC160F /* FindFriendsCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FindFriendsCell.xib; sourceTree = "<group>"; };
 		94BACD231BC84CC9000A2671 /* TutorialViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TutorialViewController.swift; sourceTree = "<group>"; };
 		94BACD251BC84E02000A2671 /* ContentViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentViewController.swift; sourceTree = "<group>"; };
 		94BACD281BCB7103000A2671 /* Camera.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Camera.swift; sourceTree = "<group>"; };
@@ -167,7 +161,6 @@
 			children = (
 				94AC18451BAF929A00EC160F /* FindFriends.swift */,
 				94AC18471BAF9D9B00EC160F /* FindFriendsCell.swift */,
-				94AC18491BAF9FB300EC160F /* FindFriendsCell.xib */,
 			);
 			name = FindFriends;
 			sourceTree = "<group>";
@@ -177,19 +170,18 @@
 			children = (
 				943915EB1BC20F66000244F1 /* FriendRequests.swift */,
 				943915ED1BC230BC000244F1 /* FriendRequestCell.swift */,
-				943915F11BC232A2000244F1 /* FriendRequestCell.xib */,
 			);
 			name = FriendRequests;
 			sourceTree = "<group>";
 		};
-		943915F71BC34AFF000244F1 /* GagFeed */ = {
+		943915F71BC34AFF000244F1 /* Gag */ = {
 			isa = PBXGroup;
 			children = (
+				949AF9701BA293C90066CDBD /* GagReel.swift */,
 				943915F51BC349DF000244F1 /* GagFeed.swift */,
 				943915F81BC34B1B000244F1 /* GagFeedCell.swift */,
-				943915FA1BC34B35000244F1 /* GagFeedCell.xib */,
 			);
-			name = GagFeed;
+			name = Gag;
 			sourceTree = "<group>";
 		};
 		94460ED11B9A78DD009F254B = {
@@ -224,11 +216,10 @@
 				94460F3E1B9E1DB6009F254B /* Gag.swift */,
 				949AE6AF1B9F5AF7001ACEEE /* Tags.swift */,
 				946CEAA41BAA1D620049313C /* DealtTags.swift */,
-				949AF9701BA293C90066CDBD /* GagReel.swift */,
 				948471011BACD04300C2BC71 /* GagUsers.swift */,
 				94BACD1C1BC6413E000A2671 /* Tutorial */,
 				94BACD271BCB70E4000A2671 /* Camera */,
-				943915F71BC34AFF000244F1 /* GagFeed */,
+				943915F71BC34AFF000244F1 /* Gag */,
 				943915E81BC20A4D000244F1 /* Friends */,
 				943915E71BC20099000244F1 /* Models */,
 				94460EE61B9A78DD009F254B /* Images.xcassets */,
@@ -383,10 +374,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				943915F21BC232A2000244F1 /* FriendRequestCell.xib in Resources */,
 				94460F3D1B9C73FA009F254B /* Main.storyboard in Resources */,
-				94AC184A1BAF9FB300EC160F /* FindFriendsCell.xib in Resources */,
-				943915FB1BC34B35000244F1 /* GagFeedCell.xib in Resources */,
 				94460EEA1B9A78DD009F254B /* LaunchScreen.xib in Resources */,
 				94460EE71B9A78DD009F254B /* Images.xcassets in Resources */,
 			);
@@ -561,7 +549,7 @@
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = GagTag/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
@@ -585,7 +573,7 @@
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = GagTag/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";

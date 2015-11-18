@@ -9,7 +9,7 @@
 import UIKit
 import Parse
 
-class FriendRequestsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class FriendRequestsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, FriendRequestCellDelegate {
 
     
     // MARK: Properties
@@ -27,30 +27,18 @@ class FriendRequestsViewController: UIViewController, UITableViewDelegate, UITab
         super.viewDidLoad()
        
         // Do any additional setup after loading the view.
-        let nib = UINib(nibName: "FriendRequestCell", bundle: nil)
-        self.tableView.registerNib(nib, forCellReuseIdentifier: "friendRequestCell")
     }
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         
-        self.queryFriendRequests()
-    }
-    
-    func queryFriendRequests() {
-        let query = PFQuery(className: "FriendRequest")
-        query.whereKey("toUser", equalTo: PFUser.currentUser()!)
-        query.whereKey("approved", equalTo: false)
-        query.whereKey("dismissed", equalTo: false)
-        query.includeKey("fromUser")
-        query.findObjectsInBackgroundWithBlock({
+        ParseHelper.getPendingFriendRequest({
             (objects: [PFObject]?, error: NSError?) -> Void in
             if (error == nil) {
                 self.friendRequests = objects!
-                print(self.friendRequests)
                 self.tableView.reloadData()
             } else {
-                print("Error: \(error!) \(error!.userInfo)")
+                print(error)
             }
         })
     }
@@ -71,6 +59,8 @@ class FriendRequestsViewController: UIViewController, UITableViewDelegate, UITab
         }
         
         let friendRequest = self.friendRequests[indexPath.row] as PFObject
+        cell?.friendRequest = friendRequest
+        cell?.delegate = self
         
         let user = friendRequest["fromUser"] as! PFUser
         cell?.labelUsername?.text = user["username"] as? String
@@ -85,6 +75,19 @@ class FriendRequestsViewController: UIViewController, UITableViewDelegate, UITab
         
         
         
+    }
+    
+    func cell(cell: FriendRequestCell, didApproveUser user: PFUser, friendRequest: PFObject) {
+        print("approve")
+        ParseHelper.addFriend(PFUser.currentUser()!, friend: user, completionBlock: nil)
+        ParseHelper.addFriend(user, friend: PFUser.currentUser()!, completionBlock: nil)
+        ParseHelper.updateFriendRequest(friendRequest, approved: true, dismissed: true, completionBlock: nil)
+        cell.friendRequestStatus = RequestStatus.Accepted
+    }
+    
+    func cell(cell: FriendRequestCell, didDismissUser user: PFUser, friendRequest: PFObject) {
+        ParseHelper.updateFriendRequest(friendRequest, approved: false, dismissed: true, completionBlock: nil)
+        cell.friendRequestStatus = RequestStatus.Dismissed
     }
 
     override func didReceiveMemoryWarning() {

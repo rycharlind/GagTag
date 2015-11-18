@@ -9,13 +9,13 @@
 import UIKit
 import Parse
 
-class FindFriendsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, FindFriendsCellDelegate {
+class FindFriendsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate, FindFriendsCellDelegate {
     
     // MARK: Properties
     // stores all the users that match the current search query
     var users: [PFUser]?
     @IBOutlet weak var tableView: UITableView!
-    
+    @IBOutlet weak var searchBar: UISearchBar!
     
     // MARK: Actions
     @IBAction func done(sender: AnyObject) {
@@ -57,7 +57,6 @@ class FindFriendsViewController: UIViewController, UITableViewDataSource, UITabl
         case SearchMode
     }
     
-    
     // whenever the state changes, perform one of the two queries and update the list
     var state: State = .DefaultMode {
         didSet {
@@ -66,9 +65,8 @@ class FindFriendsViewController: UIViewController, UITableViewDataSource, UITabl
                 query = ParseHelper.allUsers(updateList)
                 
             case .SearchMode:
-                query = ParseHelper.allUsers(updateList)
-                //let searchText = searchBar?.text ?? ""
-                //query = ParseHelper.searchUsers(searchText, completionBlock:updateList)
+                let searchText = searchBar?.text ?? ""
+                query = ParseHelper.searchUsers(searchText, completionBlock:updateList)
             }
         }
     }
@@ -144,6 +142,23 @@ class FindFriendsViewController: UIViewController, UITableViewDataSource, UITabl
         
         return cell
         
+    }
+    
+    // MARK: SearchBarDelegate
+    func searchBarTextDidBeginEditing(searchBar: UISearchBar) {
+        searchBar.setShowsCancelButton(true, animated: true)
+        state = .SearchMode
+    }
+    
+    func searchBarCancelButtonClicked(searchBar: UISearchBar) {
+        searchBar.resignFirstResponder()
+        searchBar.text = ""
+        searchBar.setShowsCancelButton(false, animated: true)
+        state = .DefaultMode
+    }
+    
+    func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
+        ParseHelper.searchUsers(searchText, completionBlock:updateList)
     }
     
     // MARK: FindFriendsCellDelegate

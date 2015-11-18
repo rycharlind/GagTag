@@ -143,8 +143,6 @@ class TagsViewController: UIViewController, UITableViewDelegate, UITableViewData
         }
         
         return 0
-        
-        
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -188,8 +186,6 @@ class TagsViewController: UIViewController, UITableViewDelegate, UITableViewData
                 }
             }
 
-            
-            
         }
         
         return cell

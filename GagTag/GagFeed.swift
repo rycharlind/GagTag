@@ -31,56 +31,24 @@ class GagFeedViewController: UIViewController, UITableViewDelegate, UITableViewD
         // Do any additional setup after loading the view.
         self.gags = [PFObject]()
         
-        // Congifure Nib or custom cell
-        let nib = UINib(nibName: "GagFeedCell", bundle: nil)
-        self.tableView.registerNib(nib, forCellReuseIdentifier: "gagFeedCell")
-        
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        UIApplication.sharedApplication().setStatusBarHidden(false, withAnimation: UIStatusBarAnimation.None)
     }
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         
-        self.queryGags()
-    }
-    
-    func queryGags() {
-        
-        // Query all the current users friends
-        let queryFriends = PFQuery(className: "Friends")
-        queryFriends.whereKey("user", equalTo: PFUser.currentUser()!)
-        queryFriends.whereKey("approved", equalTo: true)
-        queryFriends.includeKey("friend")
-        queryFriends.findObjectsInBackgroundWithBlock({
+        //self.queryGags()
+        ParseHelper.getMyGagFeed({
             (objects: [PFObject]?, error: NSError?) -> Void in
-            if (error == nil) {
-                
-                // Create an array of the friends
-                var friends = [PFUser]()
-                for object in objects! {
-                    let friend = object["friend"] as! PFUser
-                    friends.append(friend)
-                }
-                
-                // Query my friends Gags
-                let query = PFQuery(className: "Gag")
-                query.whereKey("user", containedIn: friends)
-                query.includeKey("winningTag")
-                query.orderByDescending("createdAt")
-                query.findObjectsInBackgroundWithBlock({
-                    (objects: [PFObject]?, error: NSError?) -> Void in
-                    if (error == nil) {
-                        self.gags = objects
-                        self.tableView.reloadData()
-                    } else {
-                        print("Error: \(error!) \(error!.userInfo)")
-                    }
-                })
-            } else {
-                print("Error: \(error!) \(error!.userInfo)")
+            if (objects != nil) {
+                self.gags = objects
+                self.tableView.reloadData()
             }
-            
         })
-        
     }
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
@@ -105,6 +73,8 @@ class GagFeedViewController: UIViewController, UITableViewDelegate, UITableViewD
         
         // Default to nil to fix from displaying other tag in reused cell
         cell?.labelTag.text = nil
+        cell?.imageView?.image = nil
+        cell?.tagStatus = TagStatus.None
         
         
         let gag = self.gags[indexPath.row] as PFObject
@@ -113,38 +83,30 @@ class GagFeedViewController: UIViewController, UITableViewDelegate, UITableViewD
         // Query Gag image
         pfimage.getDataInBackgroundWithBlock({
             (result, error) in
-            if (error == nil) {
-                print("got image")
+            if (result != nil) {
                 cell?.gagImageView.image = UIImage(data: result!)
-            } else {
-                print("Error: \(error!) \(error!.userInfo)")
             }
         })
         
-        // Query GagUserTag for chosenTag
-        let query = PFQuery(className: "GagUserTag")
-        query.whereKey("gag", equalTo: gag)
-        query.includeKey("user")
-        query.includeKey("chosenTag")
-        query.findObjectsInBackgroundWithBlock({
-            (objects: [PFObject]?, error: NSError?) -> Void in
-            if (error == nil) {
-                //let tagCount = objects.count
-                for object in objects! {
-                    let user = object["user"] as! PFUser
-                    if (user.objectId == PFUser.currentUser()?.objectId) {
-                        if let chosenTag = object["chosenTag"] as? PFObject {
-                            cell?.labelTag?.text = "#" + (chosenTag["value"] as? String)!
-                        } else {
-                            cell?.labelTag?.text = "Not Tagged"
-                        }
+        // Display winningTag if it exsits
+        // Else display chosentTag if it exists
+        let winningTag = gag["winningTag"] as? PFObject
+        if (winningTag != nil) {
+            cell?.labelTag.text = winningTag?["value"] as? String
+            cell?.tagStatus = TagStatus.WinningTagChosen
+        } else {
+            // Query Tags
+            ParseHelper.getMyGagUserTagObjectForGag(gag) {
+                (gagUserTag: PFObject?, error: NSError?) -> () in
+                if (gagUserTag != nil) {
+                    let chosenTag = gagUserTag?["chosenTag"] as? PFObject
+                    if (chosenTag != nil) {
+                        cell?.labelTag.text = "#" + (chosenTag?["value"] as? String)!
+                        cell?.tagStatus = TagStatus.DealtTagChosen
                     }
                 }
-                
-            } else {
-                print("Error: \(error!) \(error!.userInfo)")
             }
-        })
+        }
         
         return cell
         
@@ -156,13 +118,35 @@ class GagFeedViewController: UIViewController, UITableViewDelegate, UITableViewD
         // Not sure why I have to use dispatch.  Explained in below StackOverflow
         // http://stackoverflow.com/questions/26165700/uitableviewcell-selection-storyboard-segue-is-slow-double-tapping-works-though
         
+        let cell = tableView.cellForRowAtIndexPath(indexPath) as! GagFeedCell
+        let tagStatus = cell.tagStatus
+        let gag = self.gags[indexPath.row] as PFObject
+        
         dispatch_async(dispatch_get_main_queue(), {
-            let gag = self.gags[indexPath.row] as PFObject
-            let dealtTagsViewController = self.storyboard?.instantiateViewControllerWithIdentifier("dealtTags") as! DealtTagsViewController
-            dealtTagsViewController.gag = gag
-            self.presentViewController(dealtTagsViewController, animated: true, completion: nil)
+            
+            switch (tagStatus) {
+            case .WinningTagChosen:
+                self.showGagUsersForGag(gag)
+            case .DealtTagChosen:
+                self.showGagUsersForGag(gag)
+            case .None:
+                self.showDealtTagsForGag(gag)
+            }
+            
         });
         
+    }
+    
+    func showDealtTagsForGag(gag: PFObject) {
+        let dealtTagsViewController = self.storyboard?.instantiateViewControllerWithIdentifier("dealtTags") as! DealtTagsViewController
+        dealtTagsViewController.gag = gag
+        self.presentViewController(dealtTagsViewController, animated: true, completion: nil)
+    }
+    
+    func showGagUsersForGag(gag: PFObject) {
+        let gagUsersViewController = self.storyboard?.instantiateViewControllerWithIdentifier("gagUsers") as! GagUsersViewController
+        gagUsersViewController.gag = gag
+        self.presentViewController(gagUsersViewController, animated: true, completion: nil)
     }
     
     override func didReceiveMemoryWarning() {

@@ -56,6 +56,13 @@ class MainViewController: UIViewController, UIPageViewControllerDataSource, PFLo
         
     }
     
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        self.prefersStatusBarHidden()
+        self.setNeedsStatusBarAppearanceUpdate()
+    }
+    
     override func viewDidAppear(animated: Bool) {
         
         let currentUser = PFUser.currentUser()
@@ -101,17 +108,14 @@ class MainViewController: UIViewController, UIPageViewControllerDataSource, PFLo
     
     func logInViewController(logInController: PFLogInViewController, didLogInUser user: PFUser) {
         self.dismissViewControllerAnimated(true, completion: nil)
+        
+        self.registerForPushNotifications()
     }
     
     func signUpViewController(signUpController: PFSignUpViewController, didSignUpUser user: PFUser) {
         self.dismissViewControllerAnimated(true, completion: nil)
         
-        let userNotiicationTypes : UIUserNotificationType = ([UIUserNotificationType.Alert, UIUserNotificationType.Badge, UIUserNotificationType.Sound])
-        
-        let settings : UIUserNotificationSettings = UIUserNotificationSettings(forTypes: userNotiicationTypes, categories: nil)
-        
-        UIApplication.sharedApplication().registerUserNotificationSettings(settings)
-        UIApplication.sharedApplication().registerForRemoteNotifications()
+        self.registerForPushNotifications()
     }
     
     // MARK:  PageViewControllerDataSource
@@ -161,8 +165,11 @@ class MainViewController: UIViewController, UIPageViewControllerDataSource, PFLo
         return true
     }
     
-    override func preferredStatusBarUpdateAnimation() -> UIStatusBarAnimation {
-        return UIStatusBarAnimation.Fade
+    func registerForPushNotifications() {
+        let userNotiicationTypes : UIUserNotificationType = ([UIUserNotificationType.Alert, UIUserNotificationType.Badge, UIUserNotificationType.Sound])
+        let settings : UIUserNotificationSettings = UIUserNotificationSettings(forTypes: userNotiicationTypes, categories: nil)
+        UIApplication.sharedApplication().registerUserNotificationSettings(settings)
+        UIApplication.sharedApplication().registerForRemoteNotifications()
     }
     
     // MARK: MainNavController 

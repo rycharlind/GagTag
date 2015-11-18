@@ -31,14 +31,12 @@ class GagReelViewController: UIViewController, UITableViewDelegate, UITableViewD
         // Do any additional setup after loading the view.
         self.gags = [PFObject]()
         
-        // Congifure Nib or custom cell
-        let nib = UINib(nibName: "GagFeedCell", bundle: nil)
-        self.tableView.registerNib(nib, forCellReuseIdentifier: "gagFeedCell")
-        
     }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
+        
+        UIApplication.sharedApplication().setStatusBarHidden(false, withAnimation: UIStatusBarAnimation.None)
         
     }
     
@@ -86,7 +84,6 @@ class GagReelViewController: UIViewController, UITableViewDelegate, UITableViewD
             cell?.labelTag.text = value
         }
         
-    
         // Query Gag Image
         let pfimage = gag["image"] as! PFFile
         pfimage.getDataInBackgroundWithBlock({

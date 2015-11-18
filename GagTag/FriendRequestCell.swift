@@ -9,107 +9,58 @@
 import UIKit
 import Parse
 
+protocol FriendRequestCellDelegate: class {
+    func cell(cell: FriendRequestCell, didApproveUser user: PFUser, friendRequest: PFObject)
+    func cell(cell: FriendRequestCell, didDismissUser user: PFUser, friendRequest: PFObject)
+}
+
+enum RequestStatus {
+    case Pending
+    case Accepted
+    case Dismissed
+}
+
 class FriendRequestCell: UITableViewCell {
     
-    @IBOutlet weak var buttonAction: UIButton!
+    weak var delegate: FriendRequestCellDelegate?
     @IBOutlet weak var labelUsername: UILabel!
+    @IBOutlet weak var buttonYes: UIButton!
+    @IBOutlet weak var buttonNo: UIButton!
+    var friendRequest: PFObject!
     var friend : PFUser!
-    
-    @IBAction func add(sender: AnyObject) {
-        self.approve()
-    }
-    
-    @IBAction func close(sender: AnyObject) {
-        self.dismiss()
-    }
-    
-    func approve() {
-        print("approve")
-        
-        // Update/Add friend for Current User
-        let queryCurrentUser = PFQuery(className: "Friends")
-        queryCurrentUser.whereKey("user", equalTo: PFUser.currentUser()!)
-        queryCurrentUser.getFirstObjectInBackgroundWithBlock {
-            (object: PFObject?, error: NSError?) -> Void in
-            if error != nil || object == nil {
-            
-                let friends = PFObject(className: "Friends")
-                self.addFriend(friends, user: PFUser.currentUser()!, friend: self.friend)
-            
-            } else {
-                
-                self.addFriend(object!, user: PFUser.currentUser()!, friend: self.friend)
-                
-            }
-        }
-        
-        // Update/Add friend for FromUser (User who sent the friend request)
-        let queryFromUser = PFQuery(className: "Friends")
-        queryFromUser.whereKey("user", equalTo: self.friend)
-        queryFromUser.getFirstObjectInBackgroundWithBlock {
-            (object: PFObject?, error: NSError?) -> Void in
-            if error != nil || object == nil {
-                
-                let friends = PFObject(className: "Friends")
-                self.addFriend(friends, user: self.friend, friend: PFUser.currentUser()!)
-                
-            } else {
-                
-                self.addFriend(object!, user: self.friend, friend: PFUser.currentUser()!)
-                
-            }
-        }
-        
-        self.updateFriendRequest(true)
-
-    }
-    
-    func dismiss() {
-        
-    }
-    
-    func addFriend(friends: PFObject, user: PFObject, friend: PFObject) {
-        friends["user"] = user
-        
-        let friendsRelation = friends.relationForKey("friends")
-        friendsRelation.addObject(friend)
-        
-        friends.saveEventually({
-            (success: Bool, error: NSError?) -> Void in
-            if (success) {
-                // The object has been saved.
-                print("Friend Added")
-            } else {
-                // There was a problem, check error.description
-                print(error)
-            }
-        })
-        
-    }
-    
-    func updateFriendRequest(approved: Bool) {
-        let query = PFQuery(className: "FriendRequest")
-        query.whereKey("fromUser", equalTo: self.friend)
-        query.getFirstObjectInBackgroundWithBlock({
-            (object: PFObject?, error: NSError?) -> Void in
-            if error != nil || object == nil {
-                print(error)
-            } else if let friendRequest = object {
-                friendRequest["approved"] = approved
-                friendRequest.saveEventually({
-                    (success: Bool, error: NSError?) -> Void in
-                    if (success) {
-                        print("Friend Request Updated")
-                    }
-                })
-            }
-        })
-        
-    }
     
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
+    }
+    
+    var friendRequestStatus: RequestStatus = RequestStatus.Pending {
+        didSet {
+            switch friendRequestStatus {
+            case .Pending:
+                print("pending")
+                buttonNo.hidden = false
+                buttonYes.hidden = false
+            case .Accepted:
+                print("accepted")
+                labelUsername.text = labelUsername.text! + " - Approved"
+                buttonNo.hidden = true
+                buttonYes.hidden = true
+            case .Dismissed:
+                print("dismissed")
+                labelUsername.text = labelUsername.text! + " - Declined"
+                buttonNo.hidden = true
+                buttonYes.hidden = true
+            }
+        }
+    }
+    
+    @IBAction func approve(sender: AnyObject) {
+        delegate?.cell(self, didApproveUser: self.friend, friendRequest: self.friendRequest)
+    }
+    
+    @IBAction func dismiss(sender: AnyObject) {
+        delegate?.cell(self, didDismissUser: self.friend, friendRequest: self.friendRequest)
     }
 
     override func setSelected(selected: Bool, animated: Bool) {

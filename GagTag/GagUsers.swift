@@ -22,7 +22,6 @@ class GagUsersViewController: UIViewController, UITableViewDelegate, UITableView
         self.dismissViewControllerAnimated(true, completion: nil)
     }
     
-
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -30,21 +29,13 @@ class GagUsersViewController: UIViewController, UITableViewDelegate, UITableView
     }
     
     override func viewDidAppear(animated: Bool) {
-        self.queryGagUsers()    
-    }
-    
-    func queryGagUsers() {
-        let query = PFQuery(className: "GagUserTag")
-        query.whereKey("gag", equalTo: self.gag)
-        query.includeKey("user")
-        query.findObjectsInBackgroundWithBlock({
+        ParseHelper.getAllGagUserTagObjectsForGag(self.gag, completionBlock: {
             (objects: [PFObject]?, error: NSError?) -> Void in
-            if (error == nil) {
+            if (objects != nil) {
                 self.gagUsers = objects
                 self.tableView.reloadData()
             }
         })
-        
     }
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
@@ -63,19 +54,15 @@ class GagUsersViewController: UIViewController, UITableViewDelegate, UITableView
         
         var cell = tableView.dequeueReusableCellWithIdentifier("Cell") as UITableViewCell!
         if cell == nil {
-            cell = UITableViewCell(style: UITableViewCellStyle.Default, reuseIdentifier: "Cell")
+            cell = UITableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: "Cell")
         }
         
+        let gagUser = self.gagUsers[indexPath.row] as PFObject
+        let user = gagUser["user"] as? PFObject
+        let chosenTag = gagUser["chosenTag"] as? PFObject
         
-        
-        
-        if let gagUser = self.gagUsers[indexPath.row] as? PFObject {
-            if let user = gagUser["user"] as? PFObject {
-                cell?.textLabel?.text = user["username"] as? String
-            }
-        }
-    
-        
+        cell?.textLabel?.text = user?["username"] as? String
+        cell?.detailTextLabel?.text = "#" + (chosenTag?["value"] as? String)!
         
         return cell
         

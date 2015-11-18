@@ -62,17 +62,22 @@ class CameraViewController: UIViewController {
         if let videoConnection = stillImageOutput!.connectionWithMediaType(AVMediaTypeVideo) {
             videoConnection.videoOrientation = AVCaptureVideoOrientation.Portrait
             stillImageOutput?.captureStillImageAsynchronouslyFromConnection(videoConnection, completionHandler: {(sampleBuffer, error) in
+                
+                
                 if (sampleBuffer != nil) {
                     let imageData = AVCaptureStillImageOutput.jpegStillImageNSDataRepresentation(sampleBuffer)
                     let dataProvider = CGDataProviderCreateWithCFData(imageData)
                     let cgImageRef = CGImageCreateWithJPEGDataProvider(dataProvider, nil, true, CGColorRenderingIntent.RenderingIntentDefault)
                     
                     let image = UIImage(CGImage: cgImageRef!, scale: 1.0, orientation: UIImageOrientation.Right)
+                    
                     self.imageView.image = image
                     
                     self.updateUI(CameraViewStatus.Preview)
                     
                 }
+            
+            
             })
         }
     }
@@ -113,6 +118,12 @@ class CameraViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // Configure Take Button
+        self.buttonTake.layer.cornerRadius = 0.5 * self.buttonTake.bounds.width
+        self.buttonTake.layer.masksToBounds = true
+        self.buttonTake.layer.borderWidth = 2.0
+        self.buttonTake.layer.borderColor = UIColor.blackColor().CGColor
+        
         self.updateUI(CameraViewStatus.Running)
 
         // Do any additional setup after loading the view.
@@ -140,17 +151,19 @@ class CameraViewController: UIViewController {
             if captureSession!.canAddOutput(stillImageOutput) {
                 
                 captureSession!.addOutput(stillImageOutput)
-                
                 previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
-                previewLayer!.videoGravity = AVLayerVideoGravityResizeAspectFill
+                previewLayer!.videoGravity = AVLayerVideoGravityResize
                 previewLayer!.connection?.videoOrientation = AVCaptureVideoOrientation.Portrait
-                previewLayer!.frame = previewView.bounds
                 previewView.layer.addSublayer(previewLayer!)
                 
                 captureSession!.startRunning()
             }
         }
         
+    }
+    
+    override func viewWillLayoutSubviews() {
+        //previewLayer!.frame = previewView.bounds
     }
     
     func saveImage() {
@@ -194,11 +207,12 @@ class CameraViewController: UIViewController {
             print("No image captured")
         }
         
-        
     }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
+        UIApplication.sharedApplication().setStatusBarHidden(true, withAnimation: UIStatusBarAnimation.None)
+        
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -209,16 +223,5 @@ class CameraViewController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
 
 }
