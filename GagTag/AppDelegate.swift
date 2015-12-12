@@ -14,7 +14,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
-
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
         
@@ -25,6 +24,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         // [Optional] Track statistics around application opens.
         PFAnalytics.trackAppOpenedWithLaunchOptions(launchOptions)
+        
+        // Set font and color of Navbar title
+        if let font = UIFont(name: "HelveticaNeue-Thin", size: 20) {
+            print("font")
+            UINavigationBar.appearance().titleTextAttributes = [NSFontAttributeName: font, NSForegroundColorAttributeName: UIColor.whiteColor()]
+        }
         
         /*
         let pageController = UIPageControl.appearance()

@@ -1,38 +1,33 @@
 //
-//  DealtTagsViewController.swift
+//  ChosenTagsViewController.swift
 //  GagTag
 //
-//  Created by Ryan on 9/16/15.
-//  Copyright (c) 2015 Inndevers. All rights reserved.
+//  Created by Ryan on 11/23/15.
+//  Copyright © 2015 Inndevers. All rights reserved.
 //
 
 import UIKit
 import Parse
 
-protocol DealtTagsViewControllerDelegate {
-    func dealtTagsViewController(controller: DealtTagsViewController, didSelectTag tag: PFObject)
-}
-
-enum State {
-    case TagChosen
-    case TagNotChosen
-}
-
-class DealtTagsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+class ChosenTagsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
-    // MARK:  Properties
-    var delegate: DealtTagsViewControllerDelegate?
+    // MARK: Properties
+    @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var barButtonChoose: UIBarButtonItem!
     @IBOutlet weak var barButtonCancel: UIBarButtonItem!
-    @IBOutlet weak var tableView: UITableView!
     var gag : PFObject!
     var tags : [PFObject]!
     var selectedTag : PFObject!
     
-    
     // MARK:  Actions
     @IBAction func choose(sender: AnyObject) {
-        self.sendChosenTag(self.selectedTag)
+        ParseHelper.sendWinningTagForGag(gag, tag: selectedTag, completionBlock: {
+            (success: Bool, error: NSError?) -> Void in
+            if (success) {
+                print("Success")
+            }
+        })
+        self.dismissViewControllerAnimated(true, completion: nil)
     }
     
     @IBAction func cancel(sender: AnyObject) {
@@ -50,6 +45,7 @@ class DealtTagsViewController: UIViewController, UITableViewDataSource, UITableV
         }
     }
     
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -58,39 +54,16 @@ class DealtTagsViewController: UIViewController, UITableViewDataSource, UITableV
     }
     
     override func viewDidAppear(animated: Bool) {
-        print(self.gag)
-        ParseHelper.getMyTagsForGag(self.gag, completionBlock: {
+        ParseHelper.getChosenTagsForGag(gag, completionBlock: {
             (tags: [PFObject]?) -> Void in
-            self.tags = tags
-            print(self.tags)
-            self.tableView.reloadData()
-        })
-    }
-    
-    func sendChosenTag(tag : PFObject) {
-        print("sendChosenTag")
-        let query = PFQuery(className: "GagUserTag")
-        query.whereKey("gag", equalTo: self.gag)
-        query.whereKey("user", equalTo: PFUser.currentUser()!)
-        query.getFirstObjectInBackgroundWithBlock({
-            (object: PFObject?, error: NSError?) -> Void in
-            if error != nil || object == nil {
-                print("The getFirstObject request failed.")
-            } else {
-                // The find succeeded.
-                object?.setObject(tag, forKey: "chosenTag")
-                object?.saveInBackgroundWithBlock({
-                    (success: Bool, error: NSError?) -> Void in
-                    if (success) {
-                        // The object has been saved.
-                        self.dismissViewControllerAnimated(true, completion: nil)
-                    } else {
-                        // There was a problem, check error.description
-                    }
-                })
+            if (tags != nil) {
+                print(tags)
+                self.tags = tags
+                self.tableView.reloadData()
             }
         })
     }
+    
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         // #warning Potentially incomplete method implementation.
@@ -119,7 +92,7 @@ class DealtTagsViewController: UIViewController, UITableViewDataSource, UITableV
         } else {
             cell?.accessoryType = .None
         }
-    
+        
         return cell
         
     }
@@ -137,20 +110,14 @@ class DealtTagsViewController: UIViewController, UITableViewDataSource, UITableV
             self.tableView.reloadData()
         }
     }
+    
+    
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
     
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
+    
 
 }

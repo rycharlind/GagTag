@@ -166,11 +166,40 @@ class ParseHelper {
                 let query = PFQuery(className: "Gag")
                 query.whereKey("user", containedIn: objects!)
                 query.includeKey("winningTag")
+                query.includeKey("user")
                 query.orderByDescending("createdAt")
                 query.findObjectsInBackgroundWithBlock(completionBlock)
             } else {
                 print(error)
             }
+        })
+    }
+    
+    static func saveImage(image: UIImage, numberOfTags: Int, friends: [PFUser], completionBlock: PFBooleanResultBlock, progressBlock: (percentDone: Int32) ->()) {
+        
+        let imageData = image.lowQualityJPEGNSData
+        let imageFile = PFFile(name:"photo.png", data:imageData)
+        imageFile!.saveInBackgroundWithBlock({
+            (succeeded: Bool, error: NSError?) -> Void in
+            completionBlock(succeeded, error)
+            if (succeeded) {
+                let gag = PFObject(className:"Gag")
+                gag["user"] = PFUser.currentUser()
+                gag["allowedNumberOfTags"] = numberOfTags
+                gag["image"] = imageFile
+                gag["friends"] = friends
+                gag.saveEventually({
+                    (succeeded: Bool, error: NSError?) -> Void in
+                    if (succeeded) {
+                        print("Gag Saved Sucessfully")
+                    } else {
+                        print(error)
+                    }
+                })
+            }
+            },progressBlock: {
+                (percentDone: Int32) -> Void in
+                progressBlock(percentDone: percentDone)
         })
     }
     
@@ -216,25 +245,29 @@ class ParseHelper {
         query.findObjectsInBackgroundWithBlock(completionBlock)
     }
     
+    static func getTagCountForGag(gag: PFObject, completionBlock: PFIntegerResultBlock) {
+        let query = PFQuery(className: "GagUserTag")
+        query.whereKey("gag", equalTo: gag)
+        query.countObjectsInBackgroundWithBlock(completionBlock)
+    }
+    
     static func getMyTagsForGag(gag: PFObject, completionBlock: (tags: [PFObject]?) -> ()) {
         ParseHelper.getMyDealtTagsForGag(gag, completionBlock: {
             (tags: [PFObject]?, error: NSError?) -> Void in
             if (error == nil  && tags != nil) {
-                
                 print("Tags are not nil")
                 completionBlock(tags: tags)
-                
                 
             } else {
                 
                 ParseHelper.getAllGagUserTagObjectsForGag(gag, completionBlock: {
                     (objects: [PFObject]?, error: NSError?) -> Void in
-                    print("gotAllGagUserTagObjects")
                     // concatenate all dealtTags
                     var dealtTags = [PFObject]()
                     for object in objects! {
-                        let tags = object["dealtTags"] as? [PFObject]
-                        dealtTags += tags!
+                        let tags = object["dealtTags"] as! [PFObject]
+                        dealtTags += tags
+                        print(object)
                     }
                     
                     // append object ids to string array for query
@@ -280,6 +313,33 @@ class ParseHelper {
             tags.removeAtIndex(index)
         }
         return tempTags
+    }
+    
+    static func getChosenTagsForGag(gag: PFObject, completionBlock: (tags: [PFObject]?) -> ()) {
+        let query = PFQuery(className: "GagUserTag")
+        query.whereKey("gag", equalTo: gag)
+        query.includeKey("chosenTag")
+        query.findObjectsInBackgroundWithBlock({
+            (objects: [PFObject]?, error: NSError?) -> Void in
+            if (objects != nil) {
+                var tags = [PFObject]()
+                for object in objects! {
+                    let chosenTag = object["chosenTag"] as! PFObject
+                    tags.append(chosenTag)
+                }
+                completionBlock(tags: tags)
+            }
+        })
+    }
+    
+    static func sendWinningTagForGag(gag: PFObject, tag: PFObject, completionBlock: PFBooleanResultBlock) {
+        gag.fetchIfNeededInBackgroundWithBlock({
+            (object: PFObject?, error: NSError?) -> Void in
+            if (object != nil) {
+                object?["winningTag"] = tag
+                object?.saveEventually(completionBlock)
+            }
+        })
     }
     
 }

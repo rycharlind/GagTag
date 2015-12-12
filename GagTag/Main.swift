@@ -10,6 +10,14 @@ import UIKit
 import Parse
 import ParseUI
 
+extension UIColor {
+    static var blue:UIColor { return UIColor(red: 91/255, green: 192/255, blue: 235/255, alpha: 1) }
+    static var yellow:UIColor { return UIColor(red: 252/255, green: 231/255, blue: 76/255, alpha: 1) }
+    static var green:UIColor { return UIColor(red: 155/255, green: 197/255, blue: 61/255, alpha: 1) }
+    static var red:UIColor { return UIColor(red: 229/255, green: 89/255, blue: 52/255, alpha: 1) }
+    static var orange:UIColor { return UIColor(red: 250/255, green: 121/255, blue: 33/255, alpha: 1) }
+}
+
 protocol MainNavDelegate {
     func goToController(index: Int, direction: UIPageViewControllerNavigationDirection, animated: Bool)
 }
