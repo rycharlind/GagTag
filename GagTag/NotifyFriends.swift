@@ -13,11 +13,12 @@ protocol NotifyFriendsDelegate {
     func sendGagWithSelectedFriends(friends: [PFUser])
 }
 
-class NotifyFriendsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, NotifyFriendsCellDelegate {
+class NotifyFriendsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, NotifyFriendsCellDelegate, UISearchBarDelegate {
     
     // MARK: Properties
     // stores all the users that match the current search query
-    var users: [PFUser]!
+    var userDict: [String:[PFUser]]!
+    var sectionTitles: [String]!
     @IBOutlet weak var barButtonSend: UIBarButtonItem!
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var searchBar: UISearchBar!
@@ -42,25 +43,65 @@ class NotifyFriendsViewController: UIViewController, UITableViewDataSource, UITa
     @IBAction func cancel(sender: AnyObject) {
         self.dismissViewControllerAnimated(true, completion: nil)
     }
+    
+    // this view can be in two different states
+    enum State {
+        case DefaultMode
+        case SearchMode
+    }
+    
+    // the current parse query
+    var query: PFQuery? {
+        didSet {
+            // whenever we assign a new query, cancel any previous requests
+            oldValue?.cancel()
+        }
+    }
+    
+    // whenever the state changes, perform one of the two queries and update the list
+    var state: State = .DefaultMode {
+        didSet {
+            switch (state) {
+            case .DefaultMode:
+                query = ParseHelper.getFriendsDictionaryForUser(PFUser.currentUser()!, completionBlock: {
+                    (userDict: [String: [PFUser]]) -> Void in
+                    self.userDict = userDict
+                    self.updateList()
+                })
+                
+            case .SearchMode:
+                let searchText = searchBar?.text ?? ""
+                query = ParseHelper.searchFriendsDictionaryForUser(searchText, user: PFUser.currentUser()!, completionBlock: {
+                    (userDict: [String: [PFUser]]) -> Void in
+                    self.userDict = userDict
+                    self.updateList()
+                })
+            }
+        }
+    }
+    
+    func updateList() {
+        self.sectionTitles = [String]()
+        for (key, value) in userDict {
+            self.sectionTitles.append(key)
+        }
+        self.sectionTitles = self.sectionTitles.sort(<)
+        self.tableView.reloadData()
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        self.users = [PFUser]()
-        //self.selectedFriends = [PFUser]()
+        //self.users = [PFUser]()
+        self.userDict = [String:[PFUser]]()
+        self.sectionTitles = [String]()
     }
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
-        
-        ParseHelper.getFriendsForUser(PFUser.currentUser()!, completionBlock: {
-            (objects: [PFObject]?, error: NSError?) -> Void in
-            if (objects != nil) {
-                self.users = objects as? [PFUser]
-                self.tableView.reloadData()
-            }
-        })
+    
+        state = .DefaultMode
     }
 
     override func didReceiveMemoryWarning() {
@@ -68,12 +109,27 @@ class NotifyFriendsViewController: UIViewController, UITableViewDataSource, UITa
         // Dispose of any resources that can be recreated.
     }
     
+    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        return 65.0
+    }
+    
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 1
+        return self.sectionTitles.count
+    }
+    
+    func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        let title = self.sectionTitles[section]
+        return title
+    }
+    
+    func sectionIndexTitlesForTableView(tableView: UITableView) -> [String]? {
+        return self.sectionTitles
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.users.count
+        let sectionTitle = self.sectionTitles[section]
+        let sectionUsers = self.userDict[sectionTitle]
+        return sectionUsers!.count
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -83,10 +139,16 @@ class NotifyFriendsViewController: UIViewController, UITableViewDataSource, UITa
             cell = NotifyFriendsCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: "notifyFriendsCell")
         }
         
-        let user = self.users[indexPath.row] as PFUser
+        let sectionTitle = self.sectionTitles[indexPath.section]
+        let sectionUsers = self.userDict[sectionTitle]
+        let user = sectionUsers![indexPath.row]
+        
         cell.labelUsername.text = user["username"] as? String
         cell.user = user
+        
+        
         cell.delegate = self
+        cell.rippleLayerColor = UIColor.MKColor.LightBlue
         
         return cell
         
@@ -103,9 +165,35 @@ class NotifyFriendsViewController: UIViewController, UITableViewDataSource, UITa
         }
     }
     
+    
+    // MARK: SearchBarDelegate
+    func searchBarTextDidBeginEditing(searchBar: UISearchBar) {
+        searchBar.setShowsCancelButton(true, animated: true)
+        state = .SearchMode
+    }
+    
+    func searchBarCancelButtonClicked(searchBar: UISearchBar) {
+        searchBar.resignFirstResponder()
+        searchBar.text = ""
+        searchBar.setShowsCancelButton(false, animated: true)
+        state = .DefaultMode
+    }
+    
+    func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
+        ParseHelper.searchFriendsDictionaryForUser(searchText, user: PFUser.currentUser()!, completionBlock: {
+            (userDict: [String: [PFUser]]) -> Void in
+            self.userDict = userDict
+            self.updateList()
+        })
+    }
+    
+    
+    // MARK: NotifyFriendsCellDelegate
     func didSelectFriend(cell: NotifyFriendsCell) {
         let indexPath = self.tableView.indexPathForCell(cell)! as NSIndexPath
-        let user = self.users[indexPath.row] as PFUser
+        let sectionTitle = self.sectionTitles[indexPath.section]
+        let sectionUsers = self.userDict[sectionTitle]
+        let user = sectionUsers![indexPath.row]
         self.selectedFriends.append(user)
         print(self.selectedFriends)
     }

@@ -9,7 +9,7 @@
 import UIKit
 import Parse
 
-class GagViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UsersViewControllerDelegate, TagsViewControllerDelegate, DealtTagsViewControllerDelegate {
+class GagViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UsersViewControllerDelegate, DealtTagsViewControllerDelegate {
     
     // MARK:  Properties
     @IBOutlet weak var labelTag: UILabel!
@@ -143,13 +143,6 @@ class GagViewController: UIViewController, UIImagePickerControllerDelegate, UINa
         self.presentViewController(dealtTagsViewController, animated: true, completion: nil)
     }
     
-    func showTags() {
-        let tagsViewController = self.storyboard?.instantiateViewControllerWithIdentifier("tags") as! TagsViewController
-        tagsViewController.gag = self.gag
-        tagsViewController.delegate = self
-        self.presentViewController(tagsViewController, animated: true, completion: nil)
-    }
-    
     func showUsers() {
         let usersViewController = self.storyboard?.instantiateViewControllerWithIdentifier("users") as! UsersViewController
         usersViewController.delegate = self
@@ -279,20 +272,6 @@ class GagViewController: UIViewController, UIImagePickerControllerDelegate, UINa
     func usersTableViewController(controller: UsersViewController, didSelectUsers users: [String:PFObject]) {
         print(users)
         //self.sendPhoto(users)
-    }
-    
-    // MARK: TagsViewControllerDelegate
-    func tagsViewController(controller: TagsViewController, didSelectTag tag: PFObject) {
-        
-        if let user = self.gag["user"] as? PFObject {
-            // If this is the current user's gag then send winning tag
-            if (user.objectId == PFUser.currentUser()?.objectId) {
-                self.sendWinningTag(tag)
-            } else {
-                self.sendChosenTag(tag)
-            }
-            
-        }
     }
     
     // MARK: DealtTagsViewController

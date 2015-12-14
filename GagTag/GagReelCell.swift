@@ -1,27 +1,26 @@
 //
-//  GagFeedCell.swift
+//  GagReelCell.swift
 //  GagTag
 //
-//  Created by Ryan on 10/5/15.
-//  Copyright (c) 2015 Inndevers. All rights reserved.
+//  Created by Ryan on 11/23/15.
+//  Copyright © 2015 Inndevers. All rights reserved.
 //
 
 import UIKit
 import Parse
 
-enum TagStatus {
-    case DealtTagChosen
-    case AllowedNumberOfTagsChosen
+enum GagStatus {
     case WinningTagChosen
+    case AllDealtTagsChosen
     case None
 }
 
-protocol GagFeedCellDelegate: class {
-    func cell(cell: GagFeedCell, didTouchTagsButton tagStatus: TagStatus, gag: PFObject)
-    func cell(cell: GagFeedCell, didTouchNumberOfTagsButton tagStatus: TagStatus, gag: PFObject)
+protocol GagReelCellDelegate: class {
+    func cell(cell: GagReelCell, didTouchTagsButton gagStatus: GagStatus, gag: PFObject)
+    func cell(cell: GagReelCell, didTouchNumberOfTagsButton gagStatus: GagStatus, gag: PFObject)
 }
 
-class GagFeedCell: UITableViewCell {
+class GagReelCell: UITableViewCell {
     
     // MARK: Properties
     @IBOutlet weak var containerView: UIView!
@@ -32,37 +31,35 @@ class GagFeedCell: UITableViewCell {
     @IBOutlet weak var labelTag: UILabel!
     @IBOutlet weak var gagImageView: UIImageView!
     @IBOutlet weak var buttonTag: MKButton!
-    var delegate: GagFeedCellDelegate?
+    var delegate: GagReelCellDelegate?
     var gag: PFObject!
     
     // MARK: Actions
-    @IBAction func buttonTagTouched(sender: AnyObject) {
-        delegate?.cell(self, didTouchTagsButton: tagStatus, gag: gag)
+    @IBAction func gagReelButtonTagTouched(sender: AnyObject) {
+        delegate?.cell(self, didTouchTagsButton: gagStatus, gag: gag)
     }
     
-    @IBAction func buttonNumberOfTagsTouched(sender: AnyObject) {
-        delegate?.cell(self, didTouchNumberOfTagsButton: tagStatus, gag: gag)   
+    @IBAction func gagReelButtonNumberOfTagsTouched(sender: AnyObject) {
+        delegate?.cell(self, didTouchNumberOfTagsButton: gagStatus, gag: gag)
     }
     
-    var tagStatus: TagStatus = TagStatus.None {
+    var gagStatus: GagStatus = GagStatus.None {
         didSet {
-            switch tagStatus {
-            case .DealtTagChosen:
-                print("")
+            switch gagStatus {
+            case .AllDealtTagsChosen:
+                print("All Dealt Tags Chosen")
             case .WinningTagChosen:
-                print("")
-            case .AllowedNumberOfTagsChosen:
-                print("")
+                print("Winning Tag Chosen")
             case .None:
-                print("")
+                print("None")
             }
         }
     }
-    
+
     override func awakeFromNib() {
         super.awakeFromNib()
-        
         // Initialization code
+        
         // Init Button Tags
         buttonTag.cornerRadius = 0.5 * buttonTag.bounds.size.width
         buttonTag.layer.shadowOpacity = 0.75
@@ -78,6 +75,7 @@ class GagFeedCell: UITableViewCell {
         headerView.layer.shadowColor = UIColor.blackColor().CGColor
         headerView.layer.shadowOpacity = 0.75
         headerView.layer.shadowOffset = CGSizeZero
+        
     }
 
     override func setSelected(selected: Bool, animated: Bool) {

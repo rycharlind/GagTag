@@ -22,23 +22,21 @@ enum CameraViewStatus {
     case Running, Preview
 }
 
-class CameraViewController: UIViewController {
+class CameraViewController: UIViewController, CameraCapturedImageDelegate {
     
+    // MARK: Properites
     var mainNavDelegate: MainNavDelegate?
+    var allowedNumberOfTags: Int = 5
     
-    @IBOutlet weak var previewView: UIView!
-    @IBOutlet weak var imageView: UIImageView!
-    
-    @IBOutlet weak var cameraRunningView: UIView!
-    @IBOutlet weak var buttonSwitch: UIButton!
+    @IBOutlet weak var buttonToggleCamera: UIButton!
+    @IBOutlet weak var buttonToggleFlash: UIButton!
     @IBOutlet weak var buttonFeed: UIButton!
     @IBOutlet weak var buttonTake: UIButton!
     @IBOutlet weak var buttonReel: UIButton!
-    @IBOutlet weak var buttonFlash: UIButton!
     @IBOutlet weak var buttonSettings: UIButton!
     
-    @IBOutlet weak var cameraCapturedView: UIView!
-    
+    // Camera Properties
+    @IBOutlet weak var previewView: UIView!
     var captureSession : AVCaptureSession?
     var captureDevice : AVCaptureDevice?
     var stillImageOutput: AVCaptureStillImageOutput?
@@ -58,84 +56,137 @@ class CameraViewController: UIViewController {
     }
     
     @IBAction func takePhoto(sender: AnyObject) {
+        //self.showNotifyFriends()
         
         if let videoConnection = stillImageOutput!.connectionWithMediaType(AVMediaTypeVideo) {
             videoConnection.videoOrientation = AVCaptureVideoOrientation.Portrait
             stillImageOutput?.captureStillImageAsynchronouslyFromConnection(videoConnection, completionHandler: {(sampleBuffer, error) in
-                
                 
                 if (sampleBuffer != nil) {
                     let imageData = AVCaptureStillImageOutput.jpegStillImageNSDataRepresentation(sampleBuffer)
                     let dataProvider = CGDataProviderCreateWithCFData(imageData)
                     let cgImageRef = CGImageCreateWithJPEGDataProvider(dataProvider, nil, true, CGColorRenderingIntent.RenderingIntentDefault)
                     
-                    let image = UIImage(CGImage: cgImageRef!, scale: 1.0, orientation: UIImageOrientation.Right)
                     
-                    self.imageView.image = image
+                    var imageOrientation = UIImageOrientation.Right
+                    if (self.captureDevice!.position == AVCaptureDevicePosition.Front) {
+                        imageOrientation = UIImageOrientation.LeftMirrored
+                    }
                     
-                    self.updateUI(CameraViewStatus.Preview)
+                    let image = UIImage(CGImage: cgImageRef!, scale: 1.0, orientation: imageOrientation)
                     
+                    
+                    
+                    self.showCameraCapturedImage(image)
                 }
             
             
             })
         }
-    }
-    
-    @IBAction func close(sender: AnyObject) {
-        self.updateUI(CameraViewStatus.Running)
-    }
-    
-    @IBAction func next(sender: AnyObject) {
-        self.saveImage()
-    }
-    
-    @IBAction func settings(sender: AnyObject) {
-        let vc = self.storyboard?.instantiateViewControllerWithIdentifier("settings") as! SettingsViewController
-        vc.modalPresentationStyle = UIModalPresentationStyle.Popover
-        vc.modalTransitionStyle = UIModalTransitionStyle.CoverVertical
-        self.presentViewController(vc, animated: true, completion: nil)
+        
         
     }
     
-    func updateUI(cameraStatus: CameraViewStatus) {
-        switch (cameraStatus) {
-        case CameraViewStatus.Running:
-            print("UpdateUI: Running")
-            self.cameraRunningView.hidden = false
-            self.cameraCapturedView.hidden = true
-            self.previewView.hidden = false
-            self.imageView.hidden = true
-        case CameraViewStatus.Preview:
-            print("UpdateUI: Preview")
-            self.cameraRunningView.hidden = true
-            self.cameraCapturedView.hidden = false
-            self.previewView.hidden = true
-            self.imageView.hidden = false
+    func showNotifyFriends() {
+        let vc = self.storyboard?.instantiateViewControllerWithIdentifier("notifyFriends") as! NotifyFriendsViewController
+        //vc.delegate = self
+        self.presentViewController(vc, animated: false, completion: nil)
+    }
+    
+    @IBAction func settings(sender: AnyObject) {
+        self.showSettings()
+    }
+    
+    @IBAction func buttonToggleCameraTouched(sender: AnyObject) {
+        
+        captureSession?.beginConfiguration()
+        
+        let currentCamerInput: AVCaptureInput = captureSession?.inputs[0] as! AVCaptureInput
+        captureSession?.removeInput(currentCamerInput)
+        
+        let newCamera: AVCaptureDevice?
+        if (captureDevice!.position == AVCaptureDevicePosition.Back) {
+            print("Setting new camera with Front")
+            newCamera = self.cameraWithPosition(AVCaptureDevicePosition.Front)
+            buttonToggleCamera.setTitle(GoogleIcon.ea43, forState: .Normal)
+        } else {
+            print("Setting new camera with Back")
+            newCamera = self.cameraWithPosition(AVCaptureDevicePosition.Back)
+            buttonToggleCamera.setTitle(GoogleIcon.ea41, forState: .Normal)
         }
+        
+        var error: NSError?
+        var input: AVCaptureDeviceInput!
+        do {
+            input = try AVCaptureDeviceInput(device: newCamera)
+        } catch let error1 as NSError {
+            error = error1
+            input = nil
+        }
+    
+        if error == nil && captureSession!.canAddInput(input) {
+            captureSession!.addInput(input)
+        }
+        
+        captureDevice! = newCamera!
+        
+        captureSession?.commitConfiguration()
+        
+    }
+    
+    @IBAction func buttonToggleFlashTouch(sender: AnyObject) {
+        
+        let mode = captureDevice?.flashMode
+        do {
+            try captureDevice?.lockForConfiguration()
+            
+            if (mode == AVCaptureFlashMode.Off) {
+                captureDevice?.flashMode = AVCaptureFlashMode.On
+                buttonToggleFlash.setTitle(GoogleIcon.eaab, forState: .Normal)
+            } else {
+                captureDevice?.flashMode = AVCaptureFlashMode.Off
+                buttonToggleFlash.setTitle(GoogleIcon.eaa9, forState: .Normal)
+            }
+            
+            captureDevice?.unlockForConfiguration()
+        } catch let error as NSError {
+            print(error)
+        }
+    }
+    
+    
+    
+    func cameraWithPosition(position: AVCaptureDevicePosition) -> AVCaptureDevice {
+        let devices = AVCaptureDevice.devices()
+        for device in devices {
+            if(device.position == position){
+                return device as! AVCaptureDevice
+            }
+        }
+        return AVCaptureDevice()
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+    
         // Configure Take Button
         self.buttonTake.layer.cornerRadius = 0.5 * self.buttonTake.bounds.width
         self.buttonTake.layer.masksToBounds = true
         self.buttonTake.layer.borderWidth = 2.0
         self.buttonTake.layer.borderColor = UIColor.blackColor().CGColor
-        
-        self.updateUI(CameraViewStatus.Running)
 
         // Do any additional setup after loading the view.
+        
+        
+        // Camera Set
         captureSession = AVCaptureSession()
         captureSession!.sessionPreset = AVCaptureSessionPresetPhoto
-        
-        let backCamera = AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeVideo)
-        
+        captureDevice = AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeVideo)
         var error: NSError?
         var input: AVCaptureDeviceInput!
         do {
-            input = try AVCaptureDeviceInput(device: backCamera)
+            input = try AVCaptureDeviceInput(device: captureDevice)
         } catch let error1 as NSError {
             error = error1
             input = nil
@@ -163,60 +214,35 @@ class CameraViewController: UIViewController {
     }
     
     override func viewWillLayoutSubviews() {
-        //previewLayer!.frame = previewView.bounds
-    }
-    
-    func saveImage() {
-        
-        if (self.imageView.image != nil) {
-            
-            let alert = UIAlertController(title: "Sending", message: "0", preferredStyle: UIAlertControllerStyle.Alert)
-            alert.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.Default, handler: nil))
-            self.presentViewController(alert, animated: true, completion: nil)
-            
-            let imageData = self.imageView.image!.lowQualityJPEGNSData
-            let imageFile = PFFile(name:"photo.png", data:imageData)
-            imageFile!.saveInBackgroundWithBlock({
-                (succeeded: Bool, error: NSError?) -> Void in
-                // Handle success or failure here ...
-                if (succeeded) {
-                    let gag = PFObject(className:"Gag")
-                    gag["user"] = PFUser.currentUser()
-                    
-                    gag["image"] = imageFile
-                    gag.saveInBackgroundWithBlock({
-                        (succeeded: Bool, error: NSError?) -> Void in
-                        
-                        if (succeeded) {
-                            print("Done")
-                            alert.message = "Done"
-                        } else {
-                            print(error)
-                        }
-                    })
-                }
-                }, progressBlock: {
-                    (percentDone: Int32) -> Void in
-                    // Update your progress spinner here. percentDone will be between 0 and 100.
-                    print(percentDone, terminator: "")
-                    //self.progressView.progress = Float(percentDone) / 100
-                    alert.message = String(percentDone) + "%"
-            })
-            
-        } else {
-            print("No image captured")
-        }
-        
+        previewLayer!.frame = previewView.bounds
     }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         UIApplication.sharedApplication().setStatusBarHidden(true, withAnimation: UIStatusBarAnimation.None)
-        
     }
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
+    }
+    
+    // MARK: CameraCapturedViewDelegate
+    func buttonNextTouched(sender: AnyObject, image: UIImage, numberOfTags: Int) {
+        //self.saveImage(image, numberOfTags: numberOfTags)
+    }
+    
+    func showSettings() {
+        let vc = self.storyboard?.instantiateViewControllerWithIdentifier("settings") as! SettingsViewController
+        vc.modalPresentationStyle = UIModalPresentationStyle.Popover
+        vc.modalTransitionStyle = UIModalTransitionStyle.CoverVertical
+        self.presentViewController(vc, animated: true, completion: nil)
+    }
+    
+    func showCameraCapturedImage(image: UIImage) {
+        let vc = self.storyboard?.instantiateViewControllerWithIdentifier("cameraCapturedView") as! CameraCapturedImageViewController
+        vc.image = image
+        vc.delegate = self
+        self.presentViewController(vc, animated: false, completion: nil)
     }
 
     override func didReceiveMemoryWarning() {

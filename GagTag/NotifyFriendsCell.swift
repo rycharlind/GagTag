@@ -14,7 +14,7 @@ protocol NotifyFriendsCellDelegate {
     func didDeselectFriend(cell: NotifyFriendsCell)
 }
 
-class NotifyFriendsCell: UITableViewCell {
+class NotifyFriendsCell: MKTableViewCell {
     
     @IBOutlet weak var labelUsername: UILabel!
     @IBOutlet weak var buttonCheckFriend: UIButton!

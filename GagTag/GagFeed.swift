@@ -9,13 +9,14 @@
 import UIKit
 import Parse
 
-class GagFeedViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class GagFeedViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, GagFeedCellDelegate {
 
     // MARK: Properties
     var gags : [PFObject]!
     var gagUserTag : PFObject!
     var mainNavDelegate : MainNavDelegate?
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var barButtonCamera: UIBarButtonItem!
     
     // MARK: Actions
     
@@ -30,7 +31,13 @@ class GagFeedViewController: UIViewController, UITableViewDelegate, UITableViewD
 
         // Do any additional setup after loading the view.
         self.gags = [PFObject]()
-        
+        self.navigationController?.navigationBar.tintColor = UIColor.red
+        self.navigationController?.navigationBar.translucent = false
+                
+        if let font = UIFont(name: "googleicon", size: 20) {
+            barButtonCamera.setTitleTextAttributes([NSFontAttributeName: font], forState: UIControlState.Normal)
+            barButtonCamera.title = GoogleIcon.ea3e
+        }
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -61,7 +68,7 @@ class GagFeedViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        return 320
+        return 454
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -71,16 +78,25 @@ class GagFeedViewController: UIViewController, UITableViewDelegate, UITableViewD
             cell = GagFeedCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: "gagFeedCell")
         }
         
+        cell?.delegate = self
+        
         // Default to nil to fix from displaying other tag in reused cell
-        cell?.labelTag.text = nil
         cell?.imageView?.image = nil
-        cell?.tagStatus = TagStatus.None
+        cell.labelUsername?.text = nil
+        cell.labelTag?.text = nil
+        cell?.buttonNumberOfTags.setTitle("", forState: .Normal)
         
-        
+        // Set gag object
         let gag = self.gags[indexPath.row] as PFObject
-        let pfimage = gag["image"] as! PFFile
+        let allowedNumberOfTags = gag["allowedNumberOfTags"] as? Int
+        cell?.gag = gag
+        
+        // Set username label
+        let user = gag["user"] as! PFObject
+        cell.labelUsername?.text = user["username"] as? String
         
         // Query Gag image
+        let pfimage = gag["image"] as! PFFile
         pfimage.getDataInBackgroundWithBlock({
             (result, error) in
             if (result != nil) {
@@ -88,29 +104,36 @@ class GagFeedViewController: UIViewController, UITableViewDelegate, UITableViewD
             }
         })
         
-        // Display winningTag if it exsits
-        // Else display chosentTag if it exists
         let winningTag = gag["winningTag"] as? PFObject
         if (winningTag != nil) {
-            cell?.labelTag.text = winningTag?["value"] as? String
-            cell?.tagStatus = TagStatus.WinningTagChosen
+            cell.labelTag.text = "#" + (winningTag?["value"] as? String)!
+            cell.tagStatus = TagStatus.WinningTagChosen
         } else {
-            // Query Tags
+            
+            // Query My Gag User Tag
             ParseHelper.getMyGagUserTagObjectForGag(gag) {
                 (gagUserTag: PFObject?, error: NSError?) -> () in
                 if (gagUserTag != nil) {
                     let chosenTag = gagUserTag?["chosenTag"] as? PFObject
                     if (chosenTag != nil) {
-                        cell?.labelTag.text = "#" + (chosenTag?["value"] as? String)!
-                        cell?.tagStatus = TagStatus.DealtTagChosen
+                        cell.labelTag.text = "#" + (chosenTag?["value"] as? String)!
+                        cell.tagStatus = TagStatus.DealtTagChosen
                     }
                 }
             }
+            
+            // Check the count to see if allowedNumberOfTags is met
+            ParseHelper.getTagCountForGag(gag, completionBlock: {
+                (count: Int32, error: NSError?) -> Void in
+                cell?.buttonNumberOfTags.setTitle("\(count) of \(allowedNumberOfTags!)", forState: .Normal)
+                if (Int(count) == allowedNumberOfTags) {
+                    cell.tagStatus = TagStatus.AllowedNumberOfTagsChosen
+                }
+            })
         }
         
         return cell
-        
-        
+    
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
@@ -122,19 +145,55 @@ class GagFeedViewController: UIViewController, UITableViewDelegate, UITableViewD
         let tagStatus = cell.tagStatus
         let gag = self.gags[indexPath.row] as PFObject
         
+        print(gag)
+        
         dispatch_async(dispatch_get_main_queue(), {
             
+            //self.showPreviewImageForImage(cell.gagImageView.image!)
+            self.showSingleGagView(gag)
+            
+        });
+        
+    }
+    
+    // MARK GagFeedDelegate
+    func cell(cell: GagFeedCell, didTouchTagsButton tagStatus: TagStatus, gag: PFObject) {
+    
+        let tagStatus = cell.tagStatus
+        print(gag)
+        //self.showSingleGagView(gag)
+    
+        //dispatch_async(dispatch_get_main_queue(), {
+            
             switch (tagStatus) {
-            case .WinningTagChosen:
+            case TagStatus.WinningTagChosen:
                 self.showGagUsersForGag(gag)
             case .DealtTagChosen:
+                self.showGagUsersForGag(gag)
+            case .AllowedNumberOfTagsChosen:
                 self.showGagUsersForGag(gag)
             case .None:
                 self.showDealtTagsForGag(gag)
             }
             
-        });
-        
+        //});
+    
+    }
+    
+    func cell(cell: GagFeedCell, didTouchNumberOfTagsButton tagStatus: TagStatus, gag: PFObject) {
+        self.showGagUsersForGag(gag)
+    }
+    
+    func showSingleGagView(gag: PFObject) {
+        let vc = self.storyboard?.instantiateViewControllerWithIdentifier("singleGagView") as! SingleGagViewController
+        vc.gagId = gag.objectId!
+        self.presentViewController(vc, animated: false, completion: nil)
+    }
+    
+    func showPreviewImageForImage(image: UIImage) {
+        let previewImageViewController = self.storyboard?.instantiateViewControllerWithIdentifier("previewImageView") as! PreviewImageViewController
+        previewImageViewController.image = image
+        self.presentViewController(previewImageViewController, animated: false, completion: nil)
     }
     
     func showDealtTagsForGag(gag: PFObject) {

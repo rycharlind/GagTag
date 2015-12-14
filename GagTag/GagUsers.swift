@@ -29,6 +29,7 @@ class GagUsersViewController: UIViewController, UITableViewDelegate, UITableView
     }
     
     override func viewDidAppear(animated: Bool) {
+        print(self.gag)
         ParseHelper.getAllGagUserTagObjectsForGag(self.gag, completionBlock: {
             (objects: [PFObject]?, error: NSError?) -> Void in
             if (objects != nil) {
@@ -62,7 +63,9 @@ class GagUsersViewController: UIViewController, UITableViewDelegate, UITableView
         let chosenTag = gagUser["chosenTag"] as? PFObject
         
         cell?.textLabel?.text = user?["username"] as? String
-        cell?.detailTextLabel?.text = "#" + (chosenTag?["value"] as? String)!
+        if let tag = chosenTag {
+            cell?.detailTextLabel?.text = "#" + (tag["value"] as? String)!
+        }
         
         return cell
         

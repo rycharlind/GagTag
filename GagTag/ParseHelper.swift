@@ -63,6 +63,99 @@ class ParseHelper {
         })
     }
     
+    // Query all friends
+    static func getFriendsDictionaryForUser(user: PFUser, completionBlock: (userDict: [String:[PFUser]]) -> ()) -> PFQuery {
+        let query = PFQuery(className: "Friends")
+        query.whereKey("user", equalTo: PFUser.currentUser()!)
+        query.getFirstObjectInBackgroundWithBlock({
+            (object: PFObject?, error: NSError?) -> Void in
+            if (error == nil) {
+                let relation = object?.relationForKey("friends")
+                let q = relation?.query()
+                q?.orderByAscending("username")
+                q?.findObjectsInBackgroundWithBlock({
+                    (objects: [PFObject]?, error: NSError?) -> Void in
+                    if (objects != nil) {
+                        
+                        var userDict = [String:[PFUser]]()
+                        
+                        // Populate unsorted dictionary
+                        for object in objects! {
+                            let user = object as! PFUser
+                            let username = user["username"] as! String
+                            
+                            if let ch = username.characters.first {
+                                let firstLetter = String(ch)
+                                let firstLetterUpper = firstLetter.uppercaseString
+                                if let _ = userDict[firstLetterUpper] {
+                                    userDict[firstLetterUpper]!.append(user)
+                                } else {
+                                    var newUsers = [PFUser]()
+                                    newUsers.append(user)
+                                    userDict[firstLetterUpper] = newUsers
+                                }
+                            }
+                        }
+                
+                        completionBlock(userDict: userDict)
+
+                    
+                    }
+                })
+            } else {
+                print(error)
+            }
+        })
+        return query
+    }
+    
+    // Query all friends
+    static func searchFriendsDictionaryForUser(searchText: String, user: PFUser, completionBlock: (userDict: [String:[PFUser]]) ->()) -> PFQuery {
+        let query = PFQuery(className: "Friends")
+        query.whereKey("user", equalTo: PFUser.currentUser()!)
+        query.getFirstObjectInBackgroundWithBlock({
+            (object: PFObject?, error: NSError?) -> Void in
+            if (error == nil) {
+                let relation = object?.relationForKey("friends")
+                let q = relation?.query()
+                q?.whereKey("username", matchesRegex: searchText, modifiers: "i")
+                q?.orderByAscending("username")
+                q?.findObjectsInBackgroundWithBlock({
+                    (objects: [PFObject]?, error: NSError?) -> Void in
+                    if (objects != nil) {
+                        
+                        var userDict = [String:[PFUser]]()
+                        
+                        // Populate unsorted dictionary
+                        for object in objects! {
+                            let user = object as! PFUser
+                            let username = user["username"] as! String
+                            
+                            if let ch = username.characters.first {
+                                let firstLetter = String(ch)
+                                let firstLetterUpper = firstLetter.uppercaseString
+                                if let _ = userDict[firstLetterUpper] {
+                                    userDict[firstLetterUpper]!.append(user)
+                                } else {
+                                    var newUsers = [PFUser]()
+                                    newUsers.append(user)
+                                    userDict[firstLetterUpper] = newUsers
+                                }
+                            }
+                        }
+                        
+                        completionBlock(userDict: userDict)
+                        
+                    }
+                })
+                
+            } else {
+                print(error)
+            }
+        })
+        return query
+    }
+    
     // Send a friend request
     static func sendFriendRequestToUser(user: PFUser, completionBlock: PFBooleanResultBlock?) {
         let friendRequest = PFObject(className: "FriendRequest")
@@ -151,6 +244,20 @@ class ParseHelper {
     
     
     // MARK: Gags
+    static func getGagWithId(id: String, completionBlock: PFObjectResultBlock) {
+        let query = PFQuery(className:"Gag")
+        query.includeKey("user")
+        query.getObjectInBackgroundWithId(id) {
+            (object: PFObject?, error: NSError?) -> Void in
+            if error == nil && object != nil {
+                print(object)
+                completionBlock(object, error)
+            } else {
+                print(error)
+            }
+        }
+    }
+    
     static func getMyGags(completionBlock: PFQueryArrayResultBlock) {
         let query = PFQuery(className: "Gag")
         query.whereKey("user", equalTo: PFUser.currentUser()!)

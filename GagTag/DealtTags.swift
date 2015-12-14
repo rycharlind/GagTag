@@ -92,6 +92,10 @@ class DealtTagsViewController: UIViewController, UITableViewDataSource, UITableV
         })
     }
     
+    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        return 65.0
+    }
+    
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         // #warning Potentially incomplete method implementation.
         // Return the number of sections.
@@ -106,27 +110,31 @@ class DealtTagsViewController: UIViewController, UITableViewDataSource, UITableV
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
-        var cell = tableView.dequeueReusableCellWithIdentifier("Cell") as UITableViewCell!
+        var cell = tableView.dequeueReusableCellWithIdentifier("dealtTagsCell") as! DealtTagsCell!
         if cell == nil {
-            cell = UITableViewCell(style: UITableViewCellStyle.Default, reuseIdentifier: "Cell")
+            cell = DealtTagsCell(style: UITableViewCellStyle.Default, reuseIdentifier: "dealtTagsCell")
         }
         
         let tag = self.tags[indexPath.row] as PFObject
-        cell?.textLabel?.text = "#" + (tag["value"] as? String)!
+        let value = tag["value"] as! String
+        cell?.labelUsername?.text = " #\(value)"
+        
         
         if (tag.objectId == self.selectedTag?.objectId) {
-            cell?.accessoryType = .Checkmark
+            cell.tagSelected = true
         } else {
-            cell?.accessoryType = .None
+            cell.tagSelected = false
         }
-    
+        
+        cell.rippleLayerColor = UIColor.MKColor.LightBlue
+        
         return cell
         
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         
-        let cell = tableView.cellForRowAtIndexPath(indexPath)
+        let cell = tableView.cellForRowAtIndexPath(indexPath) as! DealtTagsCell
         let row = Int(indexPath.row)
         
         let currentObject = self.tags[row] as PFObject
@@ -142,15 +150,5 @@ class DealtTagsViewController: UIViewController, UITableViewDataSource, UITableV
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
 
 }

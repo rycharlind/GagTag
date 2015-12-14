@@ -55,6 +55,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
         PFPush.handlePush(userInfo)
+        print(userInfo["gagId"])
     }
 
     func applicationWillResignActive(application: UIApplication) {
