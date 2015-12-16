@@ -66,6 +66,7 @@ class GagReelCell: UITableViewCell {
         buttonTag.layer.shadowRadius = 3.5
         buttonTag.layer.shadowColor = UIColor.blackColor().CGColor
         buttonTag.layer.shadowOffset = CGSize(width: 1.0, height: 5.5)
+        buttonTag.hidden = true
         
         gagImageView.contentMode = .ScaleAspectFit
         

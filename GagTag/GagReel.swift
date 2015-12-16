@@ -83,26 +83,51 @@ class GagReelViewController: UIViewController, UITableViewDelegate, UITableViewD
         cell?.gagImageView?.image = nil
         cell?.labelTag.text = nil
         cell?.buttonNumberOfTags.setTitle("", forState: .Normal)
+        cell?.buttonTag.hidden = false
         
         let gag = self.gags[indexPath.row] as PFObject
         cell?.gag = gag
         
-        let allowedNumberOfTags = gag["allowedNumberOfTags"] as? Int
+        if let winningTag = gag["winningTag"] {
+            let value = winningTag["value"] as! String
+            cell.labelTag.text = " #\(value)"
+            cell.buttonTag.hidden = true
+        }
         
-        // Check the count to see if allowedNumberOfTags is met
-        ParseHelper.getTagCountForGag(gag, completionBlock: {
-            (count: Int32, error: NSError?) -> Void in
-            cell?.buttonNumberOfTags.setTitle("\(count) of \(allowedNumberOfTags!)", forState: .Normal)
-            if (Int(count) == allowedNumberOfTags) {
-                cell.gagStatus = GagStatus.AllDealtTagsChosen
+        // Get all GagUserTag objects and count the number of chosenTags
+        ParseHelper.getAllGagUserTagObjectsForGag(gag, completionBlock: {
+            (objects: [PFObject]?, error: NSError?) -> Void in
+            if (objects != nil) {
+                
+                // Count number of tags chosen
+                var numberOfTagsChosen = 0
+                for object in objects! {
+                    if let chosenTag = object["chosenTag"] {
+                        numberOfTagsChosen++
+                    }
+                }
+                
+                // Set buttonNumberOfTags text
+                let allowedNumberOfTags = gag["allowedNumberOfTags"] as! Int
+                cell?.buttonNumberOfTags.setTitle("\(numberOfTagsChosen) of \(allowedNumberOfTags)", forState: .Normal)
+                
+                // Compare numberOfTagsChosen to allowedNumberOfTags
+                if (numberOfTagsChosen == allowedNumberOfTags) {
+                    if let winningTag = gag["winningTag"] {
+                        cell.buttonTag.hidden = true
+                    } else {
+                        cell?.buttonTag.hidden = false
+                    }
+                } else {
+                    cell?.buttonTag.hidden = true
+                }
+                
+            }
+            
+            if (error != nil) {
+                print(error)
             }
         })
-        
-        if let tag = gag["winningTag"] as? PFObject {
-            let value = tag["value"] as! String
-            cell?.labelTag.text = "#" + value
-            cell?.gagStatus = GagStatus.WinningTagChosen
-        }
         
         // Query Gag Image
         let pfimage = gag["image"] as! PFFile
@@ -122,31 +147,23 @@ class GagReelViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let gag = self.gags[indexPath.row] as PFObject
-        print(gag)
         
         dispatch_async(dispatch_get_main_queue(), {
-            //self.showPreviewImageForImage(cell.gagImageView.image!)
             self.showSingleGagView(gag)
         });
     }
     
     // MARK:  GagReelCellDelegate
     func cell(cell: GagReelCell, didTouchTagsButton gagStatus: GagStatus, gag: PFObject) {
-        switch gagStatus {
-        case .AllDealtTagsChosen:
-            print("All Dealt Tags Chosen")
-            self.showChosenTagsForGag(gag)
-        case .WinningTagChosen:
-            print("Winning Tag Chosen")
-        case .None:
-            print("None")
-        }
+        self.showChosenTagsForGag(gag)
     }
     
     func cell(cell: GagReelCell, didTouchNumberOfTagsButton gagStatus: GagStatus, gag: PFObject) {
         self.showGagUsersForGag(gag)
     }
     
+    
+    // MARK:  Show Views
     func showGagUsersForGag(gag: PFObject) {
         let gagUsersViewController = self.storyboard?.instantiateViewControllerWithIdentifier("gagUsers") as! GagUsersViewController
         gagUsersViewController.gag = gag

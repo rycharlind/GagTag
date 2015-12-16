@@ -56,6 +56,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
         PFPush.handlePush(userInfo)
         print(userInfo["gagId"])
+        
+        if let gagId = userInfo["gagId"] as? String {
+            self.showSingleGagView(gagId)
+        }
+        
+    }
+    
+    func showSingleGagView(gagId: String) {
+        let storyBoard : UIStoryboard = UIStoryboard(name: "Main", bundle:nil)
+
+        let vc = storyBoard.instantiateViewControllerWithIdentifier("singleGagView") as! SingleGagViewController
+        vc.gagId = gagId
+        //self.presentViewController(vc, animated: false, completion: nil)
+        self.window?.rootViewController?.presentViewController(vc, animated: true, completion: nil)
     }
 
     func applicationWillResignActive(application: UIApplication) {

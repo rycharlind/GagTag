@@ -355,7 +355,13 @@ class ParseHelper {
     static func getTagCountForGag(gag: PFObject, completionBlock: PFIntegerResultBlock) {
         let query = PFQuery(className: "GagUserTag")
         query.whereKey("gag", equalTo: gag)
-        query.countObjectsInBackgroundWithBlock(completionBlock)
+        
+        // Have to query for all gagUserTag objects and check if a chosenTag exists
+        // A GagUserTag record is created when tags are dealt.  It does not mean a user has chosen a tag
+        // So you CANNOT just count the number of records
+        //query.countObjectsInBackgroundWithBlock(completionBlock)
+        
+        
     }
     
     static func getMyTagsForGag(gag: PFObject, completionBlock: (tags: [PFObject]?) -> ()) {

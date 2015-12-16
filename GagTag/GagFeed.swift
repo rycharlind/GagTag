@@ -85,10 +85,10 @@ class GagFeedViewController: UIViewController, UITableViewDelegate, UITableViewD
         cell.labelUsername?.text = nil
         cell.labelTag?.text = nil
         cell?.buttonNumberOfTags.setTitle("", forState: .Normal)
+        cell?.buttonTag.hidden = false
         
         // Set gag object
         let gag = self.gags[indexPath.row] as PFObject
-        let allowedNumberOfTags = gag["allowedNumberOfTags"] as? Int
         cell?.gag = gag
         
         // Set username label
@@ -104,32 +104,48 @@ class GagFeedViewController: UIViewController, UITableViewDelegate, UITableViewD
             }
         })
         
-        let winningTag = gag["winningTag"] as? PFObject
-        if (winningTag != nil) {
-            cell.labelTag.text = "#" + (winningTag?["value"] as? String)!
-            cell.tagStatus = TagStatus.WinningTagChosen
+        
+        
+        if let winningTag = gag["winningTag"] {
+            let value = winningTag["value"] as! String
+            cell.labelTag.text = " #\(value)"
+            cell.tagStatus = .WinningTagChosen
+            cell.buttonTag.hidden = true
         } else {
             
-            // Query My Gag User Tag
-            ParseHelper.getMyGagUserTagObjectForGag(gag) {
-                (gagUserTag: PFObject?, error: NSError?) -> () in
-                if (gagUserTag != nil) {
-                    let chosenTag = gagUserTag?["chosenTag"] as? PFObject
-                    if (chosenTag != nil) {
-                        cell.labelTag.text = "#" + (chosenTag?["value"] as? String)!
-                        cell.tagStatus = TagStatus.DealtTagChosen
+            ParseHelper.getAllGagUserTagObjectsForGag(gag, completionBlock: {
+                (objects: [PFObject]?, error: NSError?) -> Void in
+                if (objects != nil) {
+                    
+                    // Count number of tags chosent
+                    var numberOfTagsChosen = 0
+                    for object in objects! {
+                        if let chosenTag = object["chosenTag"] {
+                            numberOfTagsChosen++
+                            
+                            //Check if currentUser has a chosenTag
+                            let user = object["user"] as! PFUser
+                            if (user.objectId == PFUser.currentUser()!.objectId) {
+                                let value = chosenTag["value"] as! String
+                                cell.labelTag.text = " #\(value)"
+                                cell.tagStatus = TagStatus.DealtTagChosen
+                                cell.buttonTag.hidden = true
+                            }
+                        }
                     }
+                    
+                    // Set buttonNumberOfTags text
+                    let allowedNumberOfTags = gag["allowedNumberOfTags"] as! Int
+                    cell?.buttonNumberOfTags.setTitle("\(numberOfTagsChosen) of \(allowedNumberOfTags)", forState: .Normal)
+                    
+                    
                 }
-            }
-            
-            // Check the count to see if allowedNumberOfTags is met
-            ParseHelper.getTagCountForGag(gag, completionBlock: {
-                (count: Int32, error: NSError?) -> Void in
-                cell?.buttonNumberOfTags.setTitle("\(count) of \(allowedNumberOfTags!)", forState: .Normal)
-                if (Int(count) == allowedNumberOfTags) {
-                    cell.tagStatus = TagStatus.AllowedNumberOfTagsChosen
+                
+                if (error != nil) {
+                    print(error)
                 }
             })
+
         }
         
         return cell
@@ -137,53 +153,25 @@ class GagFeedViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        
-        // Not sure why I have to use dispatch.  Explained in below StackOverflow
-        // http://stackoverflow.com/questions/26165700/uitableviewcell-selection-storyboard-segue-is-slow-double-tapping-works-though
-        
-        let cell = tableView.cellForRowAtIndexPath(indexPath) as! GagFeedCell
-        let tagStatus = cell.tagStatus
+
         let gag = self.gags[indexPath.row] as PFObject
         
-        print(gag)
-        
         dispatch_async(dispatch_get_main_queue(), {
-            
-            //self.showPreviewImageForImage(cell.gagImageView.image!)
             self.showSingleGagView(gag)
-            
         });
         
     }
     
     // MARK GagFeedDelegate
     func cell(cell: GagFeedCell, didTouchTagsButton tagStatus: TagStatus, gag: PFObject) {
-    
-        let tagStatus = cell.tagStatus
-        print(gag)
-        //self.showSingleGagView(gag)
-    
-        //dispatch_async(dispatch_get_main_queue(), {
-            
-            switch (tagStatus) {
-            case TagStatus.WinningTagChosen:
-                self.showGagUsersForGag(gag)
-            case .DealtTagChosen:
-                self.showGagUsersForGag(gag)
-            case .AllowedNumberOfTagsChosen:
-                self.showGagUsersForGag(gag)
-            case .None:
-                self.showDealtTagsForGag(gag)
-            }
-            
-        //});
-    
+        self.showDealtTagsForGag(gag)
     }
     
     func cell(cell: GagFeedCell, didTouchNumberOfTagsButton tagStatus: TagStatus, gag: PFObject) {
         self.showGagUsersForGag(gag)
     }
     
+    // MARK: Show Views
     func showSingleGagView(gag: PFObject) {
         let vc = self.storyboard?.instantiateViewControllerWithIdentifier("singleGagView") as! SingleGagViewController
         vc.gagId = gag.objectId!

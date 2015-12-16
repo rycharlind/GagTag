@@ -11,7 +11,6 @@ import Parse
 
 enum TagStatus {
     case DealtTagChosen
-    case AllowedNumberOfTagsChosen
     case WinningTagChosen
     case None
 }
@@ -50,8 +49,6 @@ class GagFeedCell: UITableViewCell {
             case .DealtTagChosen:
                 print("")
             case .WinningTagChosen:
-                print("")
-            case .AllowedNumberOfTagsChosen:
                 print("")
             case .None:
                 print("")

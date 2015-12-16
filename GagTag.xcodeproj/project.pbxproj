@@ -442,6 +442,11 @@
 					94460ED91B9A78DD009F254B = {
 						CreatedOnToolsVersion = 6.4;
 						DevelopmentTeam = X3Y7M2T64C;
+						SystemCapabilities = {
+							com.apple.Push = {
+								enabled = 1;
+							};
+						};
 					};
 					94460EEE1B9A78DD009F254B = {
 						CreatedOnToolsVersion = 6.4;
