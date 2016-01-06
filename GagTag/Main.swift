@@ -36,17 +36,28 @@ class MainViewController: UIViewController, UIPageViewControllerDataSource, PFLo
         let gagReelVC = self.storyboard?.instantiateViewControllerWithIdentifier("gagReel") as! GagReelViewController
         gagReelVC.mainNavDelegate = self
         
+        let notificationsVC = self.storyboard?.instantiateViewControllerWithIdentifier("notifications") as! NotificationsViewController
+        notificationsVC.mainNavDelegate = self
+        
         let cameraVC = self.storyboard?.instantiateViewControllerWithIdentifier("camera") as! CameraViewController
         cameraVC.mainNavDelegate = self
         
         let gagFeedVC = self.storyboard?.instantiateViewControllerWithIdentifier("gagFeed") as! GagFeedViewController
         gagFeedVC.mainNavDelegate = self
         
+        let discoverVC = self.storyboard?.instantiateViewControllerWithIdentifier("discover") as! DiscoverViewController
+        //notificationsVC.mainNavDelegate = self
+        
+        //let tableCollectionVC = self.storyboard?.instantiateViewControllerWithIdentifier("tableCollection") as! TableCollectionViewController
+        
         // Create an array of ViewController that the PageViewController will use as it's datasource
         self.viewControllers = [UIViewController]()
-        self.viewControllers.append(gagReelVC)
+        //self.viewControllers.append(gagReelVC)
+        self.viewControllers.append(notificationsVC)
         self.viewControllers.append(cameraVC)
-        self.viewControllers.append(gagFeedVC)
+        //self.viewControllers.append(gagFeedVC)
+        self.viewControllers.append(discoverVC)
+        //self.viewControllers.append(tableCollectionVC)
         
         // Get PageViewController from the storyboard and set the datasource to self
         self.pageViewController = self.storyboard?.instantiateViewControllerWithIdentifier("mainPageViewController") as! UIPageViewController

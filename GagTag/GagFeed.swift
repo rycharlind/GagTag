@@ -14,16 +14,34 @@ class GagFeedViewController: UIViewController, UITableViewDelegate, UITableViewD
     // MARK: Properties
     var gags : [PFObject]!
     var gagUserTag : PFObject!
+    var friends: [PFUser]!
     var mainNavDelegate : MainNavDelegate?
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var barButtonCamera: UIBarButtonItem!
     
-    // MARK: Actions
+    lazy var refreshControl: UIRefreshControl = {
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: "handleRefresh:", forControlEvents: UIControlEvents.ValueChanged)
+        
+        return refreshControl
+    }()
     
+    // MARK: Actions
     @IBAction func goToCamera(sender: AnyObject) {
         if let delegate = self.mainNavDelegate {
             delegate.goToController(1, direction: .Reverse, animated: true)
         }
+    }
+    
+    func handleRefresh(refreshControl: UIRefreshControl) {
+        ParseHelper.getMyGagFeed({
+            (objects: [PFObject]?, error: NSError?) -> Void in
+            if (objects != nil) {
+                self.gags = objects
+                self.tableView.reloadData()
+                self.refreshControl.endRefreshing()
+            }
+        })
     }
     
     override func viewDidLoad() {
@@ -33,6 +51,9 @@ class GagFeedViewController: UIViewController, UITableViewDelegate, UITableViewD
         self.gags = [PFObject]()
         self.navigationController?.navigationBar.tintColor = UIColor.red
         self.navigationController?.navigationBar.translucent = false
+        
+        // Add Refresh Control to TableView
+        self.tableView.addSubview(self.refreshControl)
                 
         if let font = UIFont(name: "googleicon", size: 20) {
             barButtonCamera.setTitleTextAttributes([NSFontAttributeName: font], forState: UIControlState.Normal)
@@ -42,13 +63,22 @@ class GagFeedViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
+        
         UIApplication.sharedApplication().setStatusBarHidden(false, withAnimation: UIStatusBarAnimation.None)
     }
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         
-        //self.queryGags()
+        /*
+        ParseHelper.getMyGagFeedForPageIndex(0, count: 25, friends: self.friends, completionBlock: {
+            (objects: [PFObject]?, error: NSError?) -> Void in
+            
+            
+        })
+        */
+        
+        
         ParseHelper.getMyGagFeed({
             (objects: [PFObject]?, error: NSError?) -> Void in
             if (objects != nil) {
@@ -56,6 +86,7 @@ class GagFeedViewController: UIViewController, UITableViewDelegate, UITableViewD
                 self.tableView.reloadData()
             }
         })
+        
     }
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
@@ -81,15 +112,18 @@ class GagFeedViewController: UIViewController, UITableViewDelegate, UITableViewD
         cell?.delegate = self
         
         // Default to nil to fix from displaying other tag in reused cell
-        cell?.imageView?.image = nil
+        cell?.gagImageView?.image = nil
         cell.labelUsername?.text = nil
         cell.labelTag?.text = nil
-        cell?.buttonNumberOfTags.setTitle("", forState: .Normal)
+        cell?.buttonUsersCount.setTitle("", forState: .Normal)
         cell?.buttonTag.hidden = false
         
         // Set gag object
         let gag = self.gags[indexPath.row] as PFObject
         cell?.gag = gag
+        
+        // Set allowedNumberOfTags
+        let allowedNumberOfTags = gag["allowedNumberOfTags"] as! Int
         
         // Set username label
         let user = gag["user"] as! PFObject
@@ -105,48 +139,75 @@ class GagFeedViewController: UIViewController, UITableViewDelegate, UITableViewD
         })
         
         
-        
         if let winningTag = gag["winningTag"] {
             let value = winningTag["value"] as! String
             cell.labelTag.text = " #\(value)"
-            cell.tagStatus = .WinningTagChosen
+            cell.gagState = GagState.Complete
             cell.buttonTag.hidden = true
-        } else {
-            
-            ParseHelper.getAllGagUserTagObjectsForGag(gag, completionBlock: {
-                (objects: [PFObject]?, error: NSError?) -> Void in
-                if (objects != nil) {
-                    
-                    // Count number of tags chosent
-                    var numberOfTagsChosen = 0
-                    for object in objects! {
-                        if let chosenTag = object["chosenTag"] {
-                            numberOfTagsChosen++
-                            
-                            //Check if currentUser has a chosenTag
-                            let user = object["user"] as! PFUser
+        }
+        
+        ParseHelper.getAllGagUserTagObjectsForGag(gag, limit: allowedNumberOfTags, completionBlock: {
+            (objects: [PFObject]?, error: NSError?) -> Void in
+            if (objects != nil) {
+                
+                // Set buttonNumberOfTags text
+                cell?.buttonUsersCount.setTitle("\(objects!.count) of \(allowedNumberOfTags)", forState: .Normal)
+                
+                
+                // Check Tags
+                if (objects?.count == allowedNumberOfTags) {
+                    if let _ = gag["winningTag"] {
+                        cell.gagState = GagState.Complete
+                    } else {
+                        let user = gag["user"] as! PFUser
+                        if (user.objectId == PFUser.currentUser()!.objectId) {
+                            cell.gagState = GagState.ChoseWinningTag
+                        } else {
+                            cell.gagState = GagState.Waiting
+                        }
+                    }
+                } else {
+                    let user = gag["user"] as! PFUser
+                    if (user.objectId == PFUser.currentUser()!.objectId) {
+                        cell.gagState = GagState.Waiting
+                    } else {
+                        cell.gagState = GagState.ChoseDealtTag
+                        for gagUserTag in objects! {
+                            let user = gagUserTag["user"] as! PFUser
                             if (user.objectId == PFUser.currentUser()!.objectId) {
-                                let value = chosenTag["value"] as! String
-                                cell.labelTag.text = " #\(value)"
-                                cell.tagStatus = TagStatus.DealtTagChosen
-                                cell.buttonTag.hidden = true
+                                cell.gagState = GagState.Waiting
                             }
                         }
                     }
-                    
-                    // Set buttonNumberOfTags text
-                    let allowedNumberOfTags = gag["allowedNumberOfTags"] as! Int
-                    cell?.buttonNumberOfTags.setTitle("\(numberOfTagsChosen) of \(allowedNumberOfTags)", forState: .Normal)
-                    
-                    
                 }
                 
-                if (error != nil) {
-                    print(error)
+                
+                /*
+                // Count number of tags chosent
+                var numberOfTagsChosen = 0
+                for object in objects! {
+                    if let chosenTag = object["chosenTag"] {
+                        numberOfTagsChosen++
+                        
+                        //Check if currentUser has a chosenTag
+                        let user = object["user"] as! PFUser
+                        if (user.objectId == PFUser.currentUser()!.objectId) {
+                            let value = chosenTag["value"] as! String
+                            cell.labelTag.text = " #\(value)"
+                            cell.tagStatus = TagStatus.DealtTagChosen
+                            cell.buttonTag.hidden = true
+                        }
+                    }
                 }
-            })
-
-        }
+                */
+                
+                
+            }
+            
+            if (error != nil) {
+                print(error)
+            }
+        })
         
         return cell
     
@@ -163,12 +224,12 @@ class GagFeedViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     // MARK GagFeedDelegate
-    func cell(cell: GagFeedCell, didTouchTagsButton tagStatus: TagStatus, gag: PFObject) {
-        self.showDealtTagsForGag(gag)
+    func didTouchTagsButton(cell: GagFeedCell) {
+        self.showDealtTagsForGag(cell.gag)
     }
     
-    func cell(cell: GagFeedCell, didTouchNumberOfTagsButton tagStatus: TagStatus, gag: PFObject) {
-        self.showGagUsersForGag(gag)
+    func didTouchUsersCountButton(cell: GagFeedCell) {
+        self.showGagUsersForGag(cell.gag)
     }
     
     // MARK: Show Views

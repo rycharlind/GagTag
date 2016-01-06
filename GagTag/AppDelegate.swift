@@ -18,7 +18,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
         
         // Initialize Parse.
-        Parse.enableLocalDatastore()
+        //Parse.enableLocalDatastore()
         Parse.setApplicationId("PghiqKrReweFO6PzSIJNIyKHVSDUSsTGqvBm00S6",
             clientKey: "9WQgGSHHIkSBWR3NmkMZEZfCqxnLmJAVflf0kZyf")
         
@@ -30,6 +30,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             print("font")
             UINavigationBar.appearance().titleTextAttributes = [NSFontAttributeName: font, NSForegroundColorAttributeName: UIColor.whiteColor()]
         }
+        UINavigationBar.appearance().translucent = false
         
         /*
         let pageController = UIPageControl.appearance()
@@ -37,7 +38,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         pageController.currentPageIndicatorTintColor = UIColor.blackColor()
         pageController.backgroundColor = UIColor.whiteColor()
         */
-        
         
         return true
     }
@@ -50,6 +50,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         installation.setDeviceTokenFromData(deviceToken)
         installation.setObject(PFUser.currentUser()!, forKey: "user")
         installation.saveInBackground()
+        
+    }
+    
+    func application(application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: NSError) {
+        
+        print("didRegisterForRemoteNotifications: \(error)")
         
     }
     

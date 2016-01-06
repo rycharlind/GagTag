@@ -62,7 +62,9 @@ class FriendRequestsViewController: UIViewController, UITableViewDelegate, UITab
         cell?.friendRequest = friendRequest
         cell?.delegate = self
         
+        
         let user = friendRequest["fromUser"] as! PFUser
+        print(user)
         cell?.labelUsername?.text = user["username"] as? String
         cell?.friend = user
         

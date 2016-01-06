@@ -214,7 +214,7 @@ class CameraViewController: UIViewController, CameraCapturedImageDelegate {
     }
     
     override func viewWillLayoutSubviews() {
-        previewLayer!.frame = previewView.bounds
+        //previewLayer!.frame = previewView.bounds
     }
     
     override func viewWillAppear(animated: Bool) {

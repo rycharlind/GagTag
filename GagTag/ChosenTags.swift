@@ -54,10 +54,10 @@ class ChosenTagsViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     override func viewDidAppear(animated: Bool) {
-        ParseHelper.getChosenTagsForGag(gag, completionBlock: {
+        let allowedNumberOfTags = self.gag["allowedNumberOfTags"] as! Int
+        ParseHelper.getChosenTagsForGag(gag, limit: allowedNumberOfTags, completionBlock: {
             (tags: [PFObject]?) -> Void in
             if (tags != nil) {
-                print(tags)
                 self.tags = tags
                 self.tableView.reloadData()
             }

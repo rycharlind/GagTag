@@ -53,6 +53,17 @@
 		94C210AF1BD5C3BD00C10513 /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 94C210AE1BD5C3BD00C10513 /* Bolts.framework */; };
 		94C210B11BD5C3C600C10513 /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 94C210B01BD5C3C600C10513 /* Parse.framework */; };
 		94C210B31BD5C3CD00C10513 /* ParseUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 94C210B21BD5C3CD00C10513 /* ParseUI.framework */; };
+		94C94E741C27A1E00051460E /* Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94C94E731C27A1E00051460E /* Notifications.swift */; };
+		94C94E761C27A1FF0051460E /* NotificationsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94C94E751C27A1FF0051460E /* NotificationsCell.swift */; };
+		94C94E791C2EFB900051460E /* Discover.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94C94E781C2EFB900051460E /* Discover.swift */; };
+		94C94E7B1C2EFBBF0051460E /* DiscoverCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94C94E7A1C2EFBBF0051460E /* DiscoverCell.swift */; };
+		94C94E7D1C3A17D60051460E /* DiscoverCellHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94C94E7C1C3A17D50051460E /* DiscoverCellHeader.swift */; };
+		94C94E811C3B87840051460E /* SingleImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94C94E801C3B87840051460E /* SingleImage.swift */; };
+		94C94E831C3B87D50051460E /* SingleRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94C94E821C3B87D50051460E /* SingleRow.swift */; };
+		94C94E851C3B882C0051460E /* MultiRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94C94E841C3B882C0051460E /* MultiRow.swift */; };
+		94C94E871C3B8A5B0051460E /* TableCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94C94E861C3B8A5B0051460E /* TableCollectionViewController.swift */; };
+		94C94E891C3C21E80051460E /* Medium.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94C94E881C3C21E80051460E /* Medium.swift */; };
+		94C94E8F1C3C2C580051460E /* Large.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94C94E8E1C3C2C580051460E /* Large.swift */; };
 		94CA25711BD5D9F400395C46 /* ParseHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94CA25701BD5D9F400395C46 /* ParseHelper.swift */; };
 		94E02CC41C1F2360008CBE30 /* DealtTagsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94E02CC31C1F2360008CBE30 /* DealtTagsCell.swift */; };
 		94E680101BCCA5EC00D24344 /* Main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94E6800F1BCCA5EC00D24344 /* Main.swift */; };
@@ -126,6 +137,17 @@
 		94C210AE1BD5C3BD00C10513 /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Bolts.framework; sourceTree = "<group>"; };
 		94C210B01BD5C3C600C10513 /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Parse.framework; sourceTree = "<group>"; };
 		94C210B21BD5C3CD00C10513 /* ParseUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ParseUI.framework; sourceTree = "<group>"; };
+		94C94E731C27A1E00051460E /* Notifications.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Notifications.swift; sourceTree = "<group>"; };
+		94C94E751C27A1FF0051460E /* NotificationsCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationsCell.swift; sourceTree = "<group>"; };
+		94C94E781C2EFB900051460E /* Discover.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Discover.swift; sourceTree = "<group>"; };
+		94C94E7A1C2EFBBF0051460E /* DiscoverCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscoverCell.swift; sourceTree = "<group>"; };
+		94C94E7C1C3A17D50051460E /* DiscoverCellHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscoverCellHeader.swift; sourceTree = "<group>"; };
+		94C94E801C3B87840051460E /* SingleImage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleImage.swift; sourceTree = "<group>"; };
+		94C94E821C3B87D50051460E /* SingleRow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleRow.swift; sourceTree = "<group>"; };
+		94C94E841C3B882C0051460E /* MultiRow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultiRow.swift; sourceTree = "<group>"; };
+		94C94E861C3B8A5B0051460E /* TableCollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableCollectionViewController.swift; sourceTree = "<group>"; };
+		94C94E881C3C21E80051460E /* Medium.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Medium.swift; sourceTree = "<group>"; };
+		94C94E8E1C3C2C580051460E /* Large.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Large.swift; sourceTree = "<group>"; };
 		94CA25701BD5D9F400395C46 /* ParseHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParseHelper.swift; sourceTree = "<group>"; };
 		94E02CC31C1F2360008CBE30 /* DealtTagsCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DealtTagsCell.swift; sourceTree = "<group>"; };
 		94E6800F1BCCA5EC00D24344 /* Main.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Main.swift; sourceTree = "<group>"; };
@@ -231,6 +253,8 @@
 			isa = PBXGroup;
 			children = (
 				946FF4381C1E1CE200077EDC /* SingleGag.swift */,
+				94C94E771C2EFB6B0051460E /* Discover */,
+				94C94E721C27A1BF0051460E /* Notifications */,
 				940E78FD1C05189E00216414 /* GagReel */,
 				940E78FC1C05189000216414 /* GagFeed */,
 			);
@@ -354,6 +378,55 @@
 				940E78FE1C0527A200216414 /* CameraCapturedImage.swift */,
 			);
 			name = Camera;
+			sourceTree = "<group>";
+		};
+		94C94E721C27A1BF0051460E /* Notifications */ = {
+			isa = PBXGroup;
+			children = (
+				94C94E731C27A1E00051460E /* Notifications.swift */,
+				94C94E751C27A1FF0051460E /* NotificationsCell.swift */,
+			);
+			name = Notifications;
+			sourceTree = "<group>";
+		};
+		94C94E771C2EFB6B0051460E /* Discover */ = {
+			isa = PBXGroup;
+			children = (
+				94C94E8B1C3C22160051460E /* Orig */,
+				94C94E861C3B8A5B0051460E /* TableCollectionViewController.swift */,
+				94C94E8C1C3C22390051460E /* Table Cells */,
+				94C94E8A1C3C21F60051460E /* Collection Cells */,
+			);
+			name = Discover;
+			sourceTree = "<group>";
+		};
+		94C94E8A1C3C21F60051460E /* Collection Cells */ = {
+			isa = PBXGroup;
+			children = (
+				94C94E881C3C21E80051460E /* Medium.swift */,
+				94C94E8E1C3C2C580051460E /* Large.swift */,
+			);
+			name = "Collection Cells";
+			sourceTree = "<group>";
+		};
+		94C94E8B1C3C22160051460E /* Orig */ = {
+			isa = PBXGroup;
+			children = (
+				94C94E781C2EFB900051460E /* Discover.swift */,
+				94C94E7A1C2EFBBF0051460E /* DiscoverCell.swift */,
+				94C94E7C1C3A17D50051460E /* DiscoverCellHeader.swift */,
+			);
+			name = Orig;
+			sourceTree = "<group>";
+		};
+		94C94E8C1C3C22390051460E /* Table Cells */ = {
+			isa = PBXGroup;
+			children = (
+				94C94E801C3B87840051460E /* SingleImage.swift */,
+				94C94E821C3B87D50051460E /* SingleRow.swift */,
+				94C94E841C3B882C0051460E /* MultiRow.swift */,
+			);
+			name = "Table Cells";
 			sourceTree = "<group>";
 		};
 		94E02CC21C1F233D008CBE30 /* DealtTags */ = {
@@ -499,21 +572,27 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				94C94E831C3B87D50051460E /* SingleRow.swift in Sources */,
 				94E680101BCCA5EC00D24344 /* Main.swift in Sources */,
 				94BACD241BC84CC9000A2671 /* TutorialViewController.swift in Sources */,
+				94C94E891C3C21E80051460E /* Medium.swift in Sources */,
 				94F3B7A41C040C1C006DFDBE /* MKColor.swift in Sources */,
 				94F3B79F1C040C1C006DFDBE /* MKTextField.swift in Sources */,
 				946FF4371C1BBC2C00077EDC /* NotifyFriendsCell.swift in Sources */,
 				94ACFB9D1C039BAF00ADB3F1 /* GagReelCell.swift in Sources */,
 				943915EC1BC20F66000244F1 /* FriendRequests.swift in Sources */,
+				94C94E7D1C3A17D60051460E /* DiscoverCellHeader.swift in Sources */,
+				94C94E871C3B8A5B0051460E /* TableCollectionViewController.swift in Sources */,
 				943915EA1BC20D08000244F1 /* FriendsMenu.swift in Sources */,
 				943915EE1BC230BC000244F1 /* FriendRequestCell.swift in Sources */,
+				94C94E791C2EFB900051460E /* Discover.swift in Sources */,
 				943915F61BC349DF000244F1 /* GagFeed.swift in Sources */,
 				94CA25711BD5D9F400395C46 /* ParseHelper.swift in Sources */,
 				946CEAA51BAA1D620049313C /* DealtTags.swift in Sources */,
 				94F3B7A01C040C1C006DFDBE /* MKTableViewCell.swift in Sources */,
 				946FF4391C1E1CE200077EDC /* SingleGag.swift in Sources */,
 				94460F3F1B9E1DB6009F254B /* Gag.swift in Sources */,
+				94C94E741C27A1E00051460E /* Notifications.swift in Sources */,
 				943915E61BBE3F71000244F1 /* User.swift in Sources */,
 				949AF9711BA293C90066CDBD /* GagReel.swift in Sources */,
 				94AC18481BAF9D9B00EC160F /* FindFriendsCell.swift in Sources */,
@@ -522,15 +601,20 @@
 				946FF4351C1BA84D00077EDC /* NotifyFriends.swift in Sources */,
 				94F3B7A11C040C1C006DFDBE /* MKLabel.swift in Sources */,
 				9459CC2F1BFEC8830059CCBF /* PreviewImageView.swift in Sources */,
+				94C94E8F1C3C2C580051460E /* Large.swift in Sources */,
 				949AE6B41BA071F6001ACEEE /* LogIn.swift in Sources */,
 				94BACD261BC84E02000A2671 /* ContentViewController.swift in Sources */,
+				94C94E811C3B87840051460E /* SingleImage.swift in Sources */,
 				94E02CC41C1F2360008CBE30 /* DealtTagsCell.swift in Sources */,
 				94AC18461BAF929A00EC160F /* FindFriends.swift in Sources */,
 				948471021BACD04300C2BC71 /* GagUsers.swift in Sources */,
 				9418DE981C03BEF0006AC84D /* ChosenTags.swift in Sources */,
+				94C94E851C3B882C0051460E /* MultiRow.swift in Sources */,
+				94C94E7B1C2EFBBF0051460E /* DiscoverCell.swift in Sources */,
 				94F3B7A21C040C1C006DFDBE /* MKImageView.swift in Sources */,
 				94ACFB9B1C02B5A700ADB3F1 /* NumberOfTags.swift in Sources */,
 				943915F41BC341ED000244F1 /* MyFriends.swift in Sources */,
+				94C94E761C27A1FF0051460E /* NotificationsCell.swift in Sources */,
 				943915F91BC34B1B000244F1 /* GagFeedCell.swift in Sources */,
 				949AE6B61BA074CE001ACEEE /* Users.swift in Sources */,
 				94F3B7A31C040C1C006DFDBE /* MKLayer.swift in Sources */,

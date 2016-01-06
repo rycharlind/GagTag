@@ -51,6 +51,7 @@ class ParseHelper {
     static func getFriendsForUser(user: PFUser, completionBlock: PFQueryArrayResultBlock) {
         let query = PFQuery(className: "Friends")
         query.whereKey("user", equalTo: PFUser.currentUser()!)
+        query.cachePolicy = PFCachePolicy.CacheElseNetwork
         query.getFirstObjectInBackgroundWithBlock({
             (object: PFObject?, error: NSError?) -> Void in
             if (error == nil) {
@@ -64,6 +65,7 @@ class ParseHelper {
     }
     
     // Query all friends
+    // Retun in Dictionary format
     static func getFriendsDictionaryForUser(user: PFUser, completionBlock: (userDict: [String:[PFUser]]) -> ()) -> PFQuery {
         let query = PFQuery(className: "Friends")
         query.whereKey("user", equalTo: PFUser.currentUser()!)
@@ -263,6 +265,7 @@ class ParseHelper {
         query.whereKey("user", equalTo: PFUser.currentUser()!)
         query.includeKey("winningTag")
         query.orderByDescending("createdAt")
+        query.cachePolicy = PFCachePolicy.CacheElseNetwork
         query.findObjectsInBackgroundWithBlock(completionBlock)
     }
     
@@ -271,15 +274,33 @@ class ParseHelper {
             (objects: [PFObject]?, error: NSError?) -> Void in
             if (error == nil){
                 let query = PFQuery(className: "Gag")
+                
                 query.whereKey("user", containedIn: objects!)
                 query.includeKey("winningTag")
                 query.includeKey("user")
                 query.orderByDescending("createdAt")
+                query.cachePolicy = PFCachePolicy.CacheElseNetwork
+                //query.limit = 12
+                
                 query.findObjectsInBackgroundWithBlock(completionBlock)
             } else {
                 print(error)
             }
         })
+    }
+    
+    static func getMyGagFeedForPageIndex(pageIndex: Int, count: Int, friends: [PFObject], completionBlock: PFQueryArrayResultBlock) {
+        
+        let query = PFQuery(className: "Gag")
+        query.limit = count;
+        query.skip  = pageIndex * (count + 1);
+        query.whereKey("user", containedIn: friends)
+        query.includeKey("winningTag")
+        query.includeKey("user")
+        query.orderByDescending("createdAt")
+        query.findObjectsInBackgroundWithBlock(completionBlock)
+    
+    
     }
     
     static func saveImage(image: UIImage, numberOfTags: Int, friends: [PFUser], completionBlock: PFBooleanResultBlock, progressBlock: (percentDone: Int32) ->()) {
@@ -310,6 +331,22 @@ class ParseHelper {
         })
     }
     
+    static func getMyNotifications(completionBlock: PFQueryArrayResultBlock) {
+
+        let queryGagsToMe = PFQuery(className: "Gag")
+        queryGagsToMe.whereKey("friends", equalTo: PFUser.currentUser()!)
+        
+        let queryGagsFromMe = PFQuery(className: "Gag")
+        queryGagsFromMe.whereKey("user", equalTo: PFUser.currentUser()!)
+        
+        let query = PFQuery.orQueryWithSubqueries([queryGagsToMe, queryGagsFromMe])
+        query.cachePolicy = PFCachePolicy.CacheElseNetwork
+        query.includeKey("user")
+        query.orderByDescending("createdAt")
+        query.findObjectsInBackgroundWithBlock(completionBlock)
+    
+    }
+    
     // MARK: Tags
     static func getMyGagUserTagObjectForGag(gag: PFObject, completionBlock: (gagUserTag: PFObject?, error: NSError?) ->()) {
         let query = PFQuery(className: "GagUserTag")
@@ -336,13 +373,47 @@ class ParseHelper {
         })
     }
     
+    // GET - All GagUserTag objects
     static func getAllGagUserTagObjectsForGag(gag: PFObject, completionBlock: PFQueryArrayResultBlock) {
         let query = PFQuery(className: "GagUserTag")
+        query.cachePolicy = PFCachePolicy.CacheElseNetwork
         query.whereKey("gag", equalTo: gag)
         query.includeKey("user")
         query.includeKey("dealtTags")
         query.includeKey("chosenTag")
         query.findObjectsInBackgroundWithBlock(completionBlock)
+    }
+    
+    // GET - All GagUserTag objects with limit and chosenTag exists ordered by createdAt
+    static func getAllGagUserTagObjectsForGag(gag: PFObject, limit: Int, completionBlock: PFQueryArrayResultBlock) {
+        let query = PFQuery(className: "GagUserTag")
+        query.cachePolicy = PFCachePolicy.CacheElseNetwork
+        query.whereKey("gag", equalTo: gag)
+        query.limit = limit
+        query.orderByAscending("createdAt")
+        query.whereKeyExists("chosenTag")
+        query.includeKey("user")
+        query.includeKey("dealtTags")
+        query.includeKey("chosenTag")
+        query.findObjectsInBackgroundWithBlock(completionBlock)
+    }
+    
+    // GET - Winning User
+    static func getWinningUserForGag(gag: PFObject, completionBlock: (user: PFUser?) -> ()) {
+        let winningTag = gag["winningTag"] as! PFObject
+        ParseHelper.getAllGagUserTagObjectsForGag(gag, completionBlock: {
+            (objects: [PFObject]?, error: NSError?) -> Void in
+            if (objects != nil) {
+                for object in objects! {
+                    if let chosenTag = object["chosenTag"] {
+                        if (winningTag.objectId == chosenTag.objectId) {
+                            let user = object["user"] as! PFUser
+                            completionBlock(user: user)
+                        }
+                    }
+                }
+            }
+        })
     }
     
     static func getAllTagsExcludingDealtTagsObjectIds(dealtsTagsObjectIds: [String], completionBlock: PFQueryArrayResultBlock) {
@@ -428,9 +499,11 @@ class ParseHelper {
         return tempTags
     }
     
-    static func getChosenTagsForGag(gag: PFObject, completionBlock: (tags: [PFObject]?) -> ()) {
+    static func getChosenTagsForGag(gag: PFObject, limit: Int, completionBlock: (tags: [PFObject]?) -> ()) {
         let query = PFQuery(className: "GagUserTag")
         query.whereKey("gag", equalTo: gag)
+        query.whereKeyExists("chosenTag")
+        query.limit = limit
         query.includeKey("chosenTag")
         query.findObjectsInBackgroundWithBlock({
             (objects: [PFObject]?, error: NSError?) -> Void in

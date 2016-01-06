@@ -19,11 +19,29 @@ class GagReelViewController: UIViewController, UITableViewDelegate, UITableViewD
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var barButtonCamera: UIBarButtonItem!
     
+    lazy var refreshControl: UIRefreshControl = {
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: "handleRefresh:", forControlEvents: UIControlEvents.ValueChanged)
+        
+        return refreshControl
+    }()
+    
     // MARK: Actions
     @IBAction func goToCamera(sender: AnyObject) {
         if let delegate = self.mainNavDelegate {
             delegate.goToController(1, direction: .Forward, animated: true)
         }
+    }
+    
+    func handleRefresh(refreshControl: UIRefreshControl) {
+        ParseHelper.getMyGags({
+            (objects: [PFObject]?, error: NSError?) -> Void in
+            if (objects != nil) {
+                self.gags = objects
+                self.tableView.reloadData()
+                self.refreshControl.endRefreshing()
+            }
+        })
     }
     
     override func viewDidLoad() {
@@ -32,11 +50,14 @@ class GagReelViewController: UIViewController, UITableViewDelegate, UITableViewD
         // Do any additional setup after loading the view.
         self.gags = [PFObject]()
         
+        self.tableView.addSubview(self.refreshControl)
     
         if let font = UIFont(name: "googleicon", size: 26) {
             barButtonCamera.setTitleTextAttributes([NSFontAttributeName: font], forState: UIControlState.Normal)
             barButtonCamera.title = GoogleIcon.ea3e
         }
+        
+        
         
     }
     
