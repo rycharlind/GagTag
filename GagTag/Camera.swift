@@ -22,7 +22,7 @@ enum CameraViewStatus {
     case Running, Preview
 }
 
-class CameraViewController: UIViewController, CameraCapturedImageDelegate {
+class CameraViewController: UIViewController {
     
     // MARK: Properites
     var mainNavDelegate: MainNavDelegate?
@@ -101,8 +101,13 @@ class CameraViewController: UIViewController, CameraCapturedImageDelegate {
         
         captureSession?.beginConfiguration()
         
-        let currentCamerInput: AVCaptureInput = captureSession?.inputs[0] as! AVCaptureInput
-        captureSession?.removeInput(currentCamerInput)
+        for ii in captureSession!.inputs {
+            print("remove")
+            captureSession!.removeInput(ii as! AVCaptureInput)
+        }
+        
+        //let currentCamerInput: AVCaptureInput = captureSession?.inputs[0] as! AVCaptureInput
+        //captureSession?.removeInput(currentCamerInput)
         
         let newCamera: AVCaptureDevice?
         if (captureDevice!.position == AVCaptureDevicePosition.Back) {
@@ -124,6 +129,7 @@ class CameraViewController: UIViewController, CameraCapturedImageDelegate {
             input = nil
         }
     
+        print("2")
         if error == nil && captureSession!.canAddInput(input) {
             captureSession!.addInput(input)
         }
@@ -157,6 +163,7 @@ class CameraViewController: UIViewController, CameraCapturedImageDelegate {
     
     
     func cameraWithPosition(position: AVCaptureDevicePosition) -> AVCaptureDevice {
+        print("camera with position")
         let devices = AVCaptureDevice.devices()
         for device in devices {
             if(device.position == position){
@@ -181,7 +188,7 @@ class CameraViewController: UIViewController, CameraCapturedImageDelegate {
         
         // Camera Set
         captureSession = AVCaptureSession()
-        captureSession!.sessionPreset = AVCaptureSessionPresetPhoto
+        captureSession!.sessionPreset = AVCaptureSessionPreset1920x1080
         captureDevice = AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeVideo)
         var error: NSError?
         var input: AVCaptureDeviceInput!
@@ -214,7 +221,7 @@ class CameraViewController: UIViewController, CameraCapturedImageDelegate {
     }
     
     override func viewWillLayoutSubviews() {
-        //previewLayer!.frame = previewView.bounds
+        previewLayer!.frame = previewView.bounds
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -226,9 +233,10 @@ class CameraViewController: UIViewController, CameraCapturedImageDelegate {
         super.viewDidAppear(animated)
     }
     
-    // MARK: CameraCapturedViewDelegate
-    func buttonNextTouched(sender: AnyObject, image: UIImage, numberOfTags: Int) {
-        //self.saveImage(image, numberOfTags: numberOfTags)
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        UIApplication.sharedApplication().setStatusBarHidden(false, withAnimation: UIStatusBarAnimation.None)
     }
     
     func showSettings() {
@@ -241,7 +249,7 @@ class CameraViewController: UIViewController, CameraCapturedImageDelegate {
     func showCameraCapturedImage(image: UIImage) {
         let vc = self.storyboard?.instantiateViewControllerWithIdentifier("cameraCapturedView") as! CameraCapturedImageViewController
         vc.image = image
-        vc.delegate = self
+        //vc.delegate = self
         self.presentViewController(vc, animated: false, completion: nil)
     }
 

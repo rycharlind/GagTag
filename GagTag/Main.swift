@@ -22,7 +22,7 @@ protocol MainNavDelegate {
     func goToController(index: Int, direction: UIPageViewControllerNavigationDirection, animated: Bool)
 }
 
-class MainViewController: UIViewController, UIPageViewControllerDataSource, PFLogInViewControllerDelegate, PFSignUpViewControllerDelegate, MainNavDelegate {
+class MainViewController: UIViewController,UIPageViewControllerDelegate, UIPageViewControllerDataSource, PFLogInViewControllerDelegate, PFSignUpViewControllerDelegate, MainNavDelegate {
     
     var pageViewController : UIPageViewController!
     var viewControllers : [UIViewController]!
@@ -46,7 +46,7 @@ class MainViewController: UIViewController, UIPageViewControllerDataSource, PFLo
         gagFeedVC.mainNavDelegate = self
         
         let discoverVC = self.storyboard?.instantiateViewControllerWithIdentifier("discover") as! DiscoverViewController
-        //notificationsVC.mainNavDelegate = self
+        discoverVC.mainNavDelegate = self
         
         //let tableCollectionVC = self.storyboard?.instantiateViewControllerWithIdentifier("tableCollection") as! TableCollectionViewController
         
@@ -67,6 +67,7 @@ class MainViewController: UIViewController, UIPageViewControllerDataSource, PFLo
         // Set the starting ViewContrller for the PageViewController
         let starterViewControllerArray = NSArray(object: cameraVC)
         self.pageViewController.setViewControllers(starterViewControllerArray as? [UIViewController], direction: .Forward, animated: true, completion: nil)
+        self.pageViewController.delegate = self
         
         // Add the PageViewController to self
         self.addChildViewController(self.pageViewController)
@@ -173,9 +174,15 @@ class MainViewController: UIViewController, UIPageViewControllerDataSource, PFLo
        
     }
     
+    func pageViewController(pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
+        
+        print("Page Index: \(self.currentPageIndex)")
+    }
+    
+    
     override func prefersStatusBarHidden() -> Bool {
         
-        print(self.currentPageIndex)
+        //print(self.currentPageIndex)
         
         if (self.currentPageIndex != 1) {
             return false

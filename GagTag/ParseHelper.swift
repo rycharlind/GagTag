@@ -249,10 +249,11 @@ class ParseHelper {
     static func getGagWithId(id: String, completionBlock: PFObjectResultBlock) {
         let query = PFQuery(className:"Gag")
         query.includeKey("user")
+        query.includeKey("winningTag")
         query.getObjectInBackgroundWithId(id) {
             (object: PFObject?, error: NSError?) -> Void in
             if error == nil && object != nil {
-                print(object)
+                //print(object)
                 completionBlock(object, error)
             } else {
                 print(error)
@@ -265,7 +266,7 @@ class ParseHelper {
         query.whereKey("user", equalTo: PFUser.currentUser()!)
         query.includeKey("winningTag")
         query.orderByDescending("createdAt")
-        query.cachePolicy = PFCachePolicy.CacheElseNetwork
+        query.cachePolicy = PFCachePolicy.CacheThenNetwork
         query.findObjectsInBackgroundWithBlock(completionBlock)
     }
     
@@ -279,7 +280,7 @@ class ParseHelper {
                 query.includeKey("winningTag")
                 query.includeKey("user")
                 query.orderByDescending("createdAt")
-                query.cachePolicy = PFCachePolicy.CacheElseNetwork
+                query.cachePolicy = PFCachePolicy.CacheThenNetwork
                 //query.limit = 12
                 
                 query.findObjectsInBackgroundWithBlock(completionBlock)
@@ -340,7 +341,7 @@ class ParseHelper {
         queryGagsFromMe.whereKey("user", equalTo: PFUser.currentUser()!)
         
         let query = PFQuery.orQueryWithSubqueries([queryGagsToMe, queryGagsFromMe])
-        query.cachePolicy = PFCachePolicy.CacheElseNetwork
+        query.cachePolicy = PFCachePolicy.CacheThenNetwork
         query.includeKey("user")
         query.orderByDescending("createdAt")
         query.findObjectsInBackgroundWithBlock(completionBlock)
@@ -387,7 +388,7 @@ class ParseHelper {
     // GET - All GagUserTag objects with limit and chosenTag exists ordered by createdAt
     static func getAllGagUserTagObjectsForGag(gag: PFObject, limit: Int, completionBlock: PFQueryArrayResultBlock) {
         let query = PFQuery(className: "GagUserTag")
-        query.cachePolicy = PFCachePolicy.CacheElseNetwork
+        query.cachePolicy = PFCachePolicy.CacheThenNetwork
         query.whereKey("gag", equalTo: gag)
         query.limit = limit
         query.orderByAscending("createdAt")
@@ -451,7 +452,7 @@ class ParseHelper {
                     for object in objects! {
                         let tags = object["dealtTags"] as! [PFObject]
                         dealtTags += tags
-                        print(object)
+                        //print(object)
                     }
                     
                     // append object ids to string array for query

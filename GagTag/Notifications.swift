@@ -65,7 +65,7 @@ class NotificationsViewController: UIViewController, UITableViewDelegate, UITabl
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        UIApplication.sharedApplication().setStatusBarHidden(false, withAnimation: UIStatusBarAnimation.None)
+        //UIApplication.sharedApplication().setStatusBarHidden(false, withAnimation: UIStatusBarAnimation.None)
     }
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {

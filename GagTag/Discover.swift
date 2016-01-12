@@ -17,6 +17,7 @@ class DiscoverViewController: UIViewController, UICollectionViewDelegate, UIColl
     
     var gags: [PFObject]!
     var sections: [String]!
+    var mainNavDelegate : MainNavDelegate?
     
     lazy var refreshControl: UIRefreshControl = {
         let refreshControl = UIRefreshControl()
@@ -36,11 +37,31 @@ class DiscoverViewController: UIViewController, UICollectionViewDelegate, UIColl
         })
     }
     
+    // MARK: Actions
+    @IBAction func goToCamera(sender: AnyObject) {
+        print("sup")
+        if let delegate = self.mainNavDelegate {
+            delegate.goToController(1, direction: .Reverse, animated: true)
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
         self.gags = [PFObject]()
+        
+        /*
+        ParseHelper.getMyGags({
+            (objects: [PFObject]?, error: NSError?) -> Void in
+            if (objects != nil) {
+                self.gags = objects
+                self.collectionView.reloadData()
+            }
+        })
+        */
+        
+        
         ParseHelper.getMyGagFeed({
             (objects: [PFObject]?, error: NSError?) -> Void in
             if (objects != nil) {
@@ -48,6 +69,7 @@ class DiscoverViewController: UIViewController, UICollectionViewDelegate, UIColl
                 self.collectionView.reloadData()
             }
         })
+        
         
         // Add Refresh Control to TableView
         self.collectionView.addSubview(self.refreshControl)
@@ -65,12 +87,11 @@ class DiscoverViewController: UIViewController, UICollectionViewDelegate, UIColl
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        UIApplication.sharedApplication().setStatusBarHidden(false, withAnimation: UIStatusBarAnimation.None)
+        //UIApplication.sharedApplication().setStatusBarHidden(false, withAnimation: UIStatusBarAnimation.None)
     }
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
-    
 
     }
     
@@ -125,25 +146,11 @@ class DiscoverViewController: UIViewController, UICollectionViewDelegate, UIColl
         
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("discoverCell", forIndexPath: indexPath) as! DiscoverCell
         
-        cell.imageView?.image = nil
-        
         // Set gag object
         let gag = self.gags[indexPath.row] as PFObject
         
         // Query Gag image
-        let pfimage = gag["image"] as! PFFile
-        
-        if (pfimage.isDataAvailable) {
-            print("Has Data")
-        }
-        
-        pfimage.getDataInBackgroundWithBlock({
-            (result, error) in
-            if (result != nil) {
-                cell.imageView.image = UIImage(data: result!)
-            }
-        })
-    
+        cell.pfImage = gag["image"] as! PFFile
         
         return cell
         

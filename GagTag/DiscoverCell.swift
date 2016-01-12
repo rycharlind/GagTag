@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Parse
 
 class DiscoverCell: UICollectionViewCell {
     
@@ -16,6 +17,26 @@ class DiscoverCell: UICollectionViewCell {
         super.awakeFromNib()
         
         //self.backgroundColor = UIColor.MKColor.BlueGrey
+    }
+    
+    var pfImage: PFFile? {
+        didSet {
+            if let f = pfImage {
+                pfImage?.getDataInBackgroundWithBlock({
+                    (result, error) in
+                    if (result != nil) {
+                        self.imageView.image = UIImage(data: result!)
+                    }
+                })
+            }
+        }
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        if let f = pfImage {
+            f.cancel()
+        }
     }
     
 }
