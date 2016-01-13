@@ -101,21 +101,18 @@ class CameraViewController: UIViewController {
         
         captureSession?.beginConfiguration()
         
+        // Need to set this to PresetPhoto otherwise the canAddInput fails
+        captureSession?.sessionPreset = AVCaptureSessionPresetPhoto
+        
         for ii in captureSession!.inputs {
-            print("remove")
             captureSession!.removeInput(ii as! AVCaptureInput)
         }
         
-        //let currentCamerInput: AVCaptureInput = captureSession?.inputs[0] as! AVCaptureInput
-        //captureSession?.removeInput(currentCamerInput)
-        
         let newCamera: AVCaptureDevice?
         if (captureDevice!.position == AVCaptureDevicePosition.Back) {
-            print("Setting new camera with Front")
             newCamera = self.cameraWithPosition(AVCaptureDevicePosition.Front)
             buttonToggleCamera.setTitle(GoogleIcon.ea43, forState: .Normal)
         } else {
-            print("Setting new camera with Back")
             newCamera = self.cameraWithPosition(AVCaptureDevicePosition.Back)
             buttonToggleCamera.setTitle(GoogleIcon.ea41, forState: .Normal)
         }
@@ -129,15 +126,29 @@ class CameraViewController: UIViewController {
             input = nil
         }
     
-        print("2")
         if error == nil && captureSession!.canAddInput(input) {
             captureSession!.addInput(input)
         }
+        
+        captureSession?.sessionPreset = self.getSessionPreset()
         
         captureDevice! = newCamera!
         
         captureSession?.commitConfiguration()
         
+    }
+    
+    func getSessionPreset() -> String {
+        if (captureSession!.canSetSessionPreset(AVCaptureSessionPreset1920x1080)) {
+            print("1920x1080")
+            return AVCaptureSessionPreset1920x1080
+        } else if (captureSession!.canSetSessionPreset(AVCaptureSessionPreset1280x720)) {
+            print("1280x720")
+            return AVCaptureSessionPreset1280x720
+        } else {
+            print("Photo")
+            return AVCaptureSessionPresetPhoto
+        }
     }
     
     @IBAction func buttonToggleFlashTouch(sender: AnyObject) {
@@ -163,10 +174,10 @@ class CameraViewController: UIViewController {
     
     
     func cameraWithPosition(position: AVCaptureDevicePosition) -> AVCaptureDevice {
-        print("camera with position")
         let devices = AVCaptureDevice.devices()
         for device in devices {
-            if(device.position == position){
+            if(device.position == position) {
+                print("Found Position: \(position)")
                 return device as! AVCaptureDevice
             }
         }
@@ -188,7 +199,7 @@ class CameraViewController: UIViewController {
         
         // Camera Set
         captureSession = AVCaptureSession()
-        captureSession!.sessionPreset = AVCaptureSessionPreset1920x1080
+        captureSession!.sessionPreset = self.getSessionPreset()
         captureDevice = AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeVideo)
         var error: NSError?
         var input: AVCaptureDeviceInput!

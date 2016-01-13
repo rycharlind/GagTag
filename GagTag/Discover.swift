@@ -51,17 +51,6 @@ class DiscoverViewController: UIViewController, UICollectionViewDelegate, UIColl
         // Do any additional setup after loading the view.
         self.gags = [PFObject]()
         
-        /*
-        ParseHelper.getMyGags({
-            (objects: [PFObject]?, error: NSError?) -> Void in
-            if (objects != nil) {
-                self.gags = objects
-                self.collectionView.reloadData()
-            }
-        })
-        */
-        
-        
         ParseHelper.getMyGagFeed({
             (objects: [PFObject]?, error: NSError?) -> Void in
             if (objects != nil) {

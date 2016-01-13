@@ -42,7 +42,6 @@ class SingleGagViewController: UIViewController {
     
     var gag: PFObject = PFObject(className: "Gag") {
         didSet {
-            print("Set Gag")
             self.allowedNumberOfTags = self.gag["allowedNumberOfTags"] as! Int
             
             // Username
@@ -61,17 +60,18 @@ class SingleGagViewController: UIViewController {
             // Check for winningTag
             if let winningTag = gag["winningTag"] {
                 let value = winningTag["value"] as! String
+                
                 self.labelChosenOrWinningTag.text = "#\(value)"
                 self.labelChosenOrWinningTag.hidden = false
                 self.gagState = GagState.Complete
             }
-            
             
             // Image
             let pfimage = gag["image"] as! PFFile
             pfimage.getDataInBackgroundWithBlock({
                 (result, error) in
                 if (result != nil) {
+                    print("got image")
                     self.imageView.image = UIImage(data: result!)
                 }
             })
@@ -79,7 +79,9 @@ class SingleGagViewController: UIViewController {
             // GagUserTags
             ParseHelper.getAllGagUserTagObjectsForGag(self.gag, limit: self.allowedNumberOfTags, completionBlock: {
                 (objects: [PFObject]?, error: NSError?) -> Void in
-                self.gagUserTags = objects!
+                if (objects != nil) {
+                    self.gagUserTags = objects!
+                }
             })
         }
     }
@@ -87,8 +89,6 @@ class SingleGagViewController: UIViewController {
     var gagUserTags: [PFObject] = [PFObject]() {
         didSet {
             print("Set GagUserTags")
-            // Set labelUsersCount
-            //self.labelUsersCount.text = "\(gagUserTags.count) of \(allowedNumberOfTags)"
             
             // Set labelUsers
             var text = ""
@@ -158,7 +158,6 @@ class SingleGagViewController: UIViewController {
                         }
                     }
                 }
-                
             }
         }
     }
@@ -251,9 +250,12 @@ class SingleGagViewController: UIViewController {
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
 
+        print(self.gagId)
+        
         ParseHelper.getGagWithId(self.gagId, completionBlock: {
             (object: PFObject?, error: NSError?) -> Void in
             self.gag = object!
+            print(self.gag)
         })
     }
 
