@@ -39,6 +39,7 @@ class SingleGagViewController: UIViewController {
     
     var gagId: String!
     var allowedNumberOfTags: Int!
+    var image: UIImage!
     
     var gag: PFObject = PFObject(className: "Gag") {
         didSet {
@@ -51,7 +52,6 @@ class SingleGagViewController: UIViewController {
             
             // Date
             let dateFormatter = NSDateFormatter()
-            //dateFormatter.dateFormat = "yyyy-MM-dd 'at' HH:mm"
             dateFormatter.dateStyle = NSDateFormatterStyle.FullStyle
             let dateString = dateFormatter.stringFromDate(self.gag.createdAt!)
             self.labelCreatedAt.text = dateString
@@ -76,7 +76,8 @@ class SingleGagViewController: UIViewController {
                 }
             })
             
-            // GagUserTags
+            
+            // REQUEST: GagUserTags
             ParseHelper.getAllGagUserTagObjectsForGag(self.gag, limit: self.allowedNumberOfTags, completionBlock: {
                 (objects: [PFObject]?, error: NSError?) -> Void in
                 if (objects != nil) {
@@ -251,6 +252,10 @@ class SingleGagViewController: UIViewController {
         super.viewDidAppear(animated)
 
         print(self.gagId)
+        
+        if (self.image != nil) {
+            self.imageView.image = self.image
+        }
         
         ParseHelper.getGagWithId(self.gagId, completionBlock: {
             (object: PFObject?, error: NSError?) -> Void in

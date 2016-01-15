@@ -92,13 +92,13 @@ class FindFriendsViewController: UIViewController, UITableViewDataSource, UITabl
         ParseHelper.getFriendsForUser(PFUser.currentUser()!, completionBlock: {
             (objects: [PFObject]?, errror: NSError?) -> Void in
             self.friendUsers = objects as? [PFUser]
-            print(self.friendUsers)
+            print("Friend Users: \(self.friendUsers)")
         })
     
         ParseHelper.getPendingFriendRequestUsers({
             (users: [PFUser]) -> Void in
             self.pendingUsers = users
-            print(self.pendingUsers)
+            print("Pending Users: \(self.pendingUsers)")
         })
 
     }
@@ -128,7 +128,8 @@ class FindFriendsViewController: UIViewController, UITableViewDataSource, UITabl
         if let friendUsers = friendUsers {
             //cell.canFriend = !friendUsers.contains(user)
             if friendUsers.contains(user) {
-               cell.relationshipStatus = Relationship.Friends
+                print("Friends")
+                cell.relationshipStatus = Relationship.Friends
             }
         }
         
@@ -136,6 +137,7 @@ class FindFriendsViewController: UIViewController, UITableViewDataSource, UITabl
         if let pendingUsers = pendingUsers {
             //cell.isPending = pendingUsers.contains(user)
             if pendingUsers.contains(user) {
+                print("Pending")
                 cell.relationshipStatus = Relationship.Pending
             }
         }

@@ -51,7 +51,6 @@ class ParseHelper {
     static func getFriendsForUser(user: PFUser, completionBlock: PFQueryArrayResultBlock) {
         let query = PFQuery(className: "Friends")
         query.whereKey("user", equalTo: PFUser.currentUser()!)
-        query.cachePolicy = PFCachePolicy.CacheElseNetwork
         query.getFirstObjectInBackgroundWithBlock({
             (object: PFObject?, error: NSError?) -> Void in
             if (error == nil) {

@@ -147,18 +147,22 @@ class DiscoverViewController: UIViewController, UICollectionViewDelegate, UIColl
     
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
         
+        let cell = collectionView.cellForItemAtIndexPath(indexPath) as! DiscoverCell
+        let image = cell.imageView.image!
+        
         let gag = self.gags[indexPath.row] as PFObject
         
         dispatch_async(dispatch_get_main_queue(), {
-            self.showSingleGagView(gag)
+            self.showSingleGagView(gag, image: image)
         });
     
     }
     
     // MARK: Show Views
-    func showSingleGagView(gag: PFObject) {
+    func showSingleGagView(gag: PFObject, image: UIImage) {
         let vc = self.storyboard?.instantiateViewControllerWithIdentifier("singleGagView") as! SingleGagViewController
         vc.gagId = gag.objectId!
+        vc.image = image
         self.presentViewController(vc, animated: false, completion: nil)
     }
     

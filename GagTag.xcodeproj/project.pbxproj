@@ -40,6 +40,8 @@
 		946FF4371C1BBC2C00077EDC /* NotifyFriendsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 946FF4361C1BBC2C00077EDC /* NotifyFriendsCell.swift */; };
 		946FF4391C1E1CE200077EDC /* SingleGag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 946FF4381C1E1CE200077EDC /* SingleGag.swift */; };
 		948471021BACD04300C2BC71 /* GagUsers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 948471011BACD04300C2BC71 /* GagUsers.swift */; };
+		9490C6811C473587002B4654 /* SettingsNavController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9490C6801C473587002B4654 /* SettingsNavController.swift */; };
+		9490C6861C47F7EA002B4654 /* CameraManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9490C6851C47F7EA002B4654 /* CameraManager.swift */; };
 		949AE6B41BA071F6001ACEEE /* LogIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 949AE6B31BA071F6001ACEEE /* LogIn.swift */; };
 		949AE6B61BA074CE001ACEEE /* Users.swift in Sources */ = {isa = PBXBuildFile; fileRef = 949AE6B51BA074CE001ACEEE /* Users.swift */; };
 		949AF9711BA293C90066CDBD /* GagReel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 949AF9701BA293C90066CDBD /* GagReel.swift */; };
@@ -124,6 +126,8 @@
 		946FF4361C1BBC2C00077EDC /* NotifyFriendsCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotifyFriendsCell.swift; sourceTree = "<group>"; };
 		946FF4381C1E1CE200077EDC /* SingleGag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleGag.swift; sourceTree = "<group>"; };
 		948471011BACD04300C2BC71 /* GagUsers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GagUsers.swift; sourceTree = "<group>"; };
+		9490C6801C473587002B4654 /* SettingsNavController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsNavController.swift; sourceTree = "<group>"; };
+		9490C6851C47F7EA002B4654 /* CameraManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraManager.swift; sourceTree = "<group>"; };
 		949AE6B31BA071F6001ACEEE /* LogIn.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogIn.swift; sourceTree = "<group>"; };
 		949AE6B51BA074CE001ACEEE /* Users.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Users.swift; sourceTree = "<group>"; };
 		949AF9701BA293C90066CDBD /* GagReel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GagReel.swift; sourceTree = "<group>"; };
@@ -287,12 +291,12 @@
 				94CA25701BD5D9F400395C46 /* ParseHelper.swift */,
 				94460EDF1B9A78DD009F254B /* AppDelegate.swift */,
 				94E6800F1BCCA5EC00D24344 /* Main.swift */,
-				9461380F1BCDFFC9004373E7 /* Settings.swift */,
 				949AE6B31BA071F6001ACEEE /* LogIn.swift */,
 				949AE6B51BA074CE001ACEEE /* Users.swift */,
 				94460F3E1B9E1DB6009F254B /* Gag.swift */,
 				948471011BACD04300C2BC71 /* GagUsers.swift */,
 				9459CC2E1BFEC8830059CCBF /* PreviewImageView.swift */,
+				9490C6841C473902002B4654 /* Settings */,
 				94F3B7961C040C04006DFDBE /* MaterialDesign */,
 				94F3B7951C03E3FE006DFDBE /* Tags */,
 				94BACD1C1BC6413E000A2671 /* Tutorial */,
@@ -361,6 +365,15 @@
 			name = "Notify Friends";
 			sourceTree = "<group>";
 		};
+		9490C6841C473902002B4654 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				9461380F1BCDFFC9004373E7 /* Settings.swift */,
+				9490C6801C473587002B4654 /* SettingsNavController.swift */,
+			);
+			name = Settings;
+			sourceTree = "<group>";
+		};
 		94BACD1C1BC6413E000A2671 /* Tutorial */ = {
 			isa = PBXGroup;
 			children = (
@@ -373,6 +386,7 @@
 		94BACD271BCB70E4000A2671 /* Camera */ = {
 			isa = PBXGroup;
 			children = (
+				9490C6851C47F7EA002B4654 /* CameraManager.swift */,
 				94BACD281BCB7103000A2671 /* Camera.swift */,
 				94ACFB9A1C02B5A700ADB3F1 /* NumberOfTags.swift */,
 				940E78FE1C0527A200216414 /* CameraCapturedImage.swift */,
@@ -586,6 +600,7 @@
 				943915EA1BC20D08000244F1 /* FriendsMenu.swift in Sources */,
 				943915EE1BC230BC000244F1 /* FriendRequestCell.swift in Sources */,
 				94C94E791C2EFB900051460E /* Discover.swift in Sources */,
+				9490C6861C47F7EA002B4654 /* CameraManager.swift in Sources */,
 				943915F61BC349DF000244F1 /* GagFeed.swift in Sources */,
 				94CA25711BD5D9F400395C46 /* ParseHelper.swift in Sources */,
 				946CEAA51BAA1D620049313C /* DealtTags.swift in Sources */,
@@ -598,6 +613,7 @@
 				94AC18481BAF9D9B00EC160F /* FindFriendsCell.swift in Sources */,
 				94BACD291BCB7103000A2671 /* Camera.swift in Sources */,
 				94460EE01B9A78DD009F254B /* AppDelegate.swift in Sources */,
+				9490C6811C473587002B4654 /* SettingsNavController.swift in Sources */,
 				946FF4351C1BA84D00077EDC /* NotifyFriends.swift in Sources */,
 				94F3B7A11C040C1C006DFDBE /* MKLabel.swift in Sources */,
 				9459CC2F1BFEC8830059CCBF /* PreviewImageView.swift in Sources */,

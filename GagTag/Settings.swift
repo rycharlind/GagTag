@@ -9,29 +9,24 @@
 import UIKit
 import Parse
 
-class SettingsViewController: UIViewController {
+class SettingsViewController: UITableViewController {
     
-    @IBOutlet weak var navItem: UINavigationItem!
+    // MARK: Properties
+    var titleLabel: UILabel!
     
+    // MARK: Actions
     @IBAction func done(sender: AnyObject) {
         self.dismissViewControllerAnimated(true, completion: nil)
-    }
-    
-    @IBAction func logout(sender: AnyObject) {
-        PFUser.logOut()
-        self.dismissViewControllerAnimated(true, completion: nil)
-    }
-    
-    
-    @IBAction func friends(sender: AnyObject) {
-        let vc = self.storyboard?.instantiateViewControllerWithIdentifier("friendsMenuNav") as! UINavigationController
-        self.showViewController(vc, sender: self)
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+        
+        titleLabel = UILabel(frame: CGRectMake(0,0,100,32))
+        titleLabel.textAlignment = NSTextAlignment.Center
+        self.navigationItem.titleView = titleLabel
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -39,25 +34,63 @@ class SettingsViewController: UIViewController {
         
         let currentUser = PFUser.currentUser()
         if currentUser != nil {
-            self.navItem.title = PFUser.currentUser()?.username
-            
+            titleLabel.text = PFUser.currentUser()?.username
         }
+    }
+    
+    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        
+        var cell = tableView.dequeueReusableCellWithIdentifier("cell") as UITableViewCell!
+        if cell == nil {
+            cell = UITableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: "cell")
+        }
+        
+        switch (indexPath.row) {
+        case 0: // Friends
+            cell.textLabel!.text = "Friends"
+            cell.backgroundColor = UIColor.MKColor.Blue
+            cell.imageView?.image = UIImage(named: "glyphicons-44-group")
+            cell.accessoryType = UITableViewCellAccessoryType.DisclosureIndicator
+        case 1: // Email
+            cell.textLabel!.text = PFUser.currentUser()!.email
+            cell.backgroundColor = UIColor.MKColor.Indigo
+            cell.imageView?.image = UIImage(named: "glyphicons-11-envelope")
+            cell.accessoryType = UITableViewCellAccessoryType.DisclosureIndicator
+        case 2: // Password
+            cell.textLabel!.text = "Password"
+            cell.backgroundColor = UIColor.MKColor.Cyan
+            cell.imageView?.image = UIImage(named: "glyphicons-204-lock")
+            cell.accessoryType = UITableViewCellAccessoryType.DisclosureIndicator
+        case 3: // Logout
+            cell.textLabel!.text = "Sign Out"
+            cell.backgroundColor = UIColor.MKColor.Amber
+            cell.imageView?.image = UIImage(named: "glyphicons-388-log-out")
+        default:
+            print("")
+        }
+        
+        return cell
+    
+    }
+    
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        
+        switch (indexPath.row) {
+        case 0:
+            let vc = self.storyboard?.instantiateViewControllerWithIdentifier("friendsMenu") as! UITableViewController
+            self.navigationController?.showViewController(vc, sender: self)
+        case 3:
+            PFUser.logOut()
+            self.dismissViewControllerAnimated(true, completion: nil)
+        default:
+            print("Default")
+        }
+       
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
 
 }

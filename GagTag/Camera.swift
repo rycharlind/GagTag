@@ -28,6 +28,8 @@ class CameraViewController: UIViewController {
     var mainNavDelegate: MainNavDelegate?
     var allowedNumberOfTags: Int = 5
     
+    let cameraManager = CameraManager()
+    
     @IBOutlet weak var buttonToggleCamera: UIButton!
     @IBOutlet weak var buttonToggleFlash: UIButton!
     @IBOutlet weak var buttonFeed: UIButton!
@@ -56,35 +58,9 @@ class CameraViewController: UIViewController {
     }
     
     @IBAction func takePhoto(sender: AnyObject) {
-        //self.showNotifyFriends()
-        
-        if let videoConnection = stillImageOutput!.connectionWithMediaType(AVMediaTypeVideo) {
-            videoConnection.videoOrientation = AVCaptureVideoOrientation.Portrait
-            stillImageOutput?.captureStillImageAsynchronouslyFromConnection(videoConnection, completionHandler: {(sampleBuffer, error) in
-                
-                if (sampleBuffer != nil) {
-                    let imageData = AVCaptureStillImageOutput.jpegStillImageNSDataRepresentation(sampleBuffer)
-                    let dataProvider = CGDataProviderCreateWithCFData(imageData)
-                    let cgImageRef = CGImageCreateWithJPEGDataProvider(dataProvider, nil, true, CGColorRenderingIntent.RenderingIntentDefault)
-                    
-                    
-                    var imageOrientation = UIImageOrientation.Right
-                    if (self.captureDevice!.position == AVCaptureDevicePosition.Front) {
-                        imageOrientation = UIImageOrientation.LeftMirrored
-                    }
-                    
-                    let image = UIImage(CGImage: cgImageRef!, scale: 1.0, orientation: imageOrientation)
-                    
-                    
-                    
-                    self.showCameraCapturedImage(image)
-                }
-            
-            
-            })
-        }
-        
-        
+        cameraManager.capturePictureWithCompletition({ (image, error) -> Void in
+            self.showCameraCapturedImage(image!)
+        })
     }
     
     func showNotifyFriends() {
@@ -94,145 +70,48 @@ class CameraViewController: UIViewController {
     }
     
     @IBAction func settings(sender: AnyObject) {
-        self.showSettings()
+        //self.showSettings()
+        self.showSettingsNav()
     }
     
     @IBAction func buttonToggleCameraTouched(sender: AnyObject) {
-        
-        captureSession?.beginConfiguration()
-        
-        // Need to set this to PresetPhoto otherwise the canAddInput fails
-        captureSession?.sessionPreset = AVCaptureSessionPresetPhoto
-        
-        for ii in captureSession!.inputs {
-            captureSession!.removeInput(ii as! AVCaptureInput)
-        }
-        
-        let newCamera: AVCaptureDevice?
-        if (captureDevice!.position == AVCaptureDevicePosition.Back) {
-            newCamera = self.cameraWithPosition(AVCaptureDevicePosition.Front)
-            buttonToggleCamera.setTitle(GoogleIcon.ea43, forState: .Normal)
-        } else {
-            newCamera = self.cameraWithPosition(AVCaptureDevicePosition.Back)
-            buttonToggleCamera.setTitle(GoogleIcon.ea41, forState: .Normal)
-        }
-        
-        var error: NSError?
-        var input: AVCaptureDeviceInput!
-        do {
-            input = try AVCaptureDeviceInput(device: newCamera)
-        } catch let error1 as NSError {
-            error = error1
-            input = nil
-        }
-    
-        if error == nil && captureSession!.canAddInput(input) {
-            captureSession!.addInput(input)
-        }
-        
-        captureSession?.sessionPreset = self.getSessionPreset()
-        
-        captureDevice! = newCamera!
-        
-        captureSession?.commitConfiguration()
-        
-    }
-    
-    func getSessionPreset() -> String {
-        if (captureSession!.canSetSessionPreset(AVCaptureSessionPreset1920x1080)) {
-            print("1920x1080")
-            return AVCaptureSessionPreset1920x1080
-        } else if (captureSession!.canSetSessionPreset(AVCaptureSessionPreset1280x720)) {
-            print("1280x720")
-            return AVCaptureSessionPreset1280x720
-        } else {
-            print("Photo")
-            return AVCaptureSessionPresetPhoto
+        cameraManager.cameraDevice = cameraManager.cameraDevice == CameraDevice.Front ? CameraDevice.Back : CameraDevice.Front
+        switch (cameraManager.cameraDevice) {
+        case .Front:
+            sender.setTitle(GoogleIcon.ea43, forState: .Normal)
+        case .Back:
+            sender.setTitle(GoogleIcon.ea41, forState: .Normal)
         }
     }
     
     @IBAction func buttonToggleFlashTouch(sender: AnyObject) {
-        
-        let mode = captureDevice?.flashMode
-        do {
-            try captureDevice?.lockForConfiguration()
-            
-            if (mode == AVCaptureFlashMode.Off) {
-                captureDevice?.flashMode = AVCaptureFlashMode.On
-                buttonToggleFlash.setTitle(GoogleIcon.eaab, forState: .Normal)
-            } else {
-                captureDevice?.flashMode = AVCaptureFlashMode.Off
-                buttonToggleFlash.setTitle(GoogleIcon.eaa9, forState: .Normal)
-            }
-            
-            captureDevice?.unlockForConfiguration()
-        } catch let error as NSError {
-            print(error)
+        switch (cameraManager.changeFlashMode()) {
+        case .Off:
+            sender.setTitle(GoogleIcon.eaa9, forState: .Normal)
+        case .On:
+            sender.setTitle(GoogleIcon.eaab, forState: .Normal)
+        case .Auto:
+            sender.setTitle(GoogleIcon.eaa7, forState: .Normal)
         }
-    }
-    
-    
-    
-    func cameraWithPosition(position: AVCaptureDevicePosition) -> AVCaptureDevice {
-        let devices = AVCaptureDevice.devices()
-        for device in devices {
-            if(device.position == position) {
-                print("Found Position: \(position)")
-                return device as! AVCaptureDevice
-            }
-        }
-        return AVCaptureDevice()
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-    
         // Configure Take Button
         self.buttonTake.layer.cornerRadius = 0.5 * self.buttonTake.bounds.width
         self.buttonTake.layer.masksToBounds = true
         self.buttonTake.layer.borderWidth = 2.0
         self.buttonTake.layer.borderColor = UIColor.blackColor().CGColor
-
-        // Do any additional setup after loading the view.
         
+        cameraManager.shouldRespondToOrientationChanges = false
+        addCameraToView()
         
-        // Camera Set
-        captureSession = AVCaptureSession()
-        captureSession!.sessionPreset = self.getSessionPreset()
-        captureDevice = AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeVideo)
-        var error: NSError?
-        var input: AVCaptureDeviceInput!
-        do {
-            input = try AVCaptureDeviceInput(device: captureDevice)
-        } catch let error1 as NSError {
-            error = error1
-            input = nil
+        if !cameraManager.hasFlash {
+            buttonToggleFlash.enabled = false
+            buttonToggleFlash.setTitle(GoogleIcon.eaa9, forState: .Normal)
         }
         
-        if error == nil && captureSession!.canAddInput(input) {
-            
-            captureSession!.addInput(input)
-            
-            stillImageOutput = AVCaptureStillImageOutput()
-            stillImageOutput!.outputSettings = [AVVideoCodecKey: AVVideoCodecJPEG]
-            
-            if captureSession!.canAddOutput(stillImageOutput) {
-                
-                captureSession!.addOutput(stillImageOutput)
-                previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
-                previewLayer!.videoGravity = AVLayerVideoGravityResize
-                previewLayer!.connection?.videoOrientation = AVCaptureVideoOrientation.Portrait
-                previewView.layer.addSublayer(previewLayer!)
-                
-                captureSession!.startRunning()
-            }
-        }
-        
-    }
-    
-    override func viewWillLayoutSubviews() {
-        previewLayer!.frame = previewView.bounds
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -250,8 +129,27 @@ class CameraViewController: UIViewController {
         UIApplication.sharedApplication().setStatusBarHidden(false, withAnimation: UIStatusBarAnimation.None)
     }
     
+    private func addCameraToView() {
+        cameraManager.addPreviewLayerToView(previewView, newCameraOutputMode: CameraOutputMode.StillImage)
+        cameraManager.showErrorBlock = { [weak self] (erTitle: String, erMessage: String) -> Void in
+            
+            let alertController = UIAlertController(title: erTitle, message: erMessage, preferredStyle: .Alert)
+            alertController.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: { (alertAction) -> Void in  }))
+            
+            self?.presentViewController(alertController, animated: true, completion: nil)
+        }
+    }
+    
+    // MARK: Show Views
     func showSettings() {
         let vc = self.storyboard?.instantiateViewControllerWithIdentifier("settings") as! SettingsViewController
+        vc.modalPresentationStyle = UIModalPresentationStyle.Popover
+        vc.modalTransitionStyle = UIModalTransitionStyle.CoverVertical
+        self.presentViewController(vc, animated: true, completion: nil)
+    }
+    
+    func showSettingsNav() {
+        let vc = self.storyboard?.instantiateViewControllerWithIdentifier("settingsNav") as! SettingsNavigationController
         vc.modalPresentationStyle = UIModalPresentationStyle.Popover
         vc.modalTransitionStyle = UIModalTransitionStyle.CoverVertical
         self.presentViewController(vc, animated: true, completion: nil)

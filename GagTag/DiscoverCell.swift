@@ -16,7 +16,6 @@ class DiscoverCell: UICollectionViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         
-        //self.backgroundColor = UIColor.MKColor.BlueGrey
     }
     
     var pfImage: PFFile? {
@@ -28,6 +27,23 @@ class DiscoverCell: UICollectionViewCell {
                         self.imageView.image = UIImage(data: result!)
                     }
                 })
+            }
+        }
+    }
+    
+    var gagState: GagState = .Waiting {
+        didSet {
+            switch(gagState) {
+            case .ChoseDealtTag:
+                print("ChoseDealtTag")
+            case .ChoseWinningTag:
+                print("ChoseWinningTag")
+            case .Waiting:
+                print("Waiting")
+            case .Complete:
+                print("Complete")
+            case .None:
+                print("None")
             }
         }
     }
