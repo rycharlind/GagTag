@@ -9,7 +9,7 @@
 import UIKit
 import Parse
 
-class GagViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UsersViewControllerDelegate, DealtTagsViewControllerDelegate {
+class GagViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UsersViewControllerDelegate, TagsViewControllerDelegate {
     
     // MARK:  Properties
     @IBOutlet weak var labelTag: UILabel!
@@ -137,7 +137,7 @@ class GagViewController: UIViewController, UIImagePickerControllerDelegate, UINa
     }
     
     func showDealtTags() {
-        let dealtTagsViewController = self.storyboard?.instantiateViewControllerWithIdentifier("dealtTags") as! DealtTagsViewController
+        let dealtTagsViewController = self.storyboard?.instantiateViewControllerWithIdentifier("tags") as! TagsViewController
         dealtTagsViewController.gag = self.gag
         dealtTagsViewController.delegate = self;
         self.presentViewController(dealtTagsViewController, animated: true, completion: nil)
@@ -275,7 +275,7 @@ class GagViewController: UIViewController, UIImagePickerControllerDelegate, UINa
     }
     
     // MARK: DealtTagsViewController
-    func dealtTagsViewController(controller: DealtTagsViewController, didSelectTag tag: PFObject) {
+    func dealtTagsViewController(controller: TagsViewController, didSelectTag tag: PFObject) {
         self.sendChosenTag(tag)
     }
     

@@ -1,214 +1,354 @@
 //
-//  TagsTableViewController.swift
+//  DealtTagsViewController.swift
 //  GagTag
 //
-//  Created by Ryan on 9/8/15.
+//  Created by Ryan on 9/16/15.
 //  Copyright (c) 2015 Inndevers. All rights reserved.
 //
 
 import UIKit
 import Parse
-import ParseUI
 
 protocol TagsViewControllerDelegate {
-    func tagsViewController(controller: TagsViewController, didSelectTag tag: PFObject)
+    func dealtTagsViewController(controller: TagsViewController, didSelectTag tag: PFObject)
 }
 
-class TagsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+public enum TagsType {
+    case DealtTags
+    case ChosenTags
+}
+
+public enum TagCondition {
+    case New
+    case Dealt
+}
+
+class TagsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate {
     
-    // MARK: Properties
-    var gag : PFObject!
-    var gagUser : PFObject!
-    var tags : [AnyObject]!
-    var gagUserTags : [PFObject]!
-    var selectedObjects : [String:PFObject]!
-    var selectedTag : PFObject!
+    // MARK:  Properties
     var delegate: TagsViewControllerDelegate?
+    @IBOutlet weak var barButtonChoose: UIBarButtonItem!
+    @IBOutlet weak var barButtonCancel: UIBarButtonItem!
     @IBOutlet weak var tableView: UITableView!
     
-    // MARK: Actions
-    @IBAction func choose(sender: AnyObject) {
-        if let delegate = self.delegate {
-            delegate.tagsViewController(self, didSelectTag: self.selectedTag)
-        }
-        self.dismissViewControllerAnimated(true, completion: nil)
-    }
+    var gag : PFObject!
+    var tags : [PFObject]!
+    var selectedTag : PFObject!
+    var newTag: PFObject!
+    var type: TagsType = .DealtTags
+    var tagCondition: TagCondition = .Dealt
     
+    // MARK:  Actions
+    @IBAction func choose(sender: AnyObject) {
+        
+        self.barButtonChoose.enabled = false
+        switch type {
+        case .DealtTags:
+            
+            
+            switch tagCondition {
+            case .New:
+                
+                // New Tag
+                let query = PFQuery(className: "Tag")
+                query.whereKey("value", matchesRegex: self.getNewTagValue(), modifiers: "i")
+                //query.whereKey("value", equalTo: self.getNewTagValue())
+                //let query = PFUser.query()!.whereKey("username", matchesRegex: searchText, modifiers: "i")
+                query.countObjectsInBackgroundWithBlock({
+                    (count: Int32, error: NSError?) -> Void in
+                    print(count)
+                    if (count == 0) {
+                        
+                        // Save New Tag
+                        let newTag = PFObject(className: "Tag")
+                        newTag["value"] = self.getNewTagValue()
+                        newTag["user"] = PFUser.currentUser()!
+                        newTag.saveInBackgroundWithBlock({
+                            (success: Bool, error: NSError?) -> Void in
+                            if (success) {
+                                // Fetch newly created Tag
+                                newTag.fetchIfNeededInBackgroundWithBlock({
+                                    (object: PFObject?, error: NSError?) -> Void in
+                                    if let object = object {
+                                        
+                                        // Send newly created chosen tag
+                                        ParseHelper.sendChosenDealtTagForGag(self.gag, tag: object, completionBlock: {
+                                            (success: Bool, error: NSError?) -> Void in
+                                            if (success) {
+                                                self.dismissViewControllerAnimated(true, completion: nil)
+                                            } else {
+                                                print(error)
+                                            }
+                                        })
+                                        
+                                    }
+                                })
+                            }
+                        })
+                        
+                    } else {
+                        print("Tag is already created")
+                        let alert = UIAlertController(title: "Tags Taken", message: "Try again", preferredStyle: UIAlertControllerStyle.Alert)
+                        alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.Default, handler: nil))
+                        self.presentViewController(alert, animated: true, completion: nil)
+                    }
+                })
+                
+                
+            case .Dealt:
+                print("dealt")
+                
+                ParseHelper.sendChosenDealtTagForGag(gag, tag: selectedTag, completionBlock: {
+                    (success: Bool, error: NSError?) -> Void in
+                    if (success) {
+                        self.dismissViewControllerAnimated(true, completion: nil)
+                    } else {
+                        print(error)
+                    }
+                })
+                
+                
+            }
+            
+        
+        
+        case .ChosenTags:
+            ParseHelper.sendWinningTagForGag(gag, tag: selectedTag, completionBlock: {
+                (success: Bool, error: NSError?) -> Void in
+                if (success) {
+                    self.dismissViewControllerAnimated(true, completion: nil)
+                } else {
+                    print(error)
+                }
+            })
+        }
+        
+    }
     
     @IBAction func cancel(sender: AnyObject) {
         self.dismissViewControllerAnimated(true, completion: nil)
     }
     
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         // Do any additional setup after loading the view.
         self.tags = [PFObject]()
-        self.gagUserTags = [PFObject]()
-        self.selectedObjects = [String:PFObject]()
+        self.newTag = PFObject(className: "Tag")
     }
     
     override func viewDidAppear(animated: Bool) {
-        if (self.gag != nil) {
-            if let user : PFObject = self.gag["user"] as? PFObject {
-                self.gagUser = user
-                if (self.gagUser.objectId == PFUser.currentUser()?.objectId) {
-                    self.queryGagUserTags()
-                } else {
-                    self.queryDealtTags()
+        super.viewDidAppear(animated)
+        
+        barButtonChoose.enabled = false
+        
+        
+        switch type {
+        case .DealtTags:
+            print("Dealt Tags")
+            ParseHelper.getMyTagsForGag(self.gag, completionBlock: {
+                (tags: [PFObject]?) -> Void in
+                self.tags = tags
+                self.tableView.reloadData()
+            })
+        case .ChosenTags:
+            print("Chosen Tags")
+            let allowedNumberOfTags = self.gag["allowedNumberOfTags"] as! Int
+            ParseHelper.getChosenTagsForGag(gag, limit: allowedNumberOfTags, completionBlock: {
+                (tags: [PFObject]?) -> Void in
+                if (tags != nil) {
+                    self.tags = tags
+                    self.tableView.reloadData()
                 }
-            }
+            })
         }
     }
     
-    func queryGagUserTags() {
-        print("Query Gag User Tags")
-        let query = PFQuery(className: "GagUserTag")
-        query.whereKey("gag", equalTo: self.gag)
-        query.includeKey("user")
-        query.includeKey("dealtTags")
-        query.includeKey("chosenTag")
-        query.findObjectsInBackgroundWithBlock({
-            (objects: [PFObject]?, error: NSError?) -> Void in
-            if (error == nil) {
-                self.gagUserTags = objects
-                self.tableView.reloadData()
-            }
-        })
-    }
-    
-    func queryDealtTags() {
-        print("Query Dealt Tags")
-        let query = PFQuery(className: "GagUserTag")
-        query.whereKey("gag", equalTo: self.gag)
-        query.whereKey("user", equalTo: PFUser.currentUser()!)
-        query.includeKey("dealtTags")
-        
-        query.getFirstObjectInBackgroundWithBlock({
-            (object: PFObject?, error: NSError?) -> Void in
-            if error != nil || object == nil {
-                print("The getFirstObject request failed.")
-            } else {
-                // The find succeeded.
-                print("Successfully retrieved the object. \(object)")
-                //self.tags = object?["dealtTags"] as! [PFObject]
-                
-                if let dealtTags = object?["dealtTags"] as? [AnyObject] {
-                    //println("Dealt Tags: \(dealtTags)")
-                    self.tags = dealtTags
-                    self.tableView.reloadData()
-                }
-                print("My Tags: \(self.tags)")
-                
-            }
-        })
-    }
-    
-    func queryChosenTags() {
-        let query = PFQuery(className: "GagUserTag")
-        query.whereKey("gag", equalTo: self.gag)
-        query.includeKey("chosenTag")
-        query.includeKey("user")
-        query.findObjectsInBackgroundWithBlock({
-            (objects: [PFObject]?, error: NSError?) -> Void in
-            if (error == nil) {
-                for object in objects! {
-                    print(object.objectId)
-                    if let tag = object["chosenTag"] as? PFObject {
-                        self.tags.append(tag)
-                    }
-                }
-                self.tableView.reloadData()
-            }
-        })
+    // MARK: UITableViewDelegate
+    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        return 60.0
     }
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        // #warning Potentially incomplete method implementation.
-        // Return the number of sections.
-        return 1
+        if (type == .ChosenTags) {
+            return 1
+        }
+        return 2
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete method implementation.
-        // Return the number of rows in the section.
-        
-        if (self.gagUser?.objectId == PFUser.currentUser()?.objectId) {
-            return self.gagUserTags.count
+        if (type == .ChosenTags) {
+            return self.tags.count
         } else {
-            if (self.tags?.count > 0) {
-                return self.tags.count
+            if (section == 0) {
+                return 1
             }
+            return self.tags.count
         }
-        
-        return 0
+    }
+    
+    func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        if (type == .ChosenTags) {
+            return "Choose a winning tag"
+        } else {
+            if (section == 0) {
+                return "Add new"
+            }
+            return "Dealt tags"
+        }
+    
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
-        var cell = tableView.dequeueReusableCellWithIdentifier("Cell") as! PFTableViewCell!
+        if (type == .DealtTags) {
+            if (indexPath.section == 0) {
+                let cell = tableView.dequeueReusableCellWithIdentifier("addTagCell") as! AddTagCell!
+                cell.gag = self.gag
+                cell.rippleLayerColor = UIColor.MKColor.LightGreen
+                return cell
+                
+            }
+        }
+        
+        var cell = tableView.dequeueReusableCellWithIdentifier("tagsCell") as! TagsCell!
         if cell == nil {
-            cell = PFTableViewCell(style: UITableViewCellStyle.Default, reuseIdentifier: "Cell")
+            cell = TagsCell(style: UITableViewCellStyle.Default, reuseIdentifier: "tagsCell")
         }
         
-        // Current user's gag - View chosen tags or usernames
-        if (self.gagUser?.objectId == PFUser.currentUser()?.objectId) {
-            
-            // Display username and status if NOT all chosenTags are available
-            if (self.gagUserTags.count > 0) {
-                if let gagUserTag = self.gagUserTags[indexPath.row] as? PFObject {
-                    if let chosenTag = gagUserTag["chosenTag"] as? PFObject {
-                        cell?.textLabel?.text = "#" + (chosenTag["value"] as? String)!
-                    } else {
-                        
-                        if let user = gagUserTag["user"] as? PFObject {
-                            cell?.textLabel?.text = user["username"] as? String
-                        }
-                    }
-                }
-            }
-            
-            
-        // Other user's gag - View dealt tags
+        let tag = self.tags[indexPath.row] as PFObject
+        let value = tag["value"] as! String
+        cell?.labelTag?.text = " #\(value)"
+        
+        
+        if (tag.objectId == self.selectedTag?.objectId) {
+            cell.tagSelected = true
         } else {
-        
-            
-            if (self.tags?.count > 0) {
-                if let tag = self.tags[indexPath.row] as? PFObject {
-                    cell?.textLabel?.text = tag["value"] as? String
-                    
-                    if (tag.objectId == self.selectedTag?.objectId) {
-                        cell?.accessoryType = .Checkmark
-                    } else {
-                        cell?.accessoryType = .None
-                    }
-                }
-            }
-
+            cell.tagSelected = false
         }
+        
+        cell.rippleLayerColor = UIColor.MKColor.LightBlue
         
         return cell
+
         
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         
-        let cell = tableView.cellForRowAtIndexPath(indexPath)
-        let row = Int(indexPath.row)
-        
-        if (self.gagUser?.objectId != PFUser.currentUser()?.objectId) {
+        if (type == .DealtTags) {
             
-            let currentObject = self.tags[row] as! PFObject
+            let ip = NSIndexPath(forRow: 0, inSection: 0)
+            let addTagCell = tableView.cellForRowAtIndexPath(ip) as! AddTagCell
             
-            if let objId = currentObject.objectId {
-                self.selectedTag = currentObject
-                self.tableView.reloadData()
+            if (indexPath.section == 0) {
+                
+                self.handleRefreshForCell(addTagCell)
+                addTagCell.textField.becomeFirstResponder()
+                
+            } else {
+                
+                let tagCell = tableView.cellForRowAtIndexPath(indexPath) as! TagsCell
+                addTagCell.tagSelected = false
+                addTagCell.textField.resignFirstResponder()
+                tagCondition = .Dealt
+                
+                let row = Int(indexPath.row)
+                let currentObject = self.tags[row] as PFObject
+                if let _ = currentObject.objectId {
+                    tagCell.tagSelected = true
+                    selectedTag = currentObject
+                    barButtonChoose.enabled = true
+                    self.reloadTags(indexPath)
+                }
+            }
+            
+        } else {
+            
+            let tagCell = tableView.cellForRowAtIndexPath(indexPath) as! TagsCell
+            let row = Int(indexPath.row)
+            let currentObject = self.tags[row] as PFObject
+            if let _ = currentObject.objectId {
+                tagCell.tagSelected = true
+                selectedTag = currentObject
+                barButtonChoose.enabled = true
+                self.reloadTags(indexPath)
             }
             
         }
         
         
+    }
+    
+    // MARK: UITextFieldDelegate
+    func textFieldDidBeginEditing(textField: UITextField) {
+        print("TextField did begin editing method called")
+        let ip = NSIndexPath(forRow: 0, inSection: 0)
+        let addTagCell = tableView.cellForRowAtIndexPath(ip) as! AddTagCell
+        self.handleRefreshForCell(addTagCell)
+    }
+    
+    func textFieldDidEndEditing(textField: UITextField) {
+        print("TextField did end editing method called")
+    }
+    
+    func textFieldShouldBeginEditing(textField: UITextField) -> Bool {
+        print("TextField should begin editing method called")
+        return true;
+    }
+    
+    func textFieldShouldClear(textField: UITextField) -> Bool {
+        print("TextField should clear method called")
+        return true;
+    }
+    
+    func textFieldShouldEndEditing(textField: UITextField) -> Bool {
+        print("TextField should end editing method called")
+        return true;
+    }
+    
+    func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
+        // Only allow alpha characters
+        for chr in (string.characters) {
+            if (!(chr >= "a" && chr <= "z") && !(chr >= "A" && chr <= "Z") ) {
+                return false
+            }
+        }
+        return true
+    }
+    
+    func textFieldShouldReturn(textField: UITextField) -> Bool {
+        print("TextField should return method called")
+        textField.resignFirstResponder();
+        return true;
+    }
+    
+    // MARK: Local functions
+    func getNewTagValue() -> String {
+        let ip = NSIndexPath(forRow: 0, inSection: 0)
+        let addTagCell = tableView.cellForRowAtIndexPath(ip) as! AddTagCell
+        return addTagCell.textField.text!
+    }
+    
+    
+    
+    func reloadTags(skipIndexPath: NSIndexPath) {
+        for (var i = 0; i < self.tags.count; i++) {
+            if (i != skipIndexPath.row) {
+                let ip = NSIndexPath(forRow: i, inSection: skipIndexPath.section)
+                self.tableView.reloadRowsAtIndexPaths([ip], withRowAnimation: UITableViewRowAnimation.None)
+            }
+        }
+    }
+    
+    func handleRefreshForCell(cell: AddTagCell) {
+        cell.tagSelected = true
+        self.barButtonChoose.enabled = true
+        self.tagCondition = .New
+        self.selectedTag = self.newTag
+        
+        let ip = NSIndexPath(forRow: -1, inSection: 1)
+        self.reloadTags(ip)
     }
     
     override func didReceiveMemoryWarning() {

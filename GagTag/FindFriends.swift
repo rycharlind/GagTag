@@ -92,13 +92,13 @@ class FindFriendsViewController: UIViewController, UITableViewDataSource, UITabl
         ParseHelper.getFriendsForUser(PFUser.currentUser()!, completionBlock: {
             (objects: [PFObject]?, errror: NSError?) -> Void in
             self.friendUsers = objects as? [PFUser]
-            print("Friend Users: \(self.friendUsers)")
+            //print("Friend Users: \(self.friendUsers)")
         })
     
         ParseHelper.getPendingFriendRequestUsers({
             (users: [PFUser]) -> Void in
             self.pendingUsers = users
-            print("Pending Users: \(self.pendingUsers)")
+            //print("Pending Users: \(self.pendingUsers)")
         })
 
     }
@@ -120,30 +120,46 @@ class FindFriendsViewController: UIViewController, UITableViewDataSource, UITabl
         }
         
         let user = users![indexPath.row]
+        
+        print(user)
         cell.user = user
         cell.relationshipStatus = Relationship.None
         cell.delegate = self
         
         // Check if user is a friend
-        if let friendUsers = friendUsers {
-            //cell.canFriend = !friendUsers.contains(user)
-            if friendUsers.contains(user) {
-                print("Friends")
-                cell.relationshipStatus = Relationship.Friends
-            }
+        if (self.isFriendsWithUser(user)) {
+            cell.relationshipStatus = Relationship.Friends
         }
         
         // Check if you have a pending friend request
-        if let pendingUsers = pendingUsers {
-            //cell.isPending = pendingUsers.contains(user)
-            if pendingUsers.contains(user) {
-                print("Pending")
-                cell.relationshipStatus = Relationship.Pending
-            }
+        if (self.isPendingWithUser(user)) {
+            cell.relationshipStatus = Relationship.Pending
         }
         
         return cell
         
+    }
+    
+    func isFriendsWithUser(user: PFUser) -> Bool {
+        if let friendUsers = friendUsers {
+            for friend in friendUsers {
+                if (friend.objectId == user.objectId) {
+                    return true
+                }
+            }
+        }
+        return false
+    }
+    
+    func isPendingWithUser(user: PFUser) -> Bool {
+        if let pendingUsers = pendingUsers {
+            for pendingUser in pendingUsers {
+                if (pendingUser.objectId == user.objectId) {
+                    return true
+                }
+            }
+        }
+        return false
     }
     
     // MARK: SearchBarDelegate

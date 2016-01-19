@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		940E78FF1C0527A200216414 /* CameraCapturedImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 940E78FE1C0527A200216414 /* CameraCapturedImage.swift */; };
 		9412CF5A1C04B89800FF435F /* googleicon.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 94F3B7A71C042737006DFDBE /* googleicon.ttf */; };
-		9418DE981C03BEF0006AC84D /* ChosenTags.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9418DE971C03BEF0006AC84D /* ChosenTags.swift */; };
 		943915E61BBE3F71000244F1 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 943915E51BBE3F71000244F1 /* User.swift */; };
 		943915EA1BC20D08000244F1 /* FriendsMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 943915E91BC20D08000244F1 /* FriendsMenu.swift */; };
 		943915EC1BC20F66000244F1 /* FriendRequests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 943915EB1BC20F66000244F1 /* FriendRequests.swift */; };
@@ -35,7 +34,7 @@
 		94460F3F1B9E1DB6009F254B /* Gag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94460F3E1B9E1DB6009F254B /* Gag.swift */; };
 		9459CC2F1BFEC8830059CCBF /* PreviewImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9459CC2E1BFEC8830059CCBF /* PreviewImageView.swift */; };
 		946138101BCDFFC9004373E7 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9461380F1BCDFFC9004373E7 /* Settings.swift */; };
-		946CEAA51BAA1D620049313C /* DealtTags.swift in Sources */ = {isa = PBXBuildFile; fileRef = 946CEAA41BAA1D620049313C /* DealtTags.swift */; };
+		946CEAA51BAA1D620049313C /* Tags.swift in Sources */ = {isa = PBXBuildFile; fileRef = 946CEAA41BAA1D620049313C /* Tags.swift */; };
 		946FF4351C1BA84D00077EDC /* NotifyFriends.swift in Sources */ = {isa = PBXBuildFile; fileRef = 946FF4341C1BA84D00077EDC /* NotifyFriends.swift */; };
 		946FF4371C1BBC2C00077EDC /* NotifyFriendsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 946FF4361C1BBC2C00077EDC /* NotifyFriendsCell.swift */; };
 		946FF4391C1E1CE200077EDC /* SingleGag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 946FF4381C1E1CE200077EDC /* SingleGag.swift */; };
@@ -55,6 +54,8 @@
 		94C210AF1BD5C3BD00C10513 /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 94C210AE1BD5C3BD00C10513 /* Bolts.framework */; };
 		94C210B11BD5C3C600C10513 /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 94C210B01BD5C3C600C10513 /* Parse.framework */; };
 		94C210B31BD5C3CD00C10513 /* ParseUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 94C210B21BD5C3CD00C10513 /* ParseUI.framework */; };
+		94C7EF331C49586A00636EA1 /* MyFriendsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94C7EF321C49586A00636EA1 /* MyFriendsCell.swift */; };
+		94C7EF351C4CB66A00636EA1 /* AddTagCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94C7EF341C4CB66A00636EA1 /* AddTagCell.swift */; };
 		94C94E741C27A1E00051460E /* Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94C94E731C27A1E00051460E /* Notifications.swift */; };
 		94C94E761C27A1FF0051460E /* NotificationsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94C94E751C27A1FF0051460E /* NotificationsCell.swift */; };
 		94C94E791C2EFB900051460E /* Discover.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94C94E781C2EFB900051460E /* Discover.swift */; };
@@ -67,7 +68,7 @@
 		94C94E891C3C21E80051460E /* Medium.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94C94E881C3C21E80051460E /* Medium.swift */; };
 		94C94E8F1C3C2C580051460E /* Large.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94C94E8E1C3C2C580051460E /* Large.swift */; };
 		94CA25711BD5D9F400395C46 /* ParseHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94CA25701BD5D9F400395C46 /* ParseHelper.swift */; };
-		94E02CC41C1F2360008CBE30 /* DealtTagsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94E02CC31C1F2360008CBE30 /* DealtTagsCell.swift */; };
+		94E02CC41C1F2360008CBE30 /* TagsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94E02CC31C1F2360008CBE30 /* TagsCell.swift */; };
 		94E680101BCCA5EC00D24344 /* Main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94E6800F1BCCA5EC00D24344 /* Main.swift */; };
 		94F3B79E1C040C1C006DFDBE /* MKButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94F3B7971C040C1C006DFDBE /* MKButton.swift */; };
 		94F3B79F1C040C1C006DFDBE /* MKTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94F3B7981C040C1C006DFDBE /* MKTextField.swift */; };
@@ -91,7 +92,6 @@
 
 /* Begin PBXFileReference section */
 		940E78FE1C0527A200216414 /* CameraCapturedImage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraCapturedImage.swift; sourceTree = "<group>"; };
-		9418DE971C03BEF0006AC84D /* ChosenTags.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChosenTags.swift; sourceTree = "<group>"; };
 		943915E51BBE3F71000244F1 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		943915E91BC20D08000244F1 /* FriendsMenu.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendsMenu.swift; sourceTree = "<group>"; };
 		943915EB1BC20F66000244F1 /* FriendRequests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendRequests.swift; sourceTree = "<group>"; };
@@ -121,7 +121,7 @@
 		94460F3E1B9E1DB6009F254B /* Gag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Gag.swift; sourceTree = "<group>"; };
 		9459CC2E1BFEC8830059CCBF /* PreviewImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreviewImageView.swift; sourceTree = "<group>"; };
 		9461380F1BCDFFC9004373E7 /* Settings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
-		946CEAA41BAA1D620049313C /* DealtTags.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DealtTags.swift; sourceTree = "<group>"; };
+		946CEAA41BAA1D620049313C /* Tags.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tags.swift; sourceTree = "<group>"; };
 		946FF4341C1BA84D00077EDC /* NotifyFriends.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotifyFriends.swift; sourceTree = "<group>"; };
 		946FF4361C1BBC2C00077EDC /* NotifyFriendsCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotifyFriendsCell.swift; sourceTree = "<group>"; };
 		946FF4381C1E1CE200077EDC /* SingleGag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleGag.swift; sourceTree = "<group>"; };
@@ -141,6 +141,8 @@
 		94C210AE1BD5C3BD00C10513 /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Bolts.framework; sourceTree = "<group>"; };
 		94C210B01BD5C3C600C10513 /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Parse.framework; sourceTree = "<group>"; };
 		94C210B21BD5C3CD00C10513 /* ParseUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ParseUI.framework; sourceTree = "<group>"; };
+		94C7EF321C49586A00636EA1 /* MyFriendsCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyFriendsCell.swift; sourceTree = "<group>"; };
+		94C7EF341C4CB66A00636EA1 /* AddTagCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddTagCell.swift; sourceTree = "<group>"; };
 		94C94E731C27A1E00051460E /* Notifications.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Notifications.swift; sourceTree = "<group>"; };
 		94C94E751C27A1FF0051460E /* NotificationsCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationsCell.swift; sourceTree = "<group>"; };
 		94C94E781C2EFB900051460E /* Discover.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Discover.swift; sourceTree = "<group>"; };
@@ -153,7 +155,7 @@
 		94C94E881C3C21E80051460E /* Medium.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Medium.swift; sourceTree = "<group>"; };
 		94C94E8E1C3C2C580051460E /* Large.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Large.swift; sourceTree = "<group>"; };
 		94CA25701BD5D9F400395C46 /* ParseHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParseHelper.swift; sourceTree = "<group>"; };
-		94E02CC31C1F2360008CBE30 /* DealtTagsCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DealtTagsCell.swift; sourceTree = "<group>"; };
+		94E02CC31C1F2360008CBE30 /* TagsCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagsCell.swift; sourceTree = "<group>"; };
 		94E6800F1BCCA5EC00D24344 /* Main.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Main.swift; sourceTree = "<group>"; };
 		94F3B7971C040C1C006DFDBE /* MKButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MKButton.swift; sourceTree = "<group>"; };
 		94F3B7981C040C1C006DFDBE /* MKTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MKTextField.swift; sourceTree = "<group>"; };
@@ -227,7 +229,7 @@
 			isa = PBXGroup;
 			children = (
 				943915E91BC20D08000244F1 /* FriendsMenu.swift */,
-				943915F31BC341ED000244F1 /* MyFriends.swift */,
+				94C7EF311C49580C00636EA1 /* My Friends */,
 				943915EF1BC23240000244F1 /* FindFriends */,
 				943915F01BC2325F000244F1 /* FriendRequests */,
 				946FF4331C1BA82900077EDC /* Notify Friends */,
@@ -394,6 +396,15 @@
 			name = Camera;
 			sourceTree = "<group>";
 		};
+		94C7EF311C49580C00636EA1 /* My Friends */ = {
+			isa = PBXGroup;
+			children = (
+				943915F31BC341ED000244F1 /* MyFriends.swift */,
+				94C7EF321C49586A00636EA1 /* MyFriendsCell.swift */,
+			);
+			name = "My Friends";
+			sourceTree = "<group>";
+		};
 		94C94E721C27A1BF0051460E /* Notifications */ = {
 			isa = PBXGroup;
 			children = (
@@ -443,20 +454,12 @@
 			name = "Table Cells";
 			sourceTree = "<group>";
 		};
-		94E02CC21C1F233D008CBE30 /* DealtTags */ = {
-			isa = PBXGroup;
-			children = (
-				946CEAA41BAA1D620049313C /* DealtTags.swift */,
-				94E02CC31C1F2360008CBE30 /* DealtTagsCell.swift */,
-			);
-			name = DealtTags;
-			sourceTree = "<group>";
-		};
 		94F3B7951C03E3FE006DFDBE /* Tags */ = {
 			isa = PBXGroup;
 			children = (
-				94E02CC21C1F233D008CBE30 /* DealtTags */,
-				9418DE971C03BEF0006AC84D /* ChosenTags.swift */,
+				946CEAA41BAA1D620049313C /* Tags.swift */,
+				94E02CC31C1F2360008CBE30 /* TagsCell.swift */,
+				94C7EF341C4CB66A00636EA1 /* AddTagCell.swift */,
 			);
 			name = Tags;
 			sourceTree = "<group>";
@@ -586,6 +589,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				94C7EF331C49586A00636EA1 /* MyFriendsCell.swift in Sources */,
 				94C94E831C3B87D50051460E /* SingleRow.swift in Sources */,
 				94E680101BCCA5EC00D24344 /* Main.swift in Sources */,
 				94BACD241BC84CC9000A2671 /* TutorialViewController.swift in Sources */,
@@ -603,12 +607,13 @@
 				9490C6861C47F7EA002B4654 /* CameraManager.swift in Sources */,
 				943915F61BC349DF000244F1 /* GagFeed.swift in Sources */,
 				94CA25711BD5D9F400395C46 /* ParseHelper.swift in Sources */,
-				946CEAA51BAA1D620049313C /* DealtTags.swift in Sources */,
+				946CEAA51BAA1D620049313C /* Tags.swift in Sources */,
 				94F3B7A01C040C1C006DFDBE /* MKTableViewCell.swift in Sources */,
 				946FF4391C1E1CE200077EDC /* SingleGag.swift in Sources */,
 				94460F3F1B9E1DB6009F254B /* Gag.swift in Sources */,
 				94C94E741C27A1E00051460E /* Notifications.swift in Sources */,
 				943915E61BBE3F71000244F1 /* User.swift in Sources */,
+				94C7EF351C4CB66A00636EA1 /* AddTagCell.swift in Sources */,
 				949AF9711BA293C90066CDBD /* GagReel.swift in Sources */,
 				94AC18481BAF9D9B00EC160F /* FindFriendsCell.swift in Sources */,
 				94BACD291BCB7103000A2671 /* Camera.swift in Sources */,
@@ -621,10 +626,9 @@
 				949AE6B41BA071F6001ACEEE /* LogIn.swift in Sources */,
 				94BACD261BC84E02000A2671 /* ContentViewController.swift in Sources */,
 				94C94E811C3B87840051460E /* SingleImage.swift in Sources */,
-				94E02CC41C1F2360008CBE30 /* DealtTagsCell.swift in Sources */,
+				94E02CC41C1F2360008CBE30 /* TagsCell.swift in Sources */,
 				94AC18461BAF929A00EC160F /* FindFriends.swift in Sources */,
 				948471021BACD04300C2BC71 /* GagUsers.swift in Sources */,
-				9418DE981C03BEF0006AC84D /* ChosenTags.swift in Sources */,
 				94C94E851C3B882C0051460E /* MultiRow.swift in Sources */,
 				94C94E7B1C2EFBBF0051460E /* DiscoverCell.swift in Sources */,
 				94F3B7A21C040C1C006DFDBE /* MKImageView.swift in Sources */,
@@ -758,8 +762,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Ryan Lindbeck (AQA79K37NG)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Ryan Lindbeck (AQA79K37NG)";
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -782,8 +786,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Ryan Lindbeck (X3Y7M2T64C)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Ryan Lindbeck (X3Y7M2T64C)";
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",

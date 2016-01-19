@@ -19,34 +19,13 @@ class FriendsMenuViewController: UITableViewController {
 
         // Do any additional setup after loading the view.
         
+        self.navigationController?.navigationItem.title = "Friends"
+        
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
-    }
-    
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 1
-    }
-    
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 3
-    }
-    
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        
-        switch (indexPath.row) {
-        case 0:
-            self.showFindFriends()
-        case 1:
-            self.showFriendRequests()
-        case 2:
-            self.showMyFriends()
-        default:
-            print("default selected")
-        }
-        
     }
     
     func showFindFriends() {

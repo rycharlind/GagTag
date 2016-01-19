@@ -38,11 +38,11 @@ class FindFriendsCell: UITableViewCell {
         didSet {
             switch relationshipStatus {
             case .Friends:
-                buttonAction.setTitle("Remove", forState: UIControlState.Normal)
+                buttonAction.setTitle("", forState: UIControlState.Normal)
             case .Pending:
-                buttonAction.setTitle("Pending", forState: UIControlState.Normal)
+                buttonAction.setTitle(GoogleIcon.e84b, forState: UIControlState.Normal)
             case .None:
-                buttonAction.setTitle("Add", forState: UIControlState.Normal)
+                buttonAction.setTitle(GoogleIcon.ec6b, forState: UIControlState.Normal)
             }
         }
     }

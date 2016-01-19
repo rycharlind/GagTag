@@ -246,7 +246,7 @@ class GagFeedViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     func showDealtTagsForGag(gag: PFObject) {
-        let dealtTagsViewController = self.storyboard?.instantiateViewControllerWithIdentifier("dealtTags") as! DealtTagsViewController
+        let dealtTagsViewController = self.storyboard?.instantiateViewControllerWithIdentifier("tags") as! TagsViewController
         dealtTagsViewController.gag = gag
         self.presentViewController(dealtTagsViewController, animated: true, completion: nil)
     }

@@ -40,18 +40,22 @@ class MyFriendsViewController: UIViewController, UITableViewDelegate, UITableVie
         return self.users.count
     }
     
+    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        return 60.0
+    }
+    
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
-        var cell = tableView.dequeueReusableCellWithIdentifier("Cell") as UITableViewCell!
+        var cell = tableView.dequeueReusableCellWithIdentifier("myFriendsCell") as! MyFriendsCell!
         if cell == nil {
-            cell = UITableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: "Cell")
+            cell = MyFriendsCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: "myFriendsCell")
         }
         
-        let user = self.users[indexPath.row] as PFObject
-        cell?.textLabel?.text = user["username"] as? String
+        let user = self.users[indexPath.row] as PFUser
+        cell?.labelUsername?.text = user.username
+        cell?.accessoryType = UITableViewCellAccessoryType.DisclosureIndicator
         
         return cell
-        
         
     }
     

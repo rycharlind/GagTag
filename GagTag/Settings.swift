@@ -36,6 +36,7 @@ class SettingsViewController: UITableViewController {
         if currentUser != nil {
             titleLabel.text = PFUser.currentUser()?.username
         }
+        
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -65,6 +66,9 @@ class SettingsViewController: UITableViewController {
             cell.textLabel!.text = "Sign Out"
             cell.backgroundColor = UIColor.MKColor.Amber
             cell.imageView?.image = UIImage(named: "glyphicons-388-log-out")
+        case 4: // Version
+            cell.textLabel!.text = self.getVersionAndBuildNumbers()
+            cell.backgroundColor = UIColor.MKColor.BlueGrey
         default:
             print("")
         }
@@ -86,6 +90,15 @@ class SettingsViewController: UITableViewController {
             print("Default")
         }
        
+    }
+    
+    func getVersionAndBuildNumbers() -> String {
+        let versionObject: AnyObject? = NSBundle.mainBundle().infoDictionary!["CFBundleShortVersionString"]
+        let buildObject: AnyObject? = NSBundle.mainBundle().infoDictionary!["CFBundleVersion"]
+        let version = versionObject as! String
+        let build = buildObject as! String
+
+        return "GagTag v\(version).\(build)"
     }
 
     override func didReceiveMemoryWarning() {

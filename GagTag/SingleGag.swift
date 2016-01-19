@@ -219,14 +219,16 @@ class SingleGagViewController: UIViewController {
     }
     
     func showDealtTagsForGag(gag: PFObject) {
-        let vc = self.storyboard?.instantiateViewControllerWithIdentifier("dealtTags") as! DealtTagsViewController
+        let vc = self.storyboard?.instantiateViewControllerWithIdentifier("tags") as! TagsViewController
         vc.gag = gag
+        vc.type = TagsType.DealtTags
         self.presentViewController(vc, animated: true, completion: nil)
     }
     
     func showChosenTagsForGag(gag: PFObject) {
-        let vc = self.storyboard?.instantiateViewControllerWithIdentifier("chosenTags") as! ChosenTagsViewController
+        let vc = self.storyboard?.instantiateViewControllerWithIdentifier("tags") as! TagsViewController
         vc.gag = gag
+        vc.type = TagsType.ChosenTags
         self.presentViewController(vc, animated: true, completion: nil)
     }
 

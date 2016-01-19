@@ -22,7 +22,6 @@ class ParseHelper {
         // exclude the current user
         query.whereKey("username", notEqualTo: PFUser.currentUser()!.username!)
         query.orderByAscending("username")
-        query.limit = 20
         
         query.findObjectsInBackgroundWithBlock(completionBlock)
         
@@ -279,8 +278,9 @@ class ParseHelper {
                 query.includeKey("winningTag")
                 query.includeKey("user")
                 query.orderByDescending("createdAt")
-                query.cachePolicy = PFCachePolicy.CacheThenNetwork
-                //query.limit = 12
+                
+                //query.cachePolicy = PFCachePolicy.CacheThenNetwork
+                //query.limit = 50
                 
                 query.findObjectsInBackgroundWithBlock(completionBlock)
             } else {
@@ -373,6 +373,27 @@ class ParseHelper {
         })
     }
     
+    static func addTagToGlobal(tag: PFObject, completionBlock: PFBooleanResultBlock) {
+        let tagValue = tag["value"] as! String
+        // Check to see if Tag exists
+        let query = PFQuery(className: "Tag")
+        query.whereKey("value", equalTo: tagValue)
+        query.countObjectsInBackgroundWithBlock({
+            (count: Int32, error: NSError?) -> Void in
+            if (count == 0) {
+                // If count is 0, then tag was not found, so it's ok to create it
+                let newTag = PFObject(className: "Tag")
+                newTag["value"] = tagValue
+                newTag.saveInBackgroundWithBlock({
+                    (success: Bool, error: NSError?) -> Void in
+                    completionBlock(success, error)
+                })
+            } else {
+                completionBlock(false, error)
+            }
+        })
+    }
+    
     // GET - All GagUserTag objects
     static func getAllGagUserTagObjectsForGag(gag: PFObject, completionBlock: PFQueryArrayResultBlock) {
         let query = PFQuery(className: "GagUserTag")
@@ -436,14 +457,16 @@ class ParseHelper {
     }
     
     static func getMyTagsForGag(gag: PFObject, completionBlock: (tags: [PFObject]?) -> ()) {
+        // First query to see if tags have already been dealt
         ParseHelper.getMyDealtTagsForGag(gag, completionBlock: {
             (tags: [PFObject]?, error: NSError?) -> Void in
             if (error == nil  && tags != nil) {
                 print("Tags are not nil")
-                completionBlock(tags: tags)
-                
+                print(tags)
+                completionBlock(tags: tags) // If they are, return them
             } else {
                 
+                // Else query for new tags
                 ParseHelper.getAllGagUserTagObjectsForGag(gag, completionBlock: {
                     (objects: [PFObject]?, error: NSError?) -> Void in
                     // concatenate all dealtTags
@@ -451,7 +474,6 @@ class ParseHelper {
                     for object in objects! {
                         let tags = object["dealtTags"] as! [PFObject]
                         dealtTags += tags
-                        //print(object)
                     }
                     
                     // append object ids to string array for query
@@ -471,10 +493,14 @@ class ParseHelper {
                             gagUserTag["user"] = PFUser.currentUser()!
                             gagUserTag["gag"] = gag
                             gagUserTag["dealtTags"] = tags
-                            gagUserTag.saveEventually()
-                            
-                            completionBlock(tags: tags)
-                            
+                            gagUserTag.saveInBackgroundWithBlock({
+                                (success: Bool, error: NSError?) -> Void in
+                                if (success) {
+                                    completionBlock(tags: tags)
+                                } else {
+                                    print(error)
+                                }
+                            })
                         } else {
                             print(error)
                         }
@@ -514,6 +540,24 @@ class ParseHelper {
                     tags.append(chosenTag)
                 }
                 completionBlock(tags: tags)
+            }
+        })
+    }
+    
+    static func sendChosenDealtTagForGag(gag: PFObject, tag: PFObject, completionBlock: PFBooleanResultBlock) {
+        let query = PFQuery(className: "GagUserTag")
+        query.whereKey("gag", equalTo: gag)
+        query.whereKey("user", equalTo: PFUser.currentUser()!)
+        query.getFirstObjectInBackgroundWithBlock({
+            (object: PFObject?, error: NSError?) -> Void in
+            if error != nil || object == nil {
+                print("The getFirstObject request failed.")
+            } else {
+                object?.setObject(tag, forKey: "chosenTag")
+                object?.saveInBackgroundWithBlock({
+                    (success: Bool, error: NSError?) -> Void in
+                    completionBlock(success, error)
+                })
             }
         })
     }

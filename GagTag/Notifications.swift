@@ -48,14 +48,6 @@ class NotificationsViewController: UIViewController, UITableViewDelegate, UITabl
 
         // Do any additional setup after loading the view.
         self.gags = [PFObject]()
-        ParseHelper.getMyNotifications({
-            (objects: [PFObject]?, error: NSError?) -> Void in
-            if (objects != nil) {
-                print(objects)
-                self.gags = objects
-                self.tableView.reloadData()
-            }
-        })
         
         self.tableView.addSubview(self.refreshControl)
 
@@ -66,6 +58,19 @@ class NotificationsViewController: UIViewController, UITableViewDelegate, UITabl
         super.viewWillAppear(animated)
         
         //UIApplication.sharedApplication().setStatusBarHidden(false, withAnimation: UIStatusBarAnimation.None)
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        ParseHelper.getMyNotifications({
+            (objects: [PFObject]?, error: NSError?) -> Void in
+            if (objects != nil) {
+                print(objects)
+                self.gags = objects
+                self.tableView.reloadData()
+            }
+        })
     }
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {

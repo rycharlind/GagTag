@@ -9,13 +9,11 @@
 import UIKit
 import Parse
 
-class FriendRequestsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, FriendRequestCellDelegate {
+class FriendRequestsViewController: UITableViewController, FriendRequestCellDelegate {
 
     
     // MARK: Properties
-    @IBOutlet weak var tableView: UITableView!
     var friendRequests = [PFObject]()
-    
     
     // MARK: Actions
     @IBAction func done(sender: AnyObject) {
@@ -43,15 +41,19 @@ class FriendRequestsViewController: UIViewController, UITableViewDelegate, UITab
         })
     }
     
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 1
     }
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.friendRequests.count
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        return 60.0
+    }
+    
+    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
         var cell = tableView.dequeueReusableCellWithIdentifier("friendRequestCell") as! FriendRequestCell!
         if cell == nil {
@@ -62,25 +64,20 @@ class FriendRequestsViewController: UIViewController, UITableViewDelegate, UITab
         cell?.friendRequest = friendRequest
         cell?.delegate = self
         
-        
         let user = friendRequest["fromUser"] as! PFUser
         print(user)
-        cell?.labelUsername?.text = user["username"] as? String
+        cell?.labelUsername?.text = user.username
         cell?.friend = user
         
         return cell
         
-        
     }
     
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        
-        
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         
     }
     
     func cell(cell: FriendRequestCell, didApproveUser user: PFUser, friendRequest: PFObject) {
-        print("approve")
         ParseHelper.addFriend(PFUser.currentUser()!, friend: user, completionBlock: nil)
         ParseHelper.addFriend(user, friend: PFUser.currentUser()!, completionBlock: nil)
         ParseHelper.updateFriendRequest(friendRequest, approved: true, dismissed: true, completionBlock: nil)

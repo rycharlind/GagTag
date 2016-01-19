@@ -39,18 +39,12 @@ class FriendRequestCell: UITableViewCell {
             switch friendRequestStatus {
             case .Pending:
                 print("pending")
-                buttonNo.hidden = false
-                buttonYes.hidden = false
             case .Accepted:
                 print("accepted")
-                labelUsername.text = labelUsername.text! + " - Approved"
-                buttonNo.hidden = true
-                buttonYes.hidden = true
+                buttonYes.setTitle(GoogleIcon.eb2f, forState: UIControlState.Normal)
+                buttonYes.setTitleColor(UIColor.MKColor.Green, forState: UIControlState.Normal)
             case .Dismissed:
                 print("dismissed")
-                labelUsername.text = labelUsername.text! + " - Declined"
-                buttonNo.hidden = true
-                buttonYes.hidden = true
             }
         }
     }
@@ -61,12 +55,6 @@ class FriendRequestCell: UITableViewCell {
     
     @IBAction func dismiss(sender: AnyObject) {
         delegate?.cell(self, didDismissUser: self.friend, friendRequest: self.friendRequest)
-    }
-
-    override func setSelected(selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
     }
 
 }

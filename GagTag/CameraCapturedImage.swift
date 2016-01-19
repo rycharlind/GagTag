@@ -17,7 +17,7 @@ class CameraCapturedImageViewController: UIViewController, UIPopoverPresentation
     
     // MARK: Properties
     @IBOutlet weak var imageView: UIImageView!
-    @IBOutlet weak var buttonTags: UIButton!
+    @IBOutlet weak var buttonTags: MKButton!
     @IBOutlet weak var progressView: UIProgressView!
     var image: UIImage!
     var numberOfTags: Int = 5

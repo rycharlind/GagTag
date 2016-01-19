@@ -16,7 +16,6 @@ class DiscoverViewController: UIViewController, UICollectionViewDelegate, UIColl
     @IBOutlet weak var labelStatusBarBackground: UILabel!
     
     var gags: [PFObject]!
-    var sections: [String]!
     var mainNavDelegate : MainNavDelegate?
     
     lazy var refreshControl: UIRefreshControl = {
@@ -39,7 +38,6 @@ class DiscoverViewController: UIViewController, UICollectionViewDelegate, UIColl
     
     // MARK: Actions
     @IBAction func goToCamera(sender: AnyObject) {
-        print("sup")
         if let delegate = self.mainNavDelegate {
             delegate.goToController(1, direction: .Reverse, animated: true)
         }
@@ -67,16 +65,8 @@ class DiscoverViewController: UIViewController, UICollectionViewDelegate, UIColl
         self.collectionView.backgroundColor = UIColor.whiteColor()
         self.navBar.barTintColor = UIColor.MKColor.Orange
         self.labelStatusBarBackground.backgroundColor = UIColor.MKColor.Orange
-        
-        // Sections
-        self.sections = ["Trending Today", "My Feed"]
-        
-    }
     
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
         
-        //UIApplication.sharedApplication().setStatusBarHidden(false, withAnimation: UIStatusBarAnimation.None)
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -113,33 +103,15 @@ class DiscoverViewController: UIViewController, UICollectionViewDelegate, UIColl
         return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
     }
     
-    /*
-    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        return CGSize(width: self.collectionView.frame.width, height: 50)
-    }
-    
-    func collectionView(collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, atIndexPath indexPath: NSIndexPath) -> UICollectionReusableView {
-        
-        let view = collectionView.dequeueReusableSupplementaryViewOfKind(UICollectionElementKindSectionHeader, withReuseIdentifier: "DiscoverCellHeader", forIndexPath: indexPath) as! DiscoverCellHeader
-        
-        view.labelSectionTitle.text = "Test"
-        
-        
-        
-        return view
-        
-    }
-    */
-    
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("discoverCell", forIndexPath: indexPath) as! DiscoverCell
         
         // Set gag object
-        let gag = self.gags[indexPath.row] as PFObject
+        cell.gag = self.gags[indexPath.row] as PFObject
         
         // Query Gag image
-        cell.pfImage = gag["image"] as! PFFile
+        //cell.pfImage = gag["image"] as! PFFile
         
         return cell
         

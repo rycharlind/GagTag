@@ -176,7 +176,7 @@ class GagReelViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     // MARK:  GagReelCellDelegate
     func cell(cell: GagReelCell, didTouchTagsButton gagStatus: GagStatus, gag: PFObject) {
-        self.showChosenTagsForGag(gag)
+        print("You combined the Tag views.  Need to implement the new way if this VC comes back")
     }
     
     func cell(cell: GagReelCell, didTouchNumberOfTagsButton gagStatus: GagStatus, gag: PFObject) {
@@ -195,12 +195,6 @@ class GagReelViewController: UIViewController, UITableViewDelegate, UITableViewD
         let vc = self.storyboard?.instantiateViewControllerWithIdentifier("singleGagView") as! SingleGagViewController
         vc.gagId = gag.objectId!
         self.presentViewController(vc, animated: false, completion: nil)
-    }
-    
-    func showChosenTagsForGag(gag: PFObject) {
-        let chosenTagsVC = self.storyboard?.instantiateViewControllerWithIdentifier("chosenTags") as! ChosenTagsViewController
-        chosenTagsVC.gag = gag
-        self.presentViewController(chosenTagsVC, animated: true, completion: nil)
     }
     
     override func didReceiveMemoryWarning() {

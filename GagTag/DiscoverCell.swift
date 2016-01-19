@@ -15,20 +15,57 @@ class DiscoverCell: UICollectionViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        
+
+        self.imageView.backgroundColor = UIColor.grayColor()
+    }
+    
+    var gag: PFObject? {
+        didSet {
+            if let gag = gag {
+                self.pfImage = gag["image"] as? PFFile
+            }
+        }
     }
     
     var pfImage: PFFile? {
         didSet {
             if let f = pfImage {
+                self.imageView.image = nil
                 pfImage?.getDataInBackgroundWithBlock({
                     (result, error) in
                     if (result != nil) {
-                        self.imageView.image = UIImage(data: result!)
+                        let image = UIImage(data: result!)
+                        self.imageView.image = self.ResizeImage(image!, targetSize: CGSize(width: 300, height: 300))
                     }
                 })
             }
         }
+    }
+    
+    func ResizeImage(image: UIImage, targetSize: CGSize) -> UIImage {
+        let size = image.size
+        
+        let widthRatio  = targetSize.width  / image.size.width
+        let heightRatio = targetSize.height / image.size.height
+        
+        // Figure out what our orientation is, and use that to form the rectangle
+        var newSize: CGSize
+        if(widthRatio > heightRatio) {
+            newSize = CGSizeMake(size.width * heightRatio, size.height * heightRatio)
+        } else {
+            newSize = CGSizeMake(size.width * widthRatio,  size.height * widthRatio)
+        }
+        
+        // This is the rect that we've calculated out and this is what is actually used below
+        let rect = CGRectMake(0, 0, newSize.width, newSize.height)
+        
+        // Actually do the resizing to the rect using the ImageContext stuff
+        UIGraphicsBeginImageContextWithOptions(newSize, false, 1.0)
+        image.drawInRect(rect)
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        return newImage
     }
     
     var gagState: GagState = .Waiting {
