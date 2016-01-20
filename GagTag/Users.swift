@@ -95,7 +95,6 @@ class UsersViewController: UIViewController, UITableViewDataSource, UITableViewD
         let cell = tableView.cellForRowAtIndexPath(indexPath)
         let row = Int(indexPath.row)
         
-        
         let currentObject = self.objects[row] as PFObject
         
         if let objId = currentObject.objectId {

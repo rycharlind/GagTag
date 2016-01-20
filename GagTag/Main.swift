@@ -48,12 +48,16 @@ class MainViewController: UIViewController,UIPageViewControllerDelegate, UIPageV
         let discoverVC = self.storyboard?.instantiateViewControllerWithIdentifier("discover") as! DiscoverViewController
         discoverVC.mainNavDelegate = self
         
+        let notesVC = self.storyboard?.instantiateViewControllerWithIdentifier("notes") as! NotesViewController
+        notesVC.mainNavDelegate = self
+        
         //let tableCollectionVC = self.storyboard?.instantiateViewControllerWithIdentifier("tableCollection") as! TableCollectionViewController
         
         // Create an array of ViewController that the PageViewController will use as it's datasource
         self.viewControllers = [UIViewController]()
         //self.viewControllers.append(gagReelVC)
-        self.viewControllers.append(notificationsVC)
+        //self.viewControllers.append(notificationsVC)
+        self.viewControllers.append(notesVC)
         self.viewControllers.append(cameraVC)
         //self.viewControllers.append(gagFeedVC)
         self.viewControllers.append(discoverVC)

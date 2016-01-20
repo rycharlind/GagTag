@@ -104,6 +104,10 @@ class CameraViewController: UIViewController {
         self.buttonTake.layer.borderWidth = 2.0
         self.buttonTake.layer.borderColor = UIColor.blackColor().CGColor
         
+        // Configure Notifications button
+        self.buttonReel.layer.cornerRadius = 5
+        self.buttonReel.layer.masksToBounds = true
+        
         cameraManager.shouldRespondToOrientationChanges = false
         addCameraToView()
         
@@ -117,10 +121,24 @@ class CameraViewController: UIViewController {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         UIApplication.sharedApplication().setStatusBarHidden(true, withAnimation: UIStatusBarAnimation.None)
+        
     }
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
+        
+        self.hideNotesViewForButton(self.buttonReel)
+        ParseHelper.getMyNewNotesCount({
+            (count: Int32, error: NSError?) -> Void in
+            if error == nil {
+                print("Notes Count: \(count)")
+                if (count > 0) {
+                    self.showNotesViewForButton(self.buttonReel, badgeNumber: count)
+                    //self.buttonReel.setTitle("", forState: .Normal)
+                }
+            }
+        })
+    
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -160,6 +178,22 @@ class CameraViewController: UIViewController {
         vc.image = image
         //vc.delegate = self
         self.presentViewController(vc, animated: false, completion: nil)
+    }
+    
+    func showNotesViewForButton(button: UIButton, badgeNumber: Int32) {
+        button.hidden = true
+        button.backgroundColor = UIColor.MKColor.DeepOrange
+        button.titleLabel?.font = UIFont(name: "Arial", size: 20.0)
+        button.setTitle(String(badgeNumber), forState: .Normal)
+        button.hidden = false
+    }
+    
+    func hideNotesViewForButton(button: UIButton) {
+        button.hidden = true
+        button.backgroundColor = UIColor.clearColor()
+        button.titleLabel?.font = UIFont(name: "googleicon", size: 28.0)
+        button.setTitle(GoogleIcon.ebe4, forState: .Normal)
+        button.hidden = false
     }
 
     override func didReceiveMemoryWarning() {

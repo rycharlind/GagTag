@@ -41,6 +41,8 @@
 		948471021BACD04300C2BC71 /* GagUsers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 948471011BACD04300C2BC71 /* GagUsers.swift */; };
 		9490C6811C473587002B4654 /* SettingsNavController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9490C6801C473587002B4654 /* SettingsNavController.swift */; };
 		9490C6861C47F7EA002B4654 /* CameraManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9490C6851C47F7EA002B4654 /* CameraManager.swift */; };
+		949AC4E81C4EB72800468257 /* NotesCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 949AC4E71C4EB72800468257 /* NotesCell.swift */; };
+		949AC4EA1C4EB75E00468257 /* Notes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 949AC4E91C4EB75E00468257 /* Notes.swift */; };
 		949AE6B41BA071F6001ACEEE /* LogIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 949AE6B31BA071F6001ACEEE /* LogIn.swift */; };
 		949AE6B61BA074CE001ACEEE /* Users.swift in Sources */ = {isa = PBXBuildFile; fileRef = 949AE6B51BA074CE001ACEEE /* Users.swift */; };
 		949AF9711BA293C90066CDBD /* GagReel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 949AF9701BA293C90066CDBD /* GagReel.swift */; };
@@ -128,6 +130,8 @@
 		948471011BACD04300C2BC71 /* GagUsers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GagUsers.swift; sourceTree = "<group>"; };
 		9490C6801C473587002B4654 /* SettingsNavController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsNavController.swift; sourceTree = "<group>"; };
 		9490C6851C47F7EA002B4654 /* CameraManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraManager.swift; sourceTree = "<group>"; };
+		949AC4E71C4EB72800468257 /* NotesCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotesCell.swift; sourceTree = "<group>"; };
+		949AC4E91C4EB75E00468257 /* Notes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Notes.swift; sourceTree = "<group>"; };
 		949AE6B31BA071F6001ACEEE /* LogIn.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogIn.swift; sourceTree = "<group>"; };
 		949AE6B51BA074CE001ACEEE /* Users.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Users.swift; sourceTree = "<group>"; };
 		949AF9701BA293C90066CDBD /* GagReel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GagReel.swift; sourceTree = "<group>"; };
@@ -410,6 +414,8 @@
 			children = (
 				94C94E731C27A1E00051460E /* Notifications.swift */,
 				94C94E751C27A1FF0051460E /* NotificationsCell.swift */,
+				949AC4E91C4EB75E00468257 /* Notes.swift */,
+				949AC4E71C4EB72800468257 /* NotesCell.swift */,
 			);
 			name = Notifications;
 			sourceTree = "<group>";
@@ -599,6 +605,7 @@
 				946FF4371C1BBC2C00077EDC /* NotifyFriendsCell.swift in Sources */,
 				94ACFB9D1C039BAF00ADB3F1 /* GagReelCell.swift in Sources */,
 				943915EC1BC20F66000244F1 /* FriendRequests.swift in Sources */,
+				949AC4E81C4EB72800468257 /* NotesCell.swift in Sources */,
 				94C94E7D1C3A17D60051460E /* DiscoverCellHeader.swift in Sources */,
 				94C94E871C3B8A5B0051460E /* TableCollectionViewController.swift in Sources */,
 				943915EA1BC20D08000244F1 /* FriendsMenu.swift in Sources */,
@@ -634,6 +641,7 @@
 				94F3B7A21C040C1C006DFDBE /* MKImageView.swift in Sources */,
 				94ACFB9B1C02B5A700ADB3F1 /* NumberOfTags.swift in Sources */,
 				943915F41BC341ED000244F1 /* MyFriends.swift in Sources */,
+				949AC4EA1C4EB75E00468257 /* Notes.swift in Sources */,
 				94C94E761C27A1FF0051460E /* NotificationsCell.swift in Sources */,
 				943915F91BC34B1B000244F1 /* GagFeedCell.swift in Sources */,
 				949AE6B61BA074CE001ACEEE /* Users.swift in Sources */,

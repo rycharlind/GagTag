@@ -331,6 +331,8 @@ class ParseHelper {
         })
     }
     
+    // MARK: Notifications
+    
     static func getMyNotifications(completionBlock: PFQueryArrayResultBlock) {
 
         let queryGagsToMe = PFQuery(className: "Gag")
@@ -345,6 +347,28 @@ class ParseHelper {
         query.orderByDescending("createdAt")
         query.findObjectsInBackgroundWithBlock(completionBlock)
     
+    }
+    
+    static func getMyNotes(completionBlock: PFQueryArrayResultBlock) {
+        let query = PFQuery(className: "Notifications")
+        query.whereKey("toUser", equalTo: PFUser.currentUser()!)
+        query.includeKey("gag")
+        query.includeKey("fromUser")
+        query.orderByDescending("createdAt")
+        query.findObjectsInBackgroundWithBlock({
+            (objects: [PFObject]?, error: NSError?) -> Void in
+            completionBlock(objects, error)
+        })
+    }
+    
+    static func getMyNewNotesCount(completionBlock: PFIntegerResultBlock) {
+        let query = PFQuery(className: "Notifications")
+        query.whereKey("toUser", equalTo: PFUser.currentUser()!)
+        query.whereKey("viewed", equalTo: false)
+        query.countObjectsInBackgroundWithBlock({
+            (count: Int32, error: NSError?) -> Void in
+            completionBlock(count, error)
+        })
     }
     
     // MARK: Tags
