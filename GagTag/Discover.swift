@@ -124,8 +124,11 @@ class DiscoverViewController: UIViewController, UICollectionViewDelegate, UIColl
         
         let gag = self.gags[indexPath.row] as PFObject
         
+        print(gag)
+        
         dispatch_async(dispatch_get_main_queue(), {
-            self.showSingleGagView(gag, image: image)
+            //self.showSingleGagView(gag, image: image)
+            self.showGagPageController(self.gags, index: indexPath.row)
         });
     
     }
@@ -135,6 +138,13 @@ class DiscoverViewController: UIViewController, UICollectionViewDelegate, UIColl
         let vc = self.storyboard?.instantiateViewControllerWithIdentifier("singleGagView") as! SingleGagViewController
         vc.gagId = gag.objectId!
         vc.image = image
+        self.presentViewController(vc, animated: false, completion: nil)
+    }
+    
+    func showGagPageController(gags: [PFObject], index: Int) {
+        let vc = self.storyboard?.instantiateViewControllerWithIdentifier("gagsPageController") as! GagsPageViewController
+        vc.gags = self.gags
+        vc.gagsIndex = index
         self.presentViewController(vc, animated: false, completion: nil)
     }
     

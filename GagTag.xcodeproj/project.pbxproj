@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		940E78FF1C0527A200216414 /* CameraCapturedImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 940E78FE1C0527A200216414 /* CameraCapturedImage.swift */; };
 		9412CF5A1C04B89800FF435F /* googleicon.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 94F3B7A71C042737006DFDBE /* googleicon.ttf */; };
+		9422AE2B1C50963900A5262A /* GagsPageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9422AE2A1C50963900A5262A /* GagsPageController.swift */; };
 		943915E61BBE3F71000244F1 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 943915E51BBE3F71000244F1 /* User.swift */; };
 		943915EA1BC20D08000244F1 /* FriendsMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 943915E91BC20D08000244F1 /* FriendsMenu.swift */; };
 		943915EC1BC20F66000244F1 /* FriendRequests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 943915EB1BC20F66000244F1 /* FriendRequests.swift */; };
@@ -94,6 +95,7 @@
 
 /* Begin PBXFileReference section */
 		940E78FE1C0527A200216414 /* CameraCapturedImage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraCapturedImage.swift; sourceTree = "<group>"; };
+		9422AE2A1C50963900A5262A /* GagsPageController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GagsPageController.swift; sourceTree = "<group>"; };
 		943915E51BBE3F71000244F1 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		943915E91BC20D08000244F1 /* FriendsMenu.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendsMenu.swift; sourceTree = "<group>"; };
 		943915EB1BC20F66000244F1 /* FriendRequests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendRequests.swift; sourceTree = "<group>"; };
@@ -262,6 +264,7 @@
 		943915F71BC34AFF000244F1 /* Gag */ = {
 			isa = PBXGroup;
 			children = (
+				9422AE2A1C50963900A5262A /* GagsPageController.swift */,
 				946FF4381C1E1CE200077EDC /* SingleGag.swift */,
 				94C94E771C2EFB6B0051460E /* Discover */,
 				94C94E721C27A1BF0051460E /* Notifications */,
@@ -648,6 +651,7 @@
 				94F3B7A31C040C1C006DFDBE /* MKLayer.swift in Sources */,
 				94F3B7A61C04271D006DFDBE /* GoogleIcon.swift in Sources */,
 				94F3B79E1C040C1C006DFDBE /* MKButton.swift in Sources */,
+				9422AE2B1C50963900A5262A /* GagsPageController.swift in Sources */,
 				940E78FF1C0527A200216414 /* CameraCapturedImage.swift in Sources */,
 				946138101BCDFFC9004373E7 /* Settings.swift in Sources */,
 			);

@@ -134,7 +134,6 @@ class CameraViewController: UIViewController {
                 print("Notes Count: \(count)")
                 if (count > 0) {
                     self.showNotesViewForButton(self.buttonReel, badgeNumber: count)
-                    //self.buttonReel.setTitle("", forState: .Normal)
                 }
             }
         })

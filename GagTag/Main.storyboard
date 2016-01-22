@@ -1002,6 +1002,32 @@
             </objects>
             <point key="canvasLocation" x="5154" y="-389"/>
         </scene>
+        <!--Page View Controller-->
+        <scene sceneID="aZa-bV-yUA">
+            <objects>
+                <pageViewController storyboardIdentifier="gagsPageViewController" autoresizesArchivedViewToFullSize="NO" transitionStyle="scroll" navigationOrientation="horizontal" spineLocation="none" id="mPk-w2-MDd" sceneMemberID="viewController"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="O9K-Ow-iiv" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="5862" y="-1731"/>
+        </scene>
+        <!--Gags Page View Controller-->
+        <scene sceneID="nJ5-iM-ggZ">
+            <objects>
+                <viewController storyboardIdentifier="gagsPageController" id="8ge-jK-byr" customClass="GagsPageViewController" customModule="GagTag" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="P5V-SU-TWi"/>
+                        <viewControllerLayoutGuide type="bottom" id="lFp-4i-B0K"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="IKQ-9S-hRK">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="DgU-c6-AAg" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="5862" y="-1057"/>
+        </scene>
         <!--Single Gag View Controller-->
         <scene sceneID="DS9-ke-QFj">
             <objects>
@@ -1026,7 +1052,7 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Jcf-ah-8k4">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                                 <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="EQn-ue-8Iw">
+                                    <button opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="EQn-ue-8Iw">
                                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                                         <connections>
                                             <action selector="hideActionView:" destination="e7f-xO-l0m" eventType="touchUpInside" id="aTg-ky-oJv"/>
@@ -1143,7 +1169,9 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="buttonHideActionView" destination="EQn-ue-8Iw" id="jvA-yd-xib"/>
                         <outlet property="buttonMainAction" destination="5c9-nq-t79" id="Xd4-uc-fTn"/>
+                        <outlet property="buttonShowActionView" destination="QYU-7K-k5d" id="mj8-Bb-P1y"/>
                         <outlet property="imageView" destination="hgM-Z3-kwP" id="jnu-qE-ZFC"/>
                         <outlet property="labelChosenOrWinningTag" destination="9px-eZ-cBZ" id="btY-8Q-JX2"/>
                         <outlet property="labelCreatedAt" destination="NnG-fs-uFI" id="P7q-RJ-Vff"/>

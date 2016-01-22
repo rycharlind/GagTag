@@ -43,6 +43,10 @@ class CameraCapturedImageViewController: UIViewController, UIPopoverPresentation
 
         // Do any additional setup after loading the view.
         
+        var swipeDown = UISwipeGestureRecognizer(target: self, action: "respondToSwipeGesture:")
+        swipeDown.direction = UISwipeGestureRecognizerDirection.Down
+        self.view.addGestureRecognizer(swipeDown)
+        
     }
     
     override func viewWillAppear(animated: Bool) {

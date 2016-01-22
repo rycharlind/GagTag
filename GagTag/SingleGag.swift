@@ -11,6 +11,10 @@ import Parse
 
 class SingleGagViewController: UIViewController {
     
+    var pageIndex: Int!
+    var titleText: String!
+    var imageFile: String!
+    
     // View - Contains on the below hiding/showing all
     @IBOutlet weak var viewActions: UIView!
     
@@ -37,6 +41,9 @@ class SingleGagViewController: UIViewController {
     //          Else status is equal to share
     @IBOutlet weak var buttonMainAction: UIButton!
     
+    @IBOutlet weak var buttonShowActionView: UIButton!
+    @IBOutlet weak var buttonHideActionView: UIButton!
+    
     var gagId: String!
     var allowedNumberOfTags: Int!
     var image: UIImage!
@@ -44,6 +51,8 @@ class SingleGagViewController: UIViewController {
     var gag: PFObject = PFObject(className: "Gag") {
         didSet {
             self.allowedNumberOfTags = self.gag["allowedNumberOfTags"] as! Int
+            
+            print(self.gag)
             
             // Username
             let user = self.gag["user"]
@@ -66,17 +75,17 @@ class SingleGagViewController: UIViewController {
                 self.gagState = GagState.Complete
             }
             
+            
             // Image
             let pfimage = gag["image"] as! PFFile
             pfimage.getDataInBackgroundWithBlock({
                 (result, error) in
                 if (result != nil) {
-                    print("got image")
                     self.imageView.image = UIImage(data: result!)
                 }
             })
             
-            
+        
             // REQUEST: GagUserTags
             ParseHelper.getAllGagUserTagObjectsForGag(self.gag, limit: self.allowedNumberOfTags, completionBlock: {
                 (objects: [PFObject]?, error: NSError?) -> Void in
@@ -84,6 +93,7 @@ class SingleGagViewController: UIViewController {
                     self.gagUserTags = objects!
                 }
             })
+            
         }
     }
     
@@ -167,21 +177,17 @@ class SingleGagViewController: UIViewController {
         didSet {
             switch(gagState) {
             case .ChoseDealtTag:
-                print("ChoseDealtTag")
                 self.buttonMainAction.hidden = false
             case .ChoseWinningTag:
-                print("ChoseWinningTag")
                 self.buttonMainAction.hidden = false
             case .Waiting:
-                print("Waiting")
                 self.buttonMainAction.hidden = true
                 self.labelChosenOrWinningTag.backgroundColor = UIColor.MKColor.Blue
             case .Complete:
-                print("Complete")
                 self.buttonMainAction.hidden = true
                 self.labelChosenOrWinningTag.backgroundColor = UIColor.MKColor.Green
             case .None:
-                print("None")
+                print("GagState = None")
             }
         }
     }
@@ -236,6 +242,13 @@ class SingleGagViewController: UIViewController {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+        self.imageView.contentMode = .ScaleAspectFill
+        self.imageView.clipsToBounds = true
+        
+        let swipeDown = UISwipeGestureRecognizer(target: self, action: "respondToSwipeGesture:")
+        swipeDown.direction = UISwipeGestureRecognizerDirection.Down
+        self.buttonShowActionView.addGestureRecognizer(swipeDown)
+        self.buttonHideActionView.addGestureRecognizer(swipeDown)
         
         self.labelChosenOrWinningTag.hidden = true
         self.labelCreatedAt.hidden = true
@@ -252,8 +265,6 @@ class SingleGagViewController: UIViewController {
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
-
-        print(self.gagId)
         
         if (self.image != nil) {
             self.imageView.image = self.image
@@ -264,7 +275,28 @@ class SingleGagViewController: UIViewController {
             self.gag = object!
             print(self.gag)
         })
+        
     }
+    
+    func respondToSwipeGesture(gesture: UIGestureRecognizer) {
+        
+        if let swipeGesture = gesture as? UISwipeGestureRecognizer {
+            switch swipeGesture.direction {
+            case UISwipeGestureRecognizerDirection.Right:
+                print("Swiped right")
+            case UISwipeGestureRecognizerDirection.Down:
+                print("Swiped down")
+                self.dismissViewControllerAnimated(true, completion: nil)
+            case UISwipeGestureRecognizerDirection.Left:
+                print("Swiped left")
+            case UISwipeGestureRecognizerDirection.Up:
+                print("Swiped up")
+            default:
+                break
+            }
+        }
+    }
+    
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
